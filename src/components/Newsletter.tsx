@@ -3,15 +3,50 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Mail } from "lucide-react";
+import { toast } from "sonner";
 
 const Newsletter = () => {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const sanitizeInput = (input: string): string => {
+    return input.trim().toLowerCase();
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle newsletter signup
-    console.log("Newsletter signup:", email);
-    setEmail("");
+    const sanitizedEmail = sanitizeInput(email);
+    
+    if (!sanitizedEmail) {
+      toast.error("Please enter your email address");
+      return;
+    }
+
+    if (!validateEmail(sanitizedEmail)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      // TODO: Replace with actual newsletter API integration
+      // For now, we'll simulate the API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast.success("Successfully subscribed to newsletter!");
+      setEmail("");
+    } catch (error) {
+      console.error("Newsletter subscription error:", error);
+      toast.error("Failed to subscribe. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,9 +69,15 @@ const Newsletter = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="flex-1"
               required
+              disabled={loading}
+              maxLength={254} // RFC 5321 email length limit
             />
-            <Button type="submit" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
-              Subscribe
+            <Button 
+              type="submit" 
+              disabled={loading}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:opacity-50"
+            >
+              {loading ? "Subscribing..." : "Subscribe"}
             </Button>
           </form>
           
