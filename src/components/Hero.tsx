@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Play } from "lucide-react";
+import { ArrowRight, Sparkles, Play, Calendar } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -13,32 +13,41 @@ const Hero = () => {
         <div className="text-center">
           <div className="inline-flex items-center px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full border border-purple-200/50 text-sm font-medium text-purple-700 mb-8">
             <Sparkles className="h-4 w-4 mr-2" />
-            AI-Powered Marketing Made Simple
+            Your Full-Stack Marketing Assistant — On Autopilot
           </div>
           
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-8 leading-tight">
-            Generate High-Converting
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-4 leading-tight">
             <span className="block bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Marketing Assets
+              AI Marketing Copilot
             </span>
-            in Minutes
           </h1>
           
+          <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-8">
+            Stop Wasting Time on Marketing. Start Scaling.
+          </h2>
+          
           <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">
-            The only AI marketing platform designed for busy founders. Generate landing pages, 
-            email campaigns, ad copy, and more without learning marketing.
+            You didn't launch a business to become a full-time marketer. But growth depends on the right message, the right funnel, at the right time. AI Marketing Copilot takes your idea — and instantly turns it into emails, ads, landing pages, and full funnels tailored to your audience.
+          </p>
+          
+          <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto font-medium">
+            👉 No team required. No guesswork. Just launch-ready marketing in minutes.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
             <Link to="/signup">
               <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-4 h-auto">
-                Start Free Trial
+                Try It Free
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
             <Button variant="outline" size="lg" className="text-lg px-8 py-4 h-auto border-2 hover:bg-white/80">
               <Play className="mr-2 h-5 w-5" />
-              Watch Demo
+              See Live Demo
+            </Button>
+            <Button variant="outline" size="lg" className="text-lg px-8 py-4 h-auto border-2 hover:bg-white/80">
+              <Calendar className="mr-2 h-5 w-5" />
+              Book a Strategy Call
             </Button>
           </div>
           
@@ -52,11 +61,12 @@ const Hero = () => {
                   <div className="w-3 h-3 bg-green-500 rounded-full" />
                 </div>
                 <div className="font-mono text-sm text-green-400">
-                  <div className="mb-2">$ Generate high-converting landing page copy</div>
-                  <div className="mb-2 text-gray-400">→ Analyzing your product...</div>
-                  <div className="mb-2 text-gray-400">→ Crafting compelling headlines...</div>
-                  <div className="mb-2 text-gray-400">→ Optimizing for conversions...</div>
-                  <div className="text-green-400">✓ Generated 5 landing page variations in 12 seconds</div>
+                  <div className="mb-2">$ Generate complete marketing funnel for SaaS startup</div>
+                  <div className="mb-2 text-gray-400">→ Analyzing your business model...</div>
+                  <div className="mb-2 text-gray-400">→ Creating email sequences (5 emails)...</div>
+                  <div className="mb-2 text-gray-400">→ Writing Facebook & Google ads...</div>
+                  <div className="mb-2 text-gray-400">→ Building landing page copy...</div>
+                  <div className="text-green-400">✓ Complete funnel generated in 8 seconds</div>
                 </div>
               </div>
             </div>

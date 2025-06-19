@@ -1,43 +1,23 @@
 
-import { User, Building2, Briefcase } from "lucide-react";
+import { Clock, Zap, DollarSign, TrendingUp } from "lucide-react";
 
 const UseCases = () => {
-  const useCases = [
+  const targetAudience = [
     {
-      icon: <User className="h-8 w-8" />,
-      title: "Solo Founders",
-      description: "Launch and scale without a marketing team",
-      features: [
-        "Complete marketing strategies",
-        "Launch-ready landing pages", 
-        "Email automation sequences",
-        "Social media content calendar"
-      ],
-      color: "from-blue-500 to-cyan-500"
+      icon: <Clock className="h-6 w-6" />,
+      text: "Don't have time to write copy or hire an agency"
     },
     {
-      icon: <Briefcase className="h-8 w-8" />,
-      title: "Coaches & Consultants",
-      description: "Attract and convert your ideal clients",
-      features: [
-        "Authority-building content",
-        "Lead generation funnels",
-        "Client onboarding sequences",
-        "Workshop and webinar copy"
-      ],
-      color: "from-purple-500 to-pink-500"
+      icon: <Zap className="h-6 w-6" />,
+      text: "Want to test offers and funnels quickly"
     },
     {
-      icon: <Building2 className="h-8 w-8" />,
-      title: "Small Agencies",
-      description: "Deliver faster for more clients",
-      features: [
-        "Client campaign templates",
-        "Scalable content production",
-        "Team collaboration tools",
-        "White-label deliverables"
-      ],
-      color: "from-orange-500 to-red-500"
+      icon: <DollarSign className="h-6 w-6" />,
+      text: "Need pro-level marketing without the price tag"
+    },
+    {
+      icon: <TrendingUp className="h-6 w-6" />,
+      text: "Are ready to scale with clarity, speed, and focus"
     }
   ];
 
@@ -46,42 +26,39 @@ const UseCases = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-20">
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
-            Perfect for Every
+            🎯 Built for Founders
             <span className="block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Type of Business
+              Who...
             </span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Whether you're a solo founder or running a small agency, 
-            AMAP adapts to your specific needs and goals.
+            If this sounds like you, AI Marketing Copilot was built specifically 
+            for founders like you who need results, not complexity.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {useCases.map((useCase, index) => (
-            <div key={index} className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-              <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${useCase.color} text-white mb-6`}>
-                {useCase.icon}
-              </div>
-              
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                {useCase.title}
-              </h3>
-              
-              <p className="text-gray-600 mb-8 text-lg">
-                {useCase.description}
-              </p>
-              
-              <ul className="space-y-4">
-                {useCase.features.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-start">
-                    <div className="flex-shrink-0 w-2 h-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full mt-2 mr-3" />
-                    <span className="text-gray-700">{feature}</span>
-                  </li>
-                ))}
-              </ul>
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-3xl p-12 shadow-xl border border-gray-200/50">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {targetAudience.map((item, index) => (
+                <div key={index} className="flex items-start space-x-4">
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl flex items-center justify-center text-white">
+                      {item.icon}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center">
+                      <div className="w-2 h-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full mr-3" />
+                      <p className="text-lg text-gray-700 leading-relaxed">
+                        {item.text}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>
