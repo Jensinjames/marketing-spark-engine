@@ -9,28 +9,28 @@ import {
 const FAQ = () => {
   const faqs = [
     {
-      question: "Can I use this if I have zero marketing experience?",
-      answer: "Absolutely. Just describe your business or offer, and AI Copilot handles the rest — no guesswork required."
+      question: "Do I need marketing experience?",
+      answer: "No—just describe your offer and Copilot does the rest."
     },
     {
-      question: "What platforms does it integrate with?",
-      answer: "You can connect it to tools like Zapier, n8n, Mailchimp, ConvertKit, Webflow, and more. Use your stack, your way."
+      question: "What can I integrate?",
+      answer: "Zapier, n8n, Mailchimp, ConvertKit, Webflow, and more."
     },
     {
-      question: "Do I own the content it generates?",
-      answer: "Yes — every email, ad, landing page, and funnel is 100% yours to use, modify, or scale."
+      question: "Do I own what I create?",
+      answer: "Yes—100% yours to use or resell."
     },
     {
-      question: "What's included in the free plan?",
-      answer: "The free plan gives you limited access to core tools, enough to test real outputs before upgrading."
+      question: "What's in the free plan?",
+      answer: "All core features, limited by monthly credits."
     },
     {
-      question: "How long does it take to generate a full funnel?",
-      answer: "Most users generate complete campaigns (ads, landing page, email sequence) in under 10 minutes."
+      question: "Is it fast?",
+      answer: "Yes—most campaigns launch in under 10 minutes."
     },
     {
-      question: "Can I use it for clients or multiple brands?",
-      answer: "Yes — our Elite and Custom tiers are designed for agencies, freelancers, and power users."
+      question: "Agency/multi-brand ready?",
+      answer: "Elite & Custom plans include team and client support."
     }
   ];
 
@@ -39,14 +39,10 @@ const FAQ = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            🙋‍♂️ Frequently Asked
             <span className="block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Questions
+              Frequently Asked
             </span>
           </h2>
-          <p className="text-xl text-gray-600">
-            Everything you need to know about AI Marketing Copilot
-          </p>
         </div>
 
         <div className="bg-white rounded-3xl shadow-xl border border-gray-200/50 p-8">

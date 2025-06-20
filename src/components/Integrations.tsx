@@ -1,26 +1,35 @@
 
-import { Zap, Mail, FileText } from "lucide-react";
+import { Zap, Mail, Settings, Shield, Database, Bot } from "lucide-react";
 
 const Integrations = () => {
-  const integrations = [
+  const integrationCategories = [
     {
       icon: <Zap className="h-8 w-8" />,
-      title: "Zapier or n8n",
-      description: "Automate your workflows and connect with 1000+ apps",
+      title: "Integrate",
+      description: "Zapier, n8n, Mailchimp, ConvertKit, Webflow, and more. Export your assets or use built-in funnel templates.",
       color: "from-orange-500 to-red-500"
     },
     {
-      icon: <Mail className="h-8 w-8" />,
-      title: "Email Platforms",
-      description: "Mailchimp, ConvertKit, ActiveCampaign, and more",
+      icon: <Settings className="h-8 w-8" />,
+      title: "Automate",
+      description: "Automate tasks, email flows, and campaign triggers. No-code workflow builder for everyone.",
       color: "from-blue-500 to-purple-500"
     },
     {
-      icon: <FileText className="h-8 w-8" />,
-      title: "Your Tech Stack",
-      description: "Use our funnel templates or export to your existing tools",
+      icon: <Shield className="h-8 w-8" />,
+      title: "Trust",
+      description: "End-to-end encrypted, GDPR compliant. Built on Supabase and Stripe—trusted infrastructure.",
       color: "from-green-500 to-emerald-500"
     }
+  ];
+
+  const integrationLogos = [
+    { name: "Zapier", logo: "⚡" },
+    { name: "Mailchimp", logo: "📧" },
+    { name: "ConvertKit", logo: "✉️" },
+    { name: "Stripe", logo: "💳" },
+    { name: "Supabase", logo: "🗄️" },
+    { name: "GPT-4", logo: "🤖" }
   ];
 
   return (
@@ -28,36 +37,43 @@ const Integrations = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-20">
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
-            🔌 Connect. Automate.
+            Integrate. Automate.
             <span className="block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Launch.
+              Trust.
             </span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Seamlessly integrate with your existing tools and workflows. 
-            No need to change your entire tech stack.
-          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {integrations.map((integration, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          {integrationCategories.map((category, index) => (
             <div key={index} className="text-center group">
               <div className="bg-gradient-to-br from-white to-gray-50 p-8 rounded-3xl shadow-lg border border-gray-200/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${integration.color} text-white mb-6`}>
-                  {integration.icon}
+                <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${category.color} text-white mb-6`}>
+                  {category.icon}
                 </div>
-                <div className="flex items-center justify-center mb-4">
-                  <span className="text-green-500 font-semibold mr-2 text-lg">✅</span>
-                  <h3 className="text-xl font-bold text-gray-900">
-                    {integration.title}
-                  </h3>
-                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  {category.title}
+                </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  {integration.description}
+                  {category.description}
                 </p>
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="bg-gradient-to-r from-gray-50 to-white rounded-3xl p-8">
+          <h3 className="text-center text-lg font-semibold text-gray-900 mb-8">
+            Trusted Integration Partners
+          </h3>
+          <div className="flex flex-wrap justify-center items-center gap-8">
+            {integrationLogos.map((integration, index) => (
+              <div key={index} className="flex flex-col items-center space-y-2 opacity-60 hover:opacity-100 transition-opacity">
+                <div className="text-3xl">{integration.logo}</div>
+                <span className="text-sm font-medium text-gray-600">{integration.name}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
