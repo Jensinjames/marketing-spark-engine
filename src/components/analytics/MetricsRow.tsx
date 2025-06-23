@@ -8,7 +8,7 @@ const MetricsRow = () => {
       title: "Content Generated",
       value: "142",
       change: "+12%",
-      changeType: "increase" as const,
+      changeType: "positive" as const,
       icon: FileText,
       description: "This month"
     },
@@ -16,7 +16,7 @@ const MetricsRow = () => {
       title: "Total Views",
       value: "8,429",
       change: "+24%",
-      changeType: "increase" as const,
+      changeType: "positive" as const,
       icon: Eye,
       description: "All time"
     },
@@ -24,7 +24,7 @@ const MetricsRow = () => {
       title: "Click-through Rate",
       value: "3.2%",
       change: "-0.8%",
-      changeType: "decrease" as const,
+      changeType: "negative" as const,
       icon: MousePointer,
       description: "Average CTR"
     },
@@ -32,7 +32,7 @@ const MetricsRow = () => {
       title: "Conversion Rate",
       value: "12.5%",
       change: "+2.1%",
-      changeType: "increase" as const,
+      changeType: "positive" as const,
       icon: TrendingUp,
       description: "This month"
     }
