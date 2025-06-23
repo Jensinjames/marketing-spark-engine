@@ -1,5 +1,6 @@
 
 import { useState, FormEvent, ReactNode } from 'react';
+import DOMPurify from 'dompurify';
 import { Button } from "@/components/ui/button";
 import { Loader2 } from 'lucide-react';
 
@@ -36,7 +37,7 @@ const SecureForm = ({
       for (const [key, value] of formData.entries()) {
         if (typeof value === 'string') {
           // Basic XSS protection - strip HTML tags
-          data[key] = value.replace(/<[^>]*>/g, '').trim();
+          data[key] = DOMPurify.sanitize(value).trim();
         } else {
           data[key] = value;
         }
