@@ -46,7 +46,15 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "generated_content_type_fkey"
+            columns: ["type"]
+            isOneToOne: true
+            referencedRelation: "generated_content"
+            referencedColumns: ["type"]
+          },
+        ]
       }
       integration_tokens: {
         Row: {
@@ -109,7 +117,15 @@ export type Database = {
           onboarded?: boolean | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey1"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "user_credits"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
       team_members: {
         Row: {
@@ -253,9 +269,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      reset_monthly_credits: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
+      can_access_feature: {
+        Args: { feature_name: string; check_user_id?: string }
+        Returns: boolean
+      }
+      get_user_plan_info: {
+        Args: { check_user_id?: string }
+        Returns: {
+          plan_type: string
+          credits: number
+          team_seats: number
+          can_manage_teams: boolean
+        }[]
+      }
+      is_owner: {
+        Args: { team_uuid: string; uid?: string }
+        Returns: boolean
       }
     }
     Enums: {
