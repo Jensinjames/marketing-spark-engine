@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import AuthGuard from "@/components/AuthGuard";
-import DashboardNav from "@/components/dashboard/DashboardNav";
+import Layout from "@/components/layout/Layout";
 import DashboardStats from "@/components/dashboard/DashboardStats";
 import AssetGeneratorGrid from "@/components/dashboard/AssetGeneratorGrid";
 import RecentAssets from "@/components/dashboard/RecentAssets";
 
 const Dashboard = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const [credits, setCredits] = useState({ used: 0, limit: 50 });
   const [recentAssets, setRecentAssets] = useState([]);
 
@@ -47,20 +47,10 @@ const Dashboard = () => {
     }
   };
 
-  const handleLogout = async () => {
-    await signOut();
-  };
-
   return (
     <AuthGuard requireAuth={true}>
-      <div className="min-h-screen bg-gray-50">
-        <DashboardNav 
-          credits={credits}
-          userName={user?.user_metadata?.full_name || "User"}
-          onLogout={handleLogout}
-        />
-
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
+      <Layout>
+        <div className="space-y-8">
           <div className="mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-3">
               Welcome back, {user?.user_metadata?.full_name || "User"}! 👋
@@ -79,7 +69,7 @@ const Dashboard = () => {
 
           <RecentAssets assets={recentAssets} />
         </div>
-      </div>
+      </Layout>
     </AuthGuard>
   );
 };
