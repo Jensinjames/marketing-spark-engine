@@ -10,25 +10,31 @@ interface DashboardNavProps {
 
 const DashboardNav = ({ credits, userName, onLogout }: DashboardNavProps) => {
   return (
-    <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center space-x-2">
-            <div className="p-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg">
-              <Zap className="h-6 w-6 text-white" />
+    <nav className="bg-white border-b border-gray-200 shadow-sm">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
+          <div className="flex items-center space-x-3">
+            <div className="p-2.5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl shadow-lg">
+              <Zap className="h-7 w-7 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
               AMAP
             </span>
           </div>
           
-          <div className="flex items-center space-x-4">
-            <div className="hidden sm:flex items-center space-x-2 bg-purple-50 px-3 py-2 rounded-lg">
-              <span className="text-sm font-medium text-purple-700">
+          <div className="flex items-center space-x-6">
+            <div className="hidden sm:flex items-center space-x-3 bg-purple-50 px-4 py-2.5 rounded-xl border border-purple-100">
+              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <span className="text-sm font-semibold text-purple-700">
                 {credits.used}/{credits.limit} credits
               </span>
             </div>
-            <Button variant="ghost" size="sm" onClick={onLogout}>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={onLogout}
+              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-4 py-2.5 rounded-xl font-medium"
+            >
               <LogOut className="h-4 w-4 mr-2" />
               Logout
             </Button>
