@@ -8,6 +8,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import Generate from "./pages/Generate";
+import Content from "./pages/Content";
+import Analytics from "./pages/Analytics";
+import Billing from "./pages/Billing";
+import Integrations from "./pages/Integrations";
+import Settings from "./pages/Settings";
 import Pricing from "./pages/Pricing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -25,6 +31,12 @@ const App: React.FC = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/generate" element={<Generate />} />
+            <Route path="/content" element={<Content />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/billing" element={<Billing />} />
+            <Route path="/integrations" element={<Integrations />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
