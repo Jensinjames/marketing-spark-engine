@@ -46,7 +46,15 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "generated_content_type_fkey"
+            columns: ["type"]
+            isOneToOne: true
+            referencedRelation: "generated_content"
+            referencedColumns: ["type"]
+          },
+        ]
       }
       integration_tokens: {
         Row: {
