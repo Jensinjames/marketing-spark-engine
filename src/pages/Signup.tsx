@@ -1,88 +1,25 @@
 
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Zap, Eye, EyeOff, CheckCircle } from "lucide-react";
-import { useAuthMutations } from "@/hooks/useAuthMutations";
+import { Zap } from "lucide-react";
+import { useSignupForm } from "@/hooks/useSignupForm";
 import AuthGuard from "@/components/AuthGuard";
+import FormField from "@/components/auth/FormField";
+import PasswordField from "@/components/auth/PasswordField";
+import SuccessMessage from "@/components/auth/SuccessMessage";
 
 const Signup = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  
-  const { signUp } = useAuthMutations();
-  const navigate = useNavigate();
+  const {
+    state,
+    updateField,
+    validateFieldOnBlur,
+    togglePasswordVisibility,
+    handleSubmit,
+    isPending,
+  } = useSignupForm();
 
-  const validateInputs = () => {
-    if (!fullName.trim()) return "Full name is required";
-    if (!email.trim()) return "Email is required";
-    if (!password.trim()) return "Password is required";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return "Please enter a valid email address";
-    }
-    if (password.length < 8) {
-      return "Password must be at least 8 characters long";
-    }
-    return null;
-  };
-
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const validationError = validateInputs();
-    if (validationError) return;
-
-    try {
-      await signUp.mutateAsync({
-        email: email.trim().toLowerCase(),
-        password,
-        fullName: fullName.trim()
-      });
-      
-      // Show success state
-      setShowSuccess(true);
-      
-      // Navigate to login after showing success message
-      setTimeout(() => {
-        navigate('/login', { 
-          state: { 
-            message: 'Account created! Please check your email to confirm your account.',
-            email: email.trim().toLowerCase()
-          }
-        });
-      }, 2000);
-    } catch (error) {
-      // Error is handled in the mutation
-      console.error('Signup form error:', error);
-    }
-  };
-
-  if (showSuccess) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center px-4">
-        <div className="max-w-md w-full">
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200/50 text-center">
-            <div className="mb-6">
-              <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                Account Created!
-              </h1>
-              <p className="text-gray-600">
-                Please check your email to confirm your account before signing in.
-              </p>
-            </div>
-            <div className="text-sm text-gray-500">
-              Redirecting to login page...
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  if (state.showSuccess) {
+    return <SuccessMessage />;
   }
 
   return (
@@ -107,78 +44,80 @@ const Signup = () => {
               </p>
             </div>
 
-            <form onSubmit={handleSignup} className="space-y-6">
-              <div>
-                <Label htmlFor="fullName">Full Name</Label>
-                <Input
-                  id="fullName"
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Enter your full name"
-                  required
-                  disabled={signUp.isPending}
-                  className="mt-1"
-                  autoComplete="name"
-                />
+            {state.errors.general && (
+              <div 
+                className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg"
+                role="alert"
+                aria-live="polite"
+              >
+                <p className="text-sm text-red-800">{state.errors.general}</p>
               </div>
+            )}
 
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  required
-                  disabled={signUp.isPending}
-                  className="mt-1"
-                  autoComplete="email"
-                />
-              </div>
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+              <FormField
+                id="fullName"
+                label="Full Name"
+                value={state.formData.fullName}
+                onChange={(value) => updateField('fullName', value)}
+                onBlur={() => validateFieldOnBlur('fullName', state.formData.fullName)}
+                placeholder="Enter your full name"
+                required
+                disabled={state.isSubmitting || isPending}
+                error={state.errors.fullName}
+                autoComplete="name"
+              />
 
-              <div>
-                <Label htmlFor="password">Password</Label>
-                <div className="relative mt-1">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Create a password (min. 8 characters)"
-                    required
-                    disabled={signUp.isPending}
-                    minLength={8}
-                    autoComplete="new-password"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    disabled={signUp.isPending}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:opacity-50"
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-                <p className="text-sm text-gray-500 mt-1">
-                  Must be at least 8 characters long
-                </p>
-              </div>
+              <FormField
+                id="email"
+                label="Email"
+                type="email"
+                value={state.formData.email}
+                onChange={(value) => updateField('email', value)}
+                onBlur={() => validateFieldOnBlur('email', state.formData.email)}
+                placeholder="Enter your email"
+                required
+                disabled={state.isSubmitting || isPending}
+                error={state.errors.email}
+                autoComplete="email"
+              />
+
+              <PasswordField
+                id="password"
+                label="Password"
+                value={state.formData.password}
+                onChange={(value) => updateField('password', value)}
+                onBlur={() => validateFieldOnBlur('password', state.formData.password)}
+                placeholder="Create a password (min. 8 characters)"
+                required
+                disabled={state.isSubmitting || isPending}
+                error={state.errors.password}
+                autoComplete="new-password"
+                showPassword={state.showPassword}
+                onTogglePassword={togglePasswordVisibility}
+                helperText="Must be at least 8 characters long"
+              />
 
               <Button
                 type="submit"
-                disabled={signUp.isPending}
+                disabled={state.isSubmitting || isPending}
                 className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:opacity-50"
+                aria-describedby="submit-help"
               >
-                {signUp.isPending ? "Creating account..." : "Create Account"}
+                {state.isSubmitting || isPending ? "Creating account..." : "Create Account"}
               </Button>
+              <div id="submit-help" className="sr-only">
+                Click to create your account with the provided information
+              </div>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-gray-600">
                 Already have an account?{" "}
-                <Link to="/login" className="text-purple-600 hover:text-purple-700 font-medium">
+                <Link 
+                  to="/login" 
+                  className="text-purple-600 hover:text-purple-700 font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded-sm"
+                >
                   Sign in
                 </Link>
               </p>
