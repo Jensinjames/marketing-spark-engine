@@ -117,15 +117,7 @@ export type Database = {
           onboarded?: boolean | null
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_id_fkey1"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "user_credits"
-            referencedColumns: ["user_id"]
-          },
-        ]
+        Relationships: []
       }
       team_members: {
         Row: {
