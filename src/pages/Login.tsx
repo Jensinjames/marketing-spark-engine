@@ -1,10 +1,10 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Zap, Eye, EyeOff } from "lucide-react";
+import { Zap, Eye, EyeOff, AlertCircle, Mail } from "lucide-react";
 import { useAuthMutations } from "@/hooks/useAuthMutations";
 import AuthGuard from "@/components/AuthGuard";
 
@@ -19,6 +19,14 @@ const Login = () => {
   const location = useLocation();
 
   const from = location.state?.from || '/dashboard';
+  const successMessage = location.state?.message;
+  const prefilledEmail = location.state?.email;
+
+  useEffect(() => {
+    if (prefilledEmail) {
+      setEmail(prefilledEmail);
+    }
+  }, [prefilledEmail]);
 
   const validateInputs = () => {
     if (!email.trim()) return "Email is required";
@@ -42,7 +50,8 @@ const Login = () => {
       });
       navigate(from, { replace: true });
     } catch (error: any) {
-      if (error.message.includes('Invalid credentials')) {
+      console.error('Login form error:', error);
+      if (error.message.includes('Invalid credentials') || error.message.includes('Email not confirmed')) {
         setShowResendConfirmation(true);
       }
     }
@@ -50,8 +59,12 @@ const Login = () => {
 
   const handleResendConfirmation = async () => {
     if (!email.trim()) return;
-    await resendConfirmation.mutateAsync(email.trim().toLowerCase());
-    setShowResendConfirmation(false);
+    try {
+      await resendConfirmation.mutateAsync(email.trim().toLowerCase());
+      setShowResendConfirmation(false);
+    } catch (error) {
+      console.error('Resend confirmation error:', error);
+    }
   };
 
   return (
@@ -75,6 +88,13 @@ const Login = () => {
                 Sign in to your account to continue
               </p>
             </div>
+
+            {successMessage && (
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start space-x-3">
+                <Mail className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-green-800">{successMessage}</p>
+              </div>
+            )}
 
             <form onSubmit={handleLogin} className="space-y-6">
               <div>
@@ -127,18 +147,23 @@ const Login = () => {
 
             {showResendConfirmation && (
               <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <p className="text-sm text-yellow-800 mb-2">
-                  Account not confirmed? Check your email or resend confirmation.
-                </p>
-                <Button
-                  onClick={handleResendConfirmation}
-                  disabled={resendConfirmation.isPending}
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                >
-                  {resendConfirmation.isPending ? "Sending..." : "Resend Confirmation Email"}
-                </Button>
+                <div className="flex items-start space-x-3">
+                  <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm text-yellow-800 mb-2">
+                      Account not confirmed? Check your email or resend confirmation.
+                    </p>
+                    <Button
+                      onClick={handleResendConfirmation}
+                      disabled={resendConfirmation.isPending}
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                    >
+                      {resendConfirmation.isPending ? "Sending..." : "Resend Confirmation Email"}
+                    </Button>
+                  </div>
+                </div>
               </div>
             )}
 

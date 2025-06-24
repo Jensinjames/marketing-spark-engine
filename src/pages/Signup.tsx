@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Zap, Eye, EyeOff } from "lucide-react";
+import { Zap, Eye, EyeOff, CheckCircle } from "lucide-react";
 import { useAuthMutations } from "@/hooks/useAuthMutations";
 import AuthGuard from "@/components/AuthGuard";
 
@@ -13,6 +13,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   
   const { signUp } = useAuthMutations();
   const navigate = useNavigate();
@@ -43,14 +44,46 @@ const Signup = () => {
         fullName: fullName.trim()
       });
       
-      // Don't navigate immediately - let the user know about email confirmation
+      // Show success state
+      setShowSuccess(true);
+      
+      // Navigate to login after showing success message
       setTimeout(() => {
-        navigate('/login');
-      }, 3000);
+        navigate('/login', { 
+          state: { 
+            message: 'Account created! Please check your email to confirm your account.',
+            email: email.trim().toLowerCase()
+          }
+        });
+      }, 2000);
     } catch (error) {
       // Error is handled in the mutation
+      console.error('Signup form error:', error);
     }
   };
+
+  if (showSuccess) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center px-4">
+        <div className="max-w-md w-full">
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200/50 text-center">
+            <div className="mb-6">
+              <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                Account Created!
+              </h1>
+              <p className="text-gray-600">
+                Please check your email to confirm your account before signing in.
+              </p>
+            </div>
+            <div className="text-sm text-gray-500">
+              Redirecting to login page...
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <AuthGuard requireAuth={false} redirectTo="/dashboard">
