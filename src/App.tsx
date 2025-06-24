@@ -15,6 +15,7 @@ import Content from "./pages/Content";
 import Analytics from "./pages/Analytics";
 import Billing from "./pages/Billing";
 import Integrations from "./pages/Integrations";
+import Teams from "./pages/Teams";
 import Settings from "./pages/Settings";
 import Pricing from "./pages/Pricing";
 import Login from "./pages/Login";
@@ -36,6 +37,7 @@ const App: React.FC = () => (
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/billing" element={<Billing />} />
             <Route path="/integrations" element={<Integrations />} />
+            <Route path="/teams" element={<Teams />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/login" element={<Login />} />
