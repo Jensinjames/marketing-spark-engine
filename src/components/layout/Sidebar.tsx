@@ -14,12 +14,12 @@ import {
   Users,
   Puzzle
 } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthMutations } from "@/hooks/useAuthMutations";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const { signOut } = useAuth();
+  const { signOut } = useAuthMutations();
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, requiredPlan: [] },
@@ -41,7 +41,7 @@ const Sidebar = () => {
   };
 
   const handleLogout = async () => {
-    await signOut();
+    signOut.mutate();
     setIsOpen(false);
   };
 
@@ -120,10 +120,11 @@ const Sidebar = () => {
             <Button
               variant="ghost"
               onClick={handleLogout}
+              disabled={signOut.isPending}
               className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50"
             >
               <Settings className="h-4 w-4 mr-3" />
-              Logout
+              {signOut.isPending ? 'Logging out...' : 'Logout'}
             </Button>
           </div>
         </div>
