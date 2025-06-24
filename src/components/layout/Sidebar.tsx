@@ -14,12 +14,14 @@ import {
   Users,
   Puzzle
 } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthMutations } from "@/hooks/useAuthMutations";
+import { useUserPlan } from "@/hooks/useUserPlanQuery";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const { signOut } = useAuth();
+  const { signOut } = useAuthMutations();
+  const { plan } = useUserPlan();
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, requiredPlan: [] },
@@ -32,16 +34,16 @@ const Sidebar = () => {
     { name: 'Billing', href: '/billing', icon: CreditCard, requiredPlan: [] },
   ];
 
-  const userPlan = "starter"; // This should come from user context
-
   const isActive = (href: string) => location.pathname === href;
 
   const canAccess = (requiredPlan: string[]) => {
-    return requiredPlan.length === 0 || requiredPlan.includes(userPlan);
+    if (requiredPlan.length === 0) return true;
+    if (!plan) return false;
+    return requiredPlan.includes(plan.planType);
   };
 
   const handleLogout = async () => {
-    await signOut();
+    signOut.mutate();
     setIsOpen(false);
   };
 
@@ -54,6 +56,7 @@ const Sidebar = () => {
           size="icon"
           onClick={() => setIsOpen(!isOpen)}
           className="bg-white shadow-md"
+          aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
         >
           {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
         </Button>
@@ -64,14 +67,18 @@ const Sidebar = () => {
         <div
           className="lg:hidden fixed inset-0 z-40 bg-black bg-opacity-50"
           onClick={() => setIsOpen(false)}
+          aria-hidden="true"
         />
       )}
 
       {/* Sidebar */}
-      <div className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
-        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}>
+      <aside 
+        className={`
+          fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
+          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
+        aria-label="Main navigation"
+      >
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center px-6 py-8 border-b border-gray-200">
@@ -84,7 +91,7 @@ const Sidebar = () => {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-2">
+          <nav className="flex-1 px-4 py-6 space-y-2" role="navigation" aria-label="Main menu">
             {navigation.map((item) => {
               const Icon = item.icon;
               const hasAccess = canAccess(item.requiredPlan);
@@ -92,10 +99,10 @@ const Sidebar = () => {
               return (
                 <Link
                   key={item.name}
-                  to={item.href}
-                  onClick={() => setIsOpen(false)}
+                  to={hasAccess ? item.href : "#"}
+                  onClick={() => hasAccess && setIsOpen(false)}
                   className={`
-                    flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200
+                    flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2
                     ${isActive(item.href)
                       ? 'bg-purple-50 text-purple-700 border-r-2 border-purple-600'
                       : hasAccess
@@ -104,11 +111,18 @@ const Sidebar = () => {
                     }
                     ${!hasAccess && 'opacity-50'}
                   `}
+                  aria-current={isActive(item.href) ? 'page' : undefined}
+                  aria-describedby={!hasAccess && item.requiredPlan.length > 0 ? `${item.name}-upgrade-needed` : undefined}
                 >
-                  <Icon className="h-5 w-5 mr-3" />
+                  <Icon className="h-5 w-5 mr-3" aria-hidden="true" />
                   {item.name}
                   {!hasAccess && item.requiredPlan.length > 0 && (
-                    <div className="ml-auto w-2 h-2 bg-orange-400 rounded-full" />
+                    <>
+                      <div className="ml-auto w-2 h-2 bg-orange-400 rounded-full" aria-hidden="true" />
+                      <span id={`${item.name}-upgrade-needed`} className="sr-only">
+                        Requires {item.requiredPlan.join(' or ')} plan
+                      </span>
+                    </>
                   )}
                 </Link>
               );
@@ -120,14 +134,15 @@ const Sidebar = () => {
             <Button
               variant="ghost"
               onClick={handleLogout}
-              className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              disabled={signOut.isPending}
+              className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
             >
-              <Settings className="h-4 w-4 mr-3" />
-              Logout
+              <Settings className="h-4 w-4 mr-3" aria-hidden="true" />
+              {signOut.isPending ? 'Logging out...' : 'Logout'}
             </Button>
           </div>
         </div>
-      </div>
+      </aside>
     </>
   );
 };

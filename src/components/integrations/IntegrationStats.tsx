@@ -1,39 +1,40 @@
 
 import { Plug, CheckCircle, Clock } from "lucide-react";
-import StatCard from "@/components/shared/StatCard";
 
 const IntegrationStats = () => {
   const stats = [
     {
-      title: "Available",
-      value: "12",
-      icon: Plug,
-      description: "Ready to connect"
+      title: "Available integrations",
+      value: "4",
+      icon: "🔗",
+      color: "text-purple-600"
     },
     {
       title: "Connected",
-      value: "3",
-      icon: CheckCircle,
-      description: "Active integrations"
+      value: "0", 
+      icon: "✓",
+      color: "text-green-600"
     },
     {
       title: "Coming Soon",
-      value: "8",
-      icon: Clock,
-      description: "In development"
+      value: "2",
+      icon: "⚙️",
+      color: "text-blue-600"
     }
   ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      {stats.map((stat) => (
-        <StatCard
-          key={stat.title}
-          title={stat.title}
-          value={stat.value}
-          icon={stat.icon}
-          description={stat.description}
-        />
+      {stats.map((stat, index) => (
+        <div key={index} className="bg-white rounded-lg p-6 border border-gray-200">
+          <div className="flex items-center space-x-3 mb-2">
+            <span className="text-2xl">{stat.icon}</span>
+            <span className="text-sm text-gray-600">{stat.title}</span>
+          </div>
+          <div className={`text-3xl font-bold ${stat.color}`}>
+            {stat.value}
+          </div>
+        </div>
       ))}
     </div>
   );

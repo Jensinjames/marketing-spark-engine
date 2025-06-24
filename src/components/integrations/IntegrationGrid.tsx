@@ -4,52 +4,58 @@ import IntegrationCard from "./IntegrationCard";
 const IntegrationGrid = () => {
   const integrations = [
     {
-      id: "zapier",
-      name: "Zapier",
-      description: "Connect to 5000+ apps and automate your workflows",
-      logo: "",
-      status: "connected" as const,
-      category: "automation"
-    },
-    {
       id: "mailchimp",
       name: "Mailchimp",
-      description: "Sync your email campaigns and subscriber lists",
-      logo: "",
+      category: "Email Marketing",
+      description: "Sync your email campaigns and audience data",
+      icon: "📧",
       status: "available" as const,
-      category: "email"
+      color: "bg-yellow-100"
     },
     {
-      id: "hubspot",
-      name: "HubSpot",
-      description: "Integrate with your CRM and marketing tools",
-      logo: "",
-      status: "connected" as const,
-      category: "database"
-    },
-    {
-      id: "wordpress",
-      name: "WordPress",
-      description: "Publish content directly to your WordPress site",
-      logo: "",
+      id: "convertkit", 
+      name: "ConvertKit",
+      category: "Email Marketing",
+      description: "Automate email sequences and subscriber management",
+      icon: "💌",
       status: "available" as const,
-      category: "website"
+      color: "bg-pink-100"
     },
     {
-      id: "slack",
-      name: "Slack",
-      description: "Get notifications and share content in Slack",
-      logo: "",
-      status: "connected" as const,
-      category: "automation"
+      id: "zapier",
+      name: "Zapier", 
+      category: "Automation",
+      description: "Connect with 5000+ apps and automate workflows",
+      icon: "⚡",
+      status: "available" as const,
+      color: "bg-orange-100"
     },
     {
-      id: "notion",
-      name: "Notion",
-      description: "Save and organize content in your Notion workspace",
-      logo: "",
+      id: "airtable",
+      name: "Airtable",
+      category: "Database", 
+      description: "Organize and track your marketing data",
+      icon: "📊",
+      status: "available" as const,
+      color: "bg-blue-100"
+    },
+    {
+      id: "n8n",
+      name: "n8n",
+      category: "Automation",
+      description: "Self-hosted workflow automation platform",
+      icon: "🔗",
       status: "coming-soon" as const,
-      category: "database"
+      color: "bg-purple-100"
+    },
+    {
+      id: "webflow",
+      name: "Webflow", 
+      category: "Website",
+      description: "Deploy landing pages directly to your site",
+      icon: "🌐",
+      status: "coming-soon" as const,
+      color: "bg-green-100"
     }
   ];
 
