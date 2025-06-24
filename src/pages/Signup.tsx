@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Zap, Eye, EyeOff } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthMutations } from "@/hooks/useAuthMutations";
 import AuthGuard from "@/components/AuthGuard";
 
 const Signup = () => {
@@ -13,19 +13,14 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { signUp, loading } = useAuth();
+  
+  const { signUp } = useAuthMutations();
   const navigate = useNavigate();
 
   const validateInputs = () => {
-    if (!fullName.trim()) {
-      return "Full name is required";
-    }
-    if (!email.trim()) {
-      return "Email is required";
-    }
-    if (!password.trim()) {
-      return "Password is required";
-    }
+    if (!fullName.trim()) return "Full name is required";
+    if (!email.trim()) return "Email is required";
+    if (!password.trim()) return "Password is required";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return "Please enter a valid email address";
     }
@@ -39,18 +34,21 @@ const Signup = () => {
     e.preventDefault();
     
     const validationError = validateInputs();
-    if (validationError) {
-      return;
-    }
+    if (validationError) return;
 
-    const { error } = await signUp(
-      email.trim().toLowerCase(), 
-      password, 
-      fullName.trim()
-    );
-    
-    if (!error) {
-      navigate('/login');
+    try {
+      await signUp.mutateAsync({
+        email: email.trim().toLowerCase(),
+        password,
+        fullName: fullName.trim()
+      });
+      
+      // Don't navigate immediately - let the user know about email confirmation
+      setTimeout(() => {
+        navigate('/login');
+      }, 3000);
+    } catch (error) {
+      // Error is handled in the mutation
     }
   };
 
@@ -86,7 +84,7 @@ const Signup = () => {
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Enter your full name"
                   required
-                  disabled={loading}
+                  disabled={signUp.isPending}
                   className="mt-1"
                   autoComplete="name"
                 />
@@ -101,7 +99,7 @@ const Signup = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   required
-                  disabled={loading}
+                  disabled={signUp.isPending}
                   className="mt-1"
                   autoComplete="email"
                 />
@@ -117,14 +115,14 @@ const Signup = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Create a password (min. 8 characters)"
                     required
-                    disabled={loading}
+                    disabled={signUp.isPending}
                     minLength={8}
                     autoComplete="new-password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    disabled={loading}
+                    disabled={signUp.isPending}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:opacity-50"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -137,10 +135,10 @@ const Signup = () => {
 
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={signUp.isPending}
                 className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:opacity-50"
               >
-                {loading ? "Creating account..." : "Create Account"}
+                {signUp.isPending ? "Creating account..." : "Create Account"}
               </Button>
             </form>
 

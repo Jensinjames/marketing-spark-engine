@@ -1,9 +1,9 @@
 
 import { useAuth } from "@/hooks/useAuth";
-import { useUserPlan } from "@/hooks/useUserPlan";
+import { useUserPlan } from "@/hooks/useUserPlanQuery";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Lock, Zap, Loader2 } from "lucide-react";
+import { Lock, Zap, Loader2, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface PlanGateProps {
@@ -20,7 +20,7 @@ const PlanGate = ({
   feature = "this feature" 
 }: PlanGateProps) => {
   const { user } = useAuth();
-  const { plan, loading, error, hasAccess } = useUserPlan();
+  const { plan, loading, error, isRefetching, refetch, hasAccess } = useUserPlan();
   
   // Show loading state while checking plan
   if (loading) {
@@ -54,6 +54,20 @@ const PlanGate = ({
               {error || "Please sign in to continue."}
             </p>
             <div className="space-y-2">
+              {error && (
+                <Button
+                  onClick={() => refetch()}
+                  disabled={isRefetching}
+                  variant="outline"
+                  className="w-full"
+                >
+                  {isRefetching ? (
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    "Try Again"
+                  )}
+                </Button>
+              )}
               <Link to="/login">
                 <Button className="w-full">
                   Sign In

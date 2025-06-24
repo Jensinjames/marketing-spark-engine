@@ -1,31 +1,28 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Zap, Eye, EyeOff } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthMutations } from "@/hooks/useAuthMutations";
 import AuthGuard from "@/components/AuthGuard";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { signIn, loading } = useAuth();
+  const [showResendConfirmation, setShowResendConfirmation] = useState(false);
+  
+  const { signIn, resendConfirmation } = useAuthMutations();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get redirect path from location state or default to dashboard
   const from = location.state?.from || '/dashboard';
 
   const validateInputs = () => {
-    if (!email.trim()) {
-      return "Email is required";
-    }
-    if (!password.trim()) {
-      return "Password is required";
-    }
+    if (!email.trim()) return "Email is required";
+    if (!password.trim()) return "Password is required";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return "Please enter a valid email address";
     }
@@ -36,15 +33,25 @@ const Login = () => {
     e.preventDefault();
     
     const validationError = validateInputs();
-    if (validationError) {
-      return;
-    }
+    if (validationError) return;
 
-    const { error } = await signIn(email.trim().toLowerCase(), password);
-    
-    if (!error) {
+    try {
+      await signIn.mutateAsync({ 
+        email: email.trim().toLowerCase(), 
+        password 
+      });
       navigate(from, { replace: true });
+    } catch (error: any) {
+      if (error.message.includes('Invalid credentials')) {
+        setShowResendConfirmation(true);
+      }
     }
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!email.trim()) return;
+    await resendConfirmation.mutateAsync(email.trim().toLowerCase());
+    setShowResendConfirmation(false);
   };
 
   return (
@@ -79,7 +86,7 @@ const Login = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   required
-                  disabled={loading}
+                  disabled={signIn.isPending}
                   className="mt-1"
                   autoComplete="email"
                 />
@@ -95,13 +102,13 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
                     required
-                    disabled={loading}
+                    disabled={signIn.isPending}
                     autoComplete="current-password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    disabled={loading}
+                    disabled={signIn.isPending}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:opacity-50"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -111,12 +118,29 @@ const Login = () => {
 
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={signIn.isPending}
                 className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:opacity-50"
               >
-                {loading ? "Signing in..." : "Sign In"}
+                {signIn.isPending ? "Signing in..." : "Sign In"}
               </Button>
             </form>
+
+            {showResendConfirmation && (
+              <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-sm text-yellow-800 mb-2">
+                  Account not confirmed? Check your email or resend confirmation.
+                </p>
+                <Button
+                  onClick={handleResendConfirmation}
+                  disabled={resendConfirmation.isPending}
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                >
+                  {resendConfirmation.isPending ? "Sending..." : "Resend Confirmation Email"}
+                </Button>
+              </div>
+            )}
 
             <div className="mt-6 text-center">
               <p className="text-gray-600">

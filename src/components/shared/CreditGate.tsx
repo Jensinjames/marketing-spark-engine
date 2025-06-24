@@ -1,9 +1,9 @@
 
-import { useUserPlan } from "@/hooks/useUserPlan";
+import { useUserPlan } from "@/hooks/useUserPlanQuery";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Zap, AlertTriangle, Loader2 } from "lucide-react";
+import { Zap, AlertTriangle, Loader2, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface CreditGateProps {
@@ -17,7 +17,7 @@ const CreditGate = ({
   requiredCredits = 1, 
   feature = "this action" 
 }: CreditGateProps) => {
-  const { plan, loading, error, hasCreditsRemaining } = useUserPlan();
+  const { plan, loading, error, isRefetching, refetch, hasCreditsRemaining } = useUserPlan();
 
   // Show loading state
   if (loading) {
@@ -34,8 +34,20 @@ const CreditGate = ({
     return (
       <Alert variant="destructive">
         <AlertTriangle className="h-4 w-4" />
-        <AlertDescription>
-          Unable to check your credit balance. Please try again later.
+        <AlertDescription className="flex items-center justify-between">
+          <span>Unable to check your credit balance. Please try again later.</span>
+          <Button
+            onClick={() => refetch()}
+            disabled={isRefetching}
+            variant="outline"
+            size="sm"
+          >
+            {isRefetching ? (
+              <RefreshCw className="h-4 w-4 animate-spin" />
+            ) : (
+              "Retry"
+            )}
+          </Button>
         </AlertDescription>
       </Alert>
     );
