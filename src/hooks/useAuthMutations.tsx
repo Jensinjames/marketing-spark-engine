@@ -15,18 +15,92 @@ interface SignInData {
   password: string;
 }
 
+// Security: Rate limiting state
+const authAttempts = new Map<string, { count: number; lastAttempt: number }>();
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes
+
+const isRateLimited = (email: string): boolean => {
+  const attempts = authAttempts.get(email);
+  if (!attempts) return false;
+  
+  const now = Date.now();
+  if (now - attempts.lastAttempt > LOCKOUT_DURATION) {
+    authAttempts.delete(email);
+    return false;
+  }
+  
+  return attempts.count >= MAX_ATTEMPTS;
+};
+
+const recordAttempt = (email: string, success: boolean) => {
+  const now = Date.now();
+  const attempts = authAttempts.get(email) || { count: 0, lastAttempt: now };
+  
+  if (success) {
+    authAttempts.delete(email);
+  } else {
+    attempts.count += 1;
+    attempts.lastAttempt = now;
+    authAttempts.set(email, attempts);
+  }
+};
+
+const logSecurityEvent = async (event: string, details: any) => {
+  // Only log in development or if explicitly enabled
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`[Security] ${event}:`, details);
+  }
+  
+  // In production, you would send this to your security monitoring service
+  try {
+    await supabase.rpc('audit_sensitive_operation', {
+      p_action: event,
+      p_table_name: 'auth_events',
+      p_new_values: details
+    });
+  } catch (error) {
+    // Silently fail audit logging to not disrupt user experience
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Failed to log security event:', error);
+    }
+  }
+};
+
 export const useAuthMutations = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const signUpMutation = useMutation({
     mutationFn: async ({ email, password, fullName }: SignUpData) => {
+      const normalizedEmail = email.trim().toLowerCase();
+      
+      // Security: Input validation
+      if (!email || !password) {
+        throw new Error('Email and password are required');
+      }
+      
+      if (password.length < 8) {
+        throw new Error('Password must be at least 8 characters long');
+      }
+      
+      // Security: Email format validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(normalizedEmail)) {
+        throw new Error('Invalid email format');
+      }
+      
+      // Security: Rate limiting
+      if (isRateLimited(normalizedEmail)) {
+        throw new Error('Too many signup attempts. Please try again later.');
+      }
+      
       const redirectUrl = `${window.location.origin}/dashboard`;
       
-      console.log('Starting signup process for:', email);
+      await logSecurityEvent('signup_attempt', { email: normalizedEmail });
       
       const { data, error } = await supabase.auth.signUp({
-        email: email.trim().toLowerCase(),
+        email: normalizedEmail,
         password,
         options: {
           emailRedirectTo: redirectUrl,
@@ -35,16 +109,20 @@ export const useAuthMutations = () => {
       });
 
       if (error) {
-        console.error('Signup error:', error);
+        recordAttempt(normalizedEmail, false);
+        await logSecurityEvent('signup_failed', { 
+          email: normalizedEmail, 
+          error: error.message 
+        });
         throw error;
       }
       
-      console.log('Signup successful:', data);
+      recordAttempt(normalizedEmail, true);
+      await logSecurityEvent('signup_success', { email: normalizedEmail });
+      
       return data;
     },
     onSuccess: (data) => {
-      console.log('Signup mutation successful:', data.user?.email);
-      
       if (data.user && !data.user.email_confirmed_at) {
         toast.success('Account created! Please check your email to confirm your account before signing in.', {
           duration: 5000,
@@ -57,14 +135,14 @@ export const useAuthMutations = () => {
       }
     },
     onError: (error: any) => {
-      console.error('Signup mutation error:', error);
-      
       if (error.message.includes('already registered')) {
         toast.error('This email is already registered. Try signing in instead.');
-      } else if (error.message.includes('Invalid email')) {
+      } else if (error.message.includes('Invalid email') || error.message.includes('email format')) {
         toast.error('Please enter a valid email address.');
       } else if (error.message.includes('Password')) {
         toast.error('Password must be at least 8 characters long.');
+      } else if (error.message.includes('rate limit') || error.message.includes('Too many')) {
+        toast.error('Too many attempts. Please wait before trying again.');
       } else if (error.message.includes('Database error')) {
         toast.error('There was an issue creating your account. Please try again.');
       } else {
@@ -75,35 +153,50 @@ export const useAuthMutations = () => {
 
   const signInMutation = useMutation({
     mutationFn: async ({ email, password }: SignInData) => {
-      console.log('Starting signin process for:', email);
+      const normalizedEmail = email.trim().toLowerCase();
+      
+      // Security: Input validation
+      if (!email || !password) {
+        throw new Error('Email and password are required');
+      }
+      
+      // Security: Rate limiting
+      if (isRateLimited(normalizedEmail)) {
+        throw new Error('Too many login attempts. Please try again later.');
+      }
+      
+      await logSecurityEvent('signin_attempt', { email: normalizedEmail });
       
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim().toLowerCase(),
+        email: normalizedEmail,
         password,
       });
 
       if (error) {
-        console.error('Signin error:', error);
+        recordAttempt(normalizedEmail, false);
+        await logSecurityEvent('signin_failed', { 
+          email: normalizedEmail, 
+          error: error.message 
+        });
         throw error;
       }
       
-      console.log('Signin successful:', data);
+      recordAttempt(normalizedEmail, true);
+      await logSecurityEvent('signin_success', { email: normalizedEmail });
+      
       return data;
     },
     onSuccess: (data) => {
-      console.log('Signin mutation successful:', data.user?.email);
       queryClient.invalidateQueries({ queryKey: ['user'] });
       queryClient.invalidateQueries({ queryKey: ['userPlan'] });
       toast.success('Welcome back!');
     },
     onError: (error: any) => {
-      console.error('Signin mutation error:', error);
-      
       if (error.message.includes('Invalid credentials')) {
         toast.error('Invalid email or password. Please check your credentials and try again.');
       } else if (error.message.includes('Email not confirmed')) {
         toast.error('Please check your email and confirm your account first.');
-      } else if (error.message.includes('too many requests')) {
+      } else if (error.message.includes('too many') || error.message.includes('rate limit')) {
         toast.error('Too many login attempts. Please wait a moment and try again.');
       } else {
         toast.error(error.message || 'Failed to sign in. Please try again.');
@@ -113,51 +206,62 @@ export const useAuthMutations = () => {
 
   const signOutMutation = useMutation({
     mutationFn: async () => {
-      console.log('Starting signout process');
+      await logSecurityEvent('signout_attempt', {});
+      
       const { error } = await supabase.auth.signOut();
       if (error) {
-        console.error('Signout error:', error);
+        await logSecurityEvent('signout_failed', { error: error.message });
         throw error;
       }
-      console.log('Signout successful');
+      
+      await logSecurityEvent('signout_success', {});
     },
     onSuccess: () => {
-      console.log('Signout mutation successful');
       queryClient.clear();
       toast.success('Signed out successfully');
       navigate('/');
     },
     onError: (error: any) => {
-      console.error('Signout mutation error:', error);
       toast.error('Error signing out. Please try again.');
     },
   });
 
   const resendConfirmationMutation = useMutation({
     mutationFn: async (email: string) => {
-      console.log('Resending confirmation email to:', email);
+      const normalizedEmail = email.trim().toLowerCase();
+      
+      // Security: Rate limiting for confirmation emails
+      if (isRateLimited(`confirm_${normalizedEmail}`)) {
+        throw new Error('Please wait before requesting another confirmation email.');
+      }
+      
+      await logSecurityEvent('resend_confirmation_attempt', { email: normalizedEmail });
       
       const { error } = await supabase.auth.resend({
         type: 'signup',
-        email: email.trim().toLowerCase(),
+        email: normalizedEmail,
         options: {
           emailRedirectTo: `${window.location.origin}/dashboard`
         }
       });
 
       if (error) {
-        console.error('Resend confirmation error:', error);
+        recordAttempt(`confirm_${normalizedEmail}`, false);
+        await logSecurityEvent('resend_confirmation_failed', { 
+          email: normalizedEmail, 
+          error: error.message 
+        });
         throw error;
       }
       
-      console.log('Confirmation email resent successfully');
+      recordAttempt(`confirm_${normalizedEmail}`, true);
+      await logSecurityEvent('resend_confirmation_success', { email: normalizedEmail });
     },
     onSuccess: () => {
       toast.success('Confirmation email sent! Please check your inbox and spam folder.');
     },
     onError: (error: any) => {
-      console.error('Resend confirmation mutation error:', error);
-      if (error.message.includes('rate limit')) {
+      if (error.message.includes('rate limit') || error.message.includes('wait')) {
         toast.error('Please wait before requesting another confirmation email.');
       } else {
         toast.error(error.message || 'Failed to resend confirmation email');
