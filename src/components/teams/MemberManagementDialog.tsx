@@ -15,13 +15,15 @@ interface MemberManagementDialogProps {
   currentUserRole: string;
 }
 
+type MemberRole = "owner" | "admin" | "editor" | "viewer";
+
 export const MemberManagementDialog = ({ 
   member, 
   teamId, 
   currentUserRole 
 }: MemberManagementDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [newRole, setNewRole] = useState(member.role);
+  const [newRole, setNewRole] = useState<MemberRole>(member.role as MemberRole);
   const [creditsLimit, setCreditsLimit] = useState(member.credits.monthly_limit);
   
   const { updateRole, updateCredits, removeMember } = useTeamMemberActions(teamId);
@@ -51,6 +53,10 @@ export const MemberManagementDialog = ({
     }
   };
 
+  const handleRoleChange = (value: string) => {
+    setNewRole(value as MemberRole);
+  };
+
   if (!canManageRole && !canManageCredits && !canRemoveMember) {
     return null;
   }
@@ -71,7 +77,7 @@ export const MemberManagementDialog = ({
           {canManageRole && (
             <div className="space-y-2">
               <Label htmlFor="role">Role</Label>
-              <Select value={newRole} onValueChange={setNewRole}>
+              <Select value={newRole} onValueChange={handleRoleChange}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
