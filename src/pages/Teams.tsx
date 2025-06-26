@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/hooks/useAuth";
 import AuthGuard from "@/components/AuthGuard";
 import Layout from "@/components/layout/Layout";
@@ -9,9 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Users, UserPlus, Crown, Mail, Settings, Trash2, CreditCard, TrendingUp } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Users, UserPlus, Crown, Mail, CreditCard, TrendingUp, BarChart3, Settings2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { MemberManagementDialog } from "@/components/teams/MemberManagementDialog";
+import { TeamAnalytics } from "@/components/teams/TeamAnalytics";
+import { BulkActions } from "@/components/teams/BulkActions";
 
 const Teams = () => {
   const { user } = useAuth();
@@ -28,13 +31,8 @@ const Teams = () => {
     toast.info("Invite member functionality will be implemented next");
   };
 
-  const handleRemoveMember = (memberId: string) => {
-    toast.info(`Remove member ${memberId} functionality will be implemented next`);
-  };
-
-  const handleRoleChange = (memberId: string, newRole: string) => {
-    toast.info(`Change role to ${newRole} for member ${memberId} functionality will be implemented next`);
-  };
+  // Get current user's role in the team
+  const currentUserRole = teamData?.members.find(m => m.user_id === user?.id)?.role || 'viewer';
 
   if (isLoading) {
     return (
@@ -190,99 +188,124 @@ const Teams = () => {
               </Card>
             </div>
 
-            {/* Team Members List */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Team Members</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {members.map((member) => (
-                    <div
-                      key={member.id}
-                      className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex items-center space-x-4">
-                        <Avatar>
-                          <AvatarImage src={member.avatar_url} alt={member.name} />
-                          <AvatarFallback>
-                            {member.name.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        
-                        <div>
-                          <div className="flex items-center space-x-2">
-                            <h3 className="font-medium text-gray-900">{member.name}</h3>
-                            {member.role === "owner" && (
-                              <Crown className="h-4 w-4 text-yellow-500" />
-                            )}
+            {/* Tabs for different views */}
+            <Tabs defaultValue="members" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="members" className="flex items-center space-x-2">
+                  <Users className="h-4 w-4" />
+                  <span>Members</span>
+                </TabsTrigger>
+                <TabsTrigger value="analytics" className="flex items-center space-x-2">
+                  <BarChart3 className="h-4 w-4" />
+                  <span>Analytics</span>
+                </TabsTrigger>
+                <TabsTrigger value="bulk" className="flex items-center space-x-2">
+                  <Settings2 className="h-4 w-4" />
+                  <span>Bulk Actions</span>
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="members" className="space-y-6">
+                {/* Team Members List */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Team Members</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {members.map((member) => (
+                        <div
+                          key={member.id}
+                          className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                          <div className="flex items-center space-x-4">
+                            <Avatar>
+                              <AvatarImage src={member.avatar_url} alt={member.name} />
+                              <AvatarFallback>
+                                {member.name.charAt(0).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            
+                            <div>
+                              <div className="flex items-center space-x-2">
+                                <h3 className="font-medium text-gray-900">{member.name}</h3>
+                                {member.role === "owner" && (
+                                  <Crown className="h-4 w-4 text-yellow-500" />
+                                )}
+                              </div>
+                              <p className="text-sm text-gray-600">{member.email}</p>
+                            </div>
+                            
+                            <div className="flex items-center space-x-2">
+                              <Badge 
+                                variant={member.role === 'owner' ? 'default' : 'secondary'}
+                                className="capitalize"
+                              >
+                                {member.role}
+                              </Badge>
+                              <Badge 
+                                variant={member.status === 'active' ? 'default' : 'outline'}
+                                className={`capitalize ${
+                                  member.status === 'active' 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : member.status === 'pending'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-gray-100 text-gray-800'
+                                }`}
+                              >
+                                {member.status}
+                              </Badge>
+                            </div>
                           </div>
-                          <p className="text-sm text-gray-600">{member.email}</p>
+                          
+                          <div className="flex items-center space-x-4">
+                            {/* Credits Display */}
+                            <div className="text-right">
+                              <p className="text-sm font-medium">
+                                {member.credits.credits_used} / {member.credits.monthly_limit}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {member.credits.credits_remaining} remaining
+                              </p>
+                              <Progress 
+                                value={(member.credits.credits_used / member.credits.monthly_limit) * 100}
+                                className="w-20 h-2 mt-1"
+                              />
+                            </div>
+                            
+                            {/* Management Actions */}
+                            <MemberManagementDialog 
+                              member={member} 
+                              teamId={selectedTeamId!}
+                              currentUserRole={currentUserRole}
+                            />
+                          </div>
                         </div>
-                        
-                        <div className="flex items-center space-x-2">
-                          <Badge 
-                            variant={member.role === 'owner' ? 'default' : 'secondary'}
-                            className="capitalize"
-                          >
-                            {member.role}
-                          </Badge>
-                          <Badge 
-                            variant={member.status === 'active' ? 'default' : 'outline'}
-                            className={`capitalize ${
-                              member.status === 'active' 
-                                ? 'bg-green-100 text-green-800' 
-                                : member.status === 'pending'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-gray-100 text-gray-800'
-                            }`}
-                          >
-                            {member.status}
-                          </Badge>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center space-x-4">
-                        {/* Credits Display */}
-                        <div className="text-right">
-                          <p className="text-sm font-medium">
-                            {member.credits.credits_used} / {member.credits.monthly_limit}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {member.credits.credits_remaining} remaining
-                          </p>
-                          <Progress 
-                            value={(member.credits.credits_used / member.credits.monthly_limit) * 100}
-                            className="w-20 h-2 mt-1"
-                          />
-                        </div>
-                        
-                        {/* Actions */}
-                        <div className="flex items-center space-x-2">
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => handleRoleChange(member.id, 'admin')}
-                          >
-                            <Settings className="h-4 w-4" />
-                          </Button>
-                          {member.role !== "owner" && member.user_id !== user?.id && (
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="text-red-600 hover:text-red-700"
-                              onClick={() => handleRemoveMember(member.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="analytics">
+                <TeamAnalytics teamData={teamData} />
+              </TabsContent>
+
+              <TabsContent value="bulk">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Bulk Member Management</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <BulkActions 
+                      members={members} 
+                      teamId={selectedTeamId!}
+                      currentUserRole={currentUserRole}
+                    />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </div>
         </Layout>
       </PlanGate>
