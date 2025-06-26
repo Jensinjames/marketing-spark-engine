@@ -58,10 +58,15 @@ const SecureForm: React.FC<SecureFormProps> = ({
       for (const [key, value] of formData.entries()) {
         if (typeof value === 'string') {
           // Basic XSS prevention - remove script tags and dangerous attributes
-          const sanitized = value
-            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-            .replace(/javascript:/gi, '')
-            .replace(/on\w+\s*=/gi, '');
+          let sanitized = value;
+          let previous;
+          do {
+            previous = sanitized;
+            sanitized = sanitized
+              .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+              .replace(/javascript:/gi, '')
+              .replace(/on\w+\s*=/gi, '');
+          } while (sanitized !== previous);
           sanitizedData.append(key, sanitized);
         } else {
           sanitizedData.append(key, value);
