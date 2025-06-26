@@ -327,6 +327,10 @@ export type Database = {
         Args: { team_uuid: string; uid?: string }
         Returns: boolean
       }
+      is_team_admin: {
+        Args: { team_uuid: string; uid?: string }
+        Returns: boolean
+      }
     }
     Enums: {
       content_type:

@@ -3,69 +3,187 @@ import { useAuth } from "@/hooks/useAuth";
 import AuthGuard from "@/components/AuthGuard";
 import Layout from "@/components/layout/Layout";
 import PlanGate from "@/components/shared/PlanGate";
+import { useTeamMembersWithCredits } from "@/hooks/useTeamMembersWithCredits";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, UserPlus, Crown, Mail, Settings, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Users, UserPlus, Crown, Mail, Settings, Trash2, CreditCard, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const Teams = () => {
-  const mockTeamMembers = [
-    { id: 1, name: "John Doe", email: "john@example.com", role: "owner", status: "active" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com", role: "member", status: "pending" },
-  ];
+  const { user } = useAuth();
+  const [selectedTeamId] = useState<string | null>("demo-team-id"); // In real app, this would come from user selection or URL
+  
+  const { 
+    data: teamData, 
+    isLoading, 
+    error, 
+    refetch 
+  } = useTeamMembersWithCredits(selectedTeamId);
+
+  const handleInviteMember = () => {
+    toast.info("Invite member functionality will be implemented next");
+  };
+
+  const handleRemoveMember = (memberId: string) => {
+    toast.info(`Remove member ${memberId} functionality will be implemented next`);
+  };
+
+  const handleRoleChange = (memberId: string, newRole: string) => {
+    toast.info(`Change role to ${newRole} for member ${memberId} functionality will be implemented next`);
+  };
+
+  if (isLoading) {
+    return (
+      <AuthGuard requireAuth={true}>
+        <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
+          <Layout>
+            <div className="max-w-7xl mx-auto space-y-8">
+              <div className="animate-pulse">
+                <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
+                <div className="h-4 bg-gray-200 rounded w-2/3 mb-8"></div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="h-24 bg-gray-200 rounded"></div>
+                  ))}
+                </div>
+                <div className="h-96 bg-gray-200 rounded"></div>
+              </div>
+            </div>
+          </Layout>
+        </PlanGate>
+      </AuthGuard>
+    );
+  }
+
+  if (error) {
+    return (
+      <AuthGuard requireAuth={true}>
+        <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
+          <Layout>
+            <div className="max-w-7xl mx-auto space-y-8">
+              <Card className="border-red-200 bg-red-50">
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <h3 className="text-lg font-semibold text-red-800 mb-2">Access Denied</h3>
+                    <p className="text-red-600 mb-4">
+                      {error.message || 'You do not have permission to access this team\'s data.'}
+                    </p>
+                    <Button variant="outline" onClick={() => refetch()}>
+                      Try Again
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </Layout>
+        </PlanGate>
+      </AuthGuard>
+    );
+  }
+
+  if (!teamData) {
+    return (
+      <AuthGuard requireAuth={true}>
+        <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
+          <Layout>
+            <div className="max-w-7xl mx-auto space-y-8">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <h3 className="text-lg font-semibold mb-2">No Team Selected</h3>
+                    <p className="text-gray-600 mb-4">
+                      Please select a team to manage or create a new team.
+                    </p>
+                    <Button onClick={handleInviteMember}>
+                      Create Team
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </Layout>
+        </PlanGate>
+      </AuthGuard>
+    );
+  }
+
+  const { team, members, statistics } = teamData;
 
   return (
     <AuthGuard requireAuth={true}>
-      <PlanGate 
-        requiredPlans={["growth", "elite"]} 
-        feature="team management"
-      >
+      <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
         <Layout>
           <div className="max-w-7xl mx-auto space-y-8">
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Team Management</h1>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {team.name} - Team Management
+                </h1>
                 <p className="text-lg text-gray-600 mt-2">
-                  Manage your team members and their access levels.
+                  Manage your team members, roles, and credit usage.
                 </p>
               </div>
-              <Button className="bg-purple-600 hover:bg-purple-700">
+              <Button className="bg-purple-600 hover:bg-purple-700" onClick={handleInviteMember}>
                 <UserPlus className="h-4 w-4 mr-2" />
                 Invite Member
               </Button>
             </div>
 
             {/* Team Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center space-x-3">
                     <Users className="h-8 w-8 text-purple-600" />
                     <div>
                       <p className="text-sm text-gray-600">Total Members</p>
-                      <p className="text-2xl font-bold">2</p>
+                      <p className="text-2xl font-bold">{statistics.total_members}</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
+              
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center space-x-3">
                     <Mail className="h-8 w-8 text-blue-600" />
                     <div>
                       <p className="text-sm text-gray-600">Pending Invites</p>
-                      <p className="text-2xl font-bold">1</p>
+                      <p className="text-2xl font-bold">{statistics.pending_invites}</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
+              
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center space-x-3">
-                    <Crown className="h-8 w-8 text-yellow-600" />
+                    <CreditCard className="h-8 w-8 text-green-600" />
                     <div>
-                      <p className="text-sm text-gray-600">Available Seats</p>
-                      <p className="text-2xl font-bold">3</p>
+                      <p className="text-sm text-gray-600">Credits Used</p>
+                      <p className="text-2xl font-bold">{statistics.total_credits_used}</p>
+                      <p className="text-xs text-gray-500">of {statistics.total_credits_available}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center space-x-3">
+                    <TrendingUp className="h-8 w-8 text-orange-600" />
+                    <div>
+                      <p className="text-sm text-gray-600">Utilization</p>
+                      <p className="text-2xl font-bold">{statistics.credits_utilization}%</p>
+                      <Progress 
+                        value={parseFloat(statistics.credits_utilization)} 
+                        className="w-full mt-2 h-2"
+                      />
                     </div>
                   </div>
                 </CardContent>
@@ -79,46 +197,86 @@ const Teams = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {mockTeamMembers.map((member) => (
+                  {members.map((member) => (
                     <div
                       key={member.id}
-                      className="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
+                      className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                     >
                       <div className="flex items-center space-x-4">
-                        <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                          <span className="text-purple-600 font-semibold">
-                            {member.name.charAt(0)}
-                          </span>
-                        </div>
+                        <Avatar>
+                          <AvatarImage src={member.avatar_url} alt={member.name} />
+                          <AvatarFallback>
+                            {member.name.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        
                         <div>
-                          <h3 className="font-medium text-gray-900">{member.name}</h3>
+                          <div className="flex items-center space-x-2">
+                            <h3 className="font-medium text-gray-900">{member.name}</h3>
+                            {member.role === "owner" && (
+                              <Crown className="h-4 w-4 text-yellow-500" />
+                            )}
+                          </div>
                           <p className="text-sm text-gray-600">{member.email}</p>
                         </div>
+                        
                         <div className="flex items-center space-x-2">
-                          {member.role === "owner" && (
-                            <Crown className="h-4 w-4 text-yellow-500" />
-                          )}
-                          <span className="text-sm px-2 py-1 bg-gray-100 rounded-full capitalize">
+                          <Badge 
+                            variant={member.role === 'owner' ? 'default' : 'secondary'}
+                            className="capitalize"
+                          >
                             {member.role}
-                          </span>
-                          <span className={`text-sm px-2 py-1 rounded-full capitalize ${
-                            member.status === "active" 
-                              ? "bg-green-100 text-green-800" 
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}>
+                          </Badge>
+                          <Badge 
+                            variant={member.status === 'active' ? 'default' : 'outline'}
+                            className={`capitalize ${
+                              member.status === 'active' 
+                                ? 'bg-green-100 text-green-800' 
+                                : member.status === 'pending'
+                                ? 'bg-yellow-100 text-yellow-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}
+                          >
                             {member.status}
-                          </span>
+                          </Badge>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <Button variant="ghost" size="sm">
-                          <Settings className="h-4 w-4" />
-                        </Button>
-                        {member.role !== "owner" && (
-                          <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
-                            <Trash2 className="h-4 w-4" />
+                      
+                      <div className="flex items-center space-x-4">
+                        {/* Credits Display */}
+                        <div className="text-right">
+                          <p className="text-sm font-medium">
+                            {member.credits.credits_used} / {member.credits.monthly_limit}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {member.credits.credits_remaining} remaining
+                          </p>
+                          <Progress 
+                            value={(member.credits.credits_used / member.credits.monthly_limit) * 100}
+                            className="w-20 h-2 mt-1"
+                          />
+                        </div>
+                        
+                        {/* Actions */}
+                        <div className="flex items-center space-x-2">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleRoleChange(member.id, 'admin')}
+                          >
+                            <Settings className="h-4 w-4" />
                           </Button>
-                        )}
+                          {member.role !== "owner" && member.user_id !== user?.id && (
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="text-red-600 hover:text-red-700"
+                              onClick={() => handleRemoveMember(member.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}
