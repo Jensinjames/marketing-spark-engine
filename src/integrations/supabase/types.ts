@@ -9,6 +9,45 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          ip_address: unknown | null
+          new_values: Json | null
+          old_values: Json | null
+          record_id: string | null
+          table_name: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id?: string | null
+          table_name: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id?: string | null
+          table_name?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       generated_content: {
         Row: {
           content: Json
@@ -261,6 +300,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      audit_sensitive_operation: {
+        Args: {
+          p_action: string
+          p_table_name: string
+          p_record_id?: string
+          p_old_values?: Json
+          p_new_values?: Json
+        }
+        Returns: undefined
+      }
       can_access_feature: {
         Args: { feature_name: string; check_user_id?: string }
         Returns: boolean
@@ -275,6 +324,10 @@ export type Database = {
         }[]
       }
       is_owner: {
+        Args: { team_uuid: string; uid?: string }
+        Returns: boolean
+      }
+      is_team_admin: {
         Args: { team_uuid: string; uid?: string }
         Returns: boolean
       }

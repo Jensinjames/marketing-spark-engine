@@ -1,79 +1,135 @@
 
-import { useState, FormEvent, ReactNode } from 'react';
-import DOMPurify from 'dompurify';
-import { Button } from "@/components/ui/button";
-import { Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Shield } from "lucide-react";
 
 interface SecureFormProps {
-  onSubmit: (data: Record<string, any>) => Promise<void>;
-  children: ReactNode;
-  submitText?: string;
-  disabled?: boolean;
+  children: React.ReactNode;
+  onSubmit: (data: FormData, csrfToken: string) => Promise<void> | void;
   className?: string;
+  enableCSRF?: boolean;
 }
 
-const SecureForm = ({ 
-  onSubmit, 
+// Simple CSRF token generation
+const generateCSRFToken = (): string => {
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+};
+
+const SecureForm: React.FC<SecureFormProps> = ({ 
   children, 
-  submitText = 'Submit',
-  disabled = false,
-  className = ''
-}: SecureFormProps) => {
+  onSubmit, 
+  className = "",
+  enableCSRF = true 
+}) => {
+  const [csrfToken, setCSRFToken] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [csrfToken] = useState(() => crypto.randomUUID());
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    if (enableCSRF) {
+      setCSRFToken(generateCSRFToken());
+    }
+  }, [enableCSRF]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
     
-    if (isSubmitting || disabled) return;
-
+    if (isSubmitting) return;
+    
+    setIsSubmitting(true);
+    
     try {
-      setIsSubmitting(true);
-      
       const formData = new FormData(e.currentTarget);
-      const data: Record<string, any> = {};
       
-      // Convert FormData to object with validation
-      for (const [key, value] of formData.entries()) {
-        if (typeof value === 'string') {
-          // Basic XSS protection - strip HTML tags
-          data[key] = DOMPurify.sanitize(value).trim();
-        } else {
-          data[key] = value;
+      // Security: Validate CSRF token if enabled
+      if (enableCSRF) {
+        const submittedToken = formData.get('csrf_token') as string;
+        if (submittedToken !== csrfToken) {
+          throw new Error('Security validation failed. Please refresh and try again.');
         }
       }
       
-      // Add CSRF token
-      data._csrf = csrfToken;
+      // Security: Input sanitization - remove potential XSS
+      const sanitizedData = new FormData();
+      for (const [key, value] of formData.entries()) {
+        if (typeof value === 'string') {
+          // Basic XSS prevention - remove script tags and dangerous attributes
+          let sanitized = value;
+          let previous;
+          do {
+            previous = sanitized;
+            sanitized = sanitized
+              .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+              .replace(/javascript:/gi, '')
+              .replace(/on\w+\s*=/gi, '');
+          } while (sanitized !== previous);
+          sanitizedData.append(key, sanitized);
+        } else {
+          sanitizedData.append(key, value);
+        }
+      }
       
-      await onSubmit(data);
-    } catch (error) {
-      console.error('Form submission error:', error);
-      throw error;
+      await onSubmit(sanitizedData, csrfToken);
+      
+      // Regenerate CSRF token after successful submission
+      if (enableCSRF) {
+        setCSRFToken(generateCSRFToken());
+      }
+    } catch (err: any) {
+      setError(err.message || 'An error occurred. Please try again.');
+      
+      // Security: Log suspicious activity
+      if (err.message?.includes('Security validation failed')) {
+        console.warn('[Security] CSRF validation failed', {
+          timestamp: new Date().toISOString(),
+          userAgent: navigator.userAgent,
+          url: window.location.href
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className={className}>
-      <input type="hidden" name="_csrf" value={csrfToken} />
-      {children}
-      <Button
-        type="submit"
-        disabled={isSubmitting || disabled}
-        className="w-full mt-4"
-      >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Processing...
-          </>
-        ) : (
-          submitText
+    <Card className={className}>
+      <CardContent className="p-6">
+        {error && (
+          <Alert className="mb-4 border-red-200 bg-red-50">
+            <Shield className="h-4 w-4 text-red-600" />
+            <AlertDescription className="text-red-800">
+              {error}
+            </AlertDescription>
+          </Alert>
         )}
-      </Button>
-    </form>
+        
+        <form onSubmit={handleSubmit} noValidate>
+          {enableCSRF && (
+            <input 
+              type="hidden" 
+              name="csrf_token" 
+              value={csrfToken}
+              readOnly
+            />
+          )}
+          
+          {React.Children.map(children, child => {
+            if (React.isValidElement(child)) {
+              // Pass down form state to children
+              return React.cloneElement(child, {
+                disabled: child.props.disabled || isSubmitting,
+                ...child.props
+              } as any);
+            }
+            return child;
+          })}
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 
