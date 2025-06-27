@@ -49,17 +49,10 @@ export class RateLimiter {
 }
 
 // Input sanitization
+import DOMPurify from 'dompurify';
+
 export const sanitizeInput = (input: string): string => {
-  let sanitized = input;
-  let previous;
-  do {
-    previous = sanitized;
-    sanitized = sanitized
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-      .replace(/javascript:/gi, '')
-      .replace(/on\w+\s*=/gi, '');
-  } while (sanitized !== previous);
-  return sanitized.trim();
+  return DOMPurify.sanitize(input).trim();
 };
 
 // Email validation
