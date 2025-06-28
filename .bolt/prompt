@@ -1,0 +1,195 @@
+You are building multi-tenant SaaS application using Vite + React + Tailwind (frontend) and Supabase (Postgres, Auth, Edge Functions) as the backend. 
+Your tasks include but are not limited too implementing and maintaining Teams Management and Credits admin dashboard sections.
+**Guidelines:**
+- All API endpoints must be written as Supabase Edge Functions (Deno runtime).
+- All endpoints MUST validate authentication and enforce that the user has an admin role by checking the user’s role on the user record (preferably via the `users` or `profiles` table).
+- All admin actions (e.g., managing teams, editing credits) MUST be logged to a Supabase `audit_logs` table, including at least: action, user id, timestamp, and relevant data.
+- Use proper input validation and error handling in all endpoints.
+- Enforce Row Level Security (RLS) on all sensitive tables.
+- Use environment variables for secrets and config.
+- Use rate limiting where appropriate for admin endpoints.
+- For the frontend, use React functional components, React Query for data fetching, shadcn/ui components, and Tailwind CSS for styling. Only render/administer these pages for users with the admin role.
+- All code must be idiomatic TypeScript, with clear comments.
+- For each feature, include both backend (Edge Function) and frontend (React) code in separate code blocks, with clear explanations.
+
+**Data Models:**
+- `users` (id, email, created_at, role)
+- `team_members` (id, team_id, user_id, role, status)
+- `user_credits` (user_id, monthly_limit, credits_used, reset_at)
+- `audit_logs` (id, user_id, action, data, created_at)
+- Other tables as needed (see project docs)
+
+**Output Format:**
+For each feature (Teams Management, Credits Management), provide:
+- Edge Function code for the required API endpoints
+- React component/page code
+- Code should be ready to copy-paste into the repo, with all necessary imports and type safety.
+
+**Extra:**
+- Never expose secrets in code samples.
+- Always check admin rights before any admin action.
+- Always log admin actions.
+- Use async/await and modern TypeScript/React idioms.
+
+SaaS app for founders to generate, manage, and export AI-powered marketing content with team, credit, and plan controls.
+1. Core Features
+* **User authentication:** Email/password; magic link optional for onboarding.  
+* **User dashboard:** Track usage, credits, assets, plan details.  
+* **AI-powered content generation:** Up to 6 asset types: email sequence, ad copy, landing page, social posts, blog/product copy, funnel builder.  
+* **Credit system:** Per plan, usage deducted on generation, resets monthly.  
+* **Team management:** Invite members, assign roles, seat limits by plan.  
+* **Plan management and upgrades:** Stripe integration, webhooks, enforce limits/roles.  
+* **Content export:** PDF, DOCX, or copyable text.  
+* **Integration-ready:** Zapier, n8n, Mailchimp, Airtable, etc. for higher tiers.
+
+\. Technical Stack & Constraints
+* **Frontend:** React \+ TypeScript, Vite, Tailwind, shadcn/ui, React Query, Lucide icons.  
+* **Backend:** Supabase (Postgres, Auth, Edge Functions, RLS), OpenAI API, n8n Cloud, Stripe.  
+* **UI:** Mobile-first, dark mode ready, modern UI.  
+* **Business Logic:** All backend business logic (auth, credit check, asset storage, resets, plan sync) in Supabase edge functions.
+
+\. Data Model (Supabase Example)
+* \`users\` (id, email, created\_at)  
+* \`user\_plans\` (user\_id, plan, credits, seat\_count, stripe\_customer\_id, status)  
+* \`user\_credits\` (user\_id, monthly\_limit, credits\_used, reset\_at)  
+* \`generated\_content\` (id, user\_id, type, prompt, output, created\_at)  
+* \`team\_members\` (id, team\_id, user\_id, role, status)  
+* \`integration\_tokens\` (id, user\_id, provider, token, created\_at)
+
+\. Flows & Logic
+* **Signup/Login:** Dashboard shows credits, recent assets, plan info.  
+* **Generate content:** Check credits, run OpenAI API, save output, deduct credits.  
+* **Credit limit reached:** Show upsell modal, redirect to pricing/upgrade page.  
+* **Plan upgrades:** Stripe checkout, update DB, apply seat/credit changes instantly.  
+* **Monthly reset:** Via n8n workflow.  
+* **Team:** Invite, join, remove, role assignment; enforce seat limits per plan.  
+* **Exports:** Allow download as PDF/DOCX, or quick copy for any asset.
+
+\. Pages
+* **Landing page:** Features, pricing, CTA, FAQ (public).  
+* **Auth pages:** Sign up, log in, forgot password (Supabase Auth).  
+* **Dashboard:** Credits, plan info, quick actions, recent assets, team members, usage stats.  
+* **Asset generator:** Multi-step wizard for all 6 asset types, preview results.  
+* **Pricing/Upgrade:** Plan selector, feature comparison, Stripe-powered checkout.  
+* **Team Management:** Invite, remove, assign role; visible seats/usage.
+***ADMIN Dashboard** Purpose: manage who gets to be an “admin” or “super-admin,” control their scopes, rotate privileges, and audit all changes.
+
+Roles & Hierarchy
+
+super_admin—full control over all tenants, can promote/demote other admins.
+
+admin—can manage teams, credits, content within their own tenant only.
+
+Data Model Extension
+
+Add role column on users (already present) but values = user | admin | super_admin.
+
+Optionally, admin_scopes JSON on profiles to allow granular permissions (e.g. ["teams","credits","billing"]).
+
+Edge Functions for Admin Management
+
+createAdmin
+
+Auth check: only super_admin.
+
+Input: user_id, desired role (must be admin).
+
+Logic: update users.role, insert audit log { action: "assign_admin", data: { user_id, role } }.
+
+listAdmins
+
+only super_admin—returns all users with role ≠ user.
+
+updateAdminRole
+
+only super_admin—change between admin ↔ super_admin (if demoting self, require at least one other super_admin).
+revokeMember
+only super_admin—set users.role = 'user', log { action: "revoke_member", data: { user_id - member_id} }.
+RLS & Policies
+Block any non-super_admin from executing these endpoints.
+Enforce via Supabase policies on users table:
+create policy manage_admins on users 
+  for update using ( auth.role() = 'super_admin' );
+Frontend: Admin Users Page
+Route: /admin/users
+Only visible if current user’s role = super_admin.
+List all admins & super_admins with React Query → listAdmins.
+Buttons to “Promote to Super-Admin,” “Revoke Member,” or “Assign Admin” on any Team.
+Show confirmation modals and display operation results.
+4. Edge Functions
+(same as before, plus the Admin Management endpoints above)
+5. Data Security
+6. Core Features & Flows
+(add to Teams & Credits flows: only admin-role users can perform those admin actions—super_admins get full visibility across tenants)
+
+[LATEST CHANGES]
+This update adds multiple new pages and UI components for analytics, billing, integrations, content management, settings, and AI content generation. It introduces a user plan management hook, enhances authentication and plan gating logic, integrates secure form handling with CSRF protection, and refactors routing to include the new pages. Existing pages like Dashboard and Analytics are refactored for improved structure and authentication enforcement but lack viewable component.
+src/App.tsx	Added route imports and route definitions for Generate, Content, Analytics, Billing, Integrations, and Settings pages.
+1. Architecture & Stack
+
+Frontend: Vite + React (TypeScript), Tailwind CSS, shadcn/ui, React Query, Lucide icons.
+Backend: Supabase Auth, Postgres, Edge Functions (Deno runtime), RLS policies, Stripe webhooks, n8n automations, OpenAI API.
+
+2. Authentication & Authorization
+Every Edge Function must validate the JWT and fetch user from Supabase.
+Enforce admin role on all “admin” endpoints/pages by checking users.role or a profiles.role field.
+In React, guard admin views by checking the user’s role before rendering.
+
+3. Edge Functions
+Write as Supabase Edge Functions (Deno runtime).
+Input validation using Zod or similar, with clear error messages.
+Error handling: return structured HTTP errors (with status, code, message).
+Rate limit admin‐only endpoints to prevent abuse.
+Audit logging: after every admin action (team/credit management), insert into audit_logs (user_id, action, data, created_at).
+Environment variables only for secrets (e.g. SUPABASE_SERVICE_ROLE_KEY, Stripe keys). Never hardcode.
+
+4. Data Security
+Row-Level Security: enforce per-tenant and per-role access on all tables (team_members, user_credits, generated_content, etc.).
+Use Supabase policies to restrict reads/writes to owner or admin of the tenant.
+
+5. Core Features & Flows
+Teams Management:
+Invite, remove, list members via Edge Functions.
+Enforce seat limits by plan.
+Frontend: React page under /admin/teams, React Query hooks for data.
+Credits Dashboard:
+Show monthly limit, used, reset date.
+Edge Function to adjust credits.
+Trigger n8n monthly reset workflow.
+Content Generation:
+checkCreditsAndGenerate → verify quota → call OpenAI → save to generated_content → deduct credits.
+saveGeneratedContent, getPlanInfo, upgradePlanWebhook, resetCredits.
+
+6. Data Models
+users (id, email, created_at, role)
+user_plans (user_id, plan, credits, seat_count, stripe_customer_id, status)
+user_credits (user_id, monthly_limit, credits_used, reset_at)
+generated_content (id, user_id, type, prompt, output, created_at)
+team_members (id, team_id, user_id, role, status)
+audit_logs (id, user_id, action, data JSON, created_at)
+integration_tokens (id, user_id, provider, token, created_at)
+
+7. Frontend Guidelines
+React functional components, idiomatic TypeScript with clear comments.
+React Query for data fetching/caching, with staleTime/gcTime tuned for UX.
+Tailwind CSS + shadcn/ui for styling and consistent components (tables, forms, modals).
+Always show loading/error states and guard routes on auth/role.
+
+8. Output & Documentation
+When delivering code, provide:
+Edge Function: full .ts file with imports, validation, auth check, logic, logging.
+React Page/Component: full .tsx with imports, hooks, UI, access guard.
+Include short explanation above each code block: what it does and how to integrate.
+Never expose secrets or service-role keys in samples.
+
+9. Integrations & Automations
+Stripe webhooks handled in Edge Function upgradePlanWebhook: validate signature, update user_plans, log in audit_logs.
+n8n Cron for resetCredits: triggers once a month to zero out usage and update reset_at.
+Zapier/n8n triggers on “save” for Growth+/Elite+ users to send emails or update external systems via saved integration_tokens.
+
+10. Best Practices
+Use async/await, avoid callbacks.
+Keep functions small and focused.
+Log meaningful context on errors and successes.
+Write unit tests for Edge Functions where feasible.
+Uphold consistency in naming, error codes, and logging format.
