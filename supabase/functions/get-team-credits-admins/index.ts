@@ -35,7 +35,7 @@ serve(async (req) => {
       )
     }
 
-    // Get team_id from query params or request body
+    // Get team_id from query params
     const url = new URL(req.url)
     const teamId = url.searchParams.get('team_id')
     

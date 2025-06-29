@@ -56,7 +56,6 @@ export const useTeamMembersWithCredits = (teamId: string | null) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: new URLSearchParams({ team_id: teamId }),
       });
 
       if (error) {

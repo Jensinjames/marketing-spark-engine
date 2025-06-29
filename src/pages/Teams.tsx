@@ -3,12 +3,14 @@ import AuthGuard from "@/components/AuthGuard";
 import Layout from "@/components/layout/Layout";
 import PlanGate from "@/components/shared/PlanGate";
 import { useTeamMembersWithCredits } from "@/hooks/useTeamMembersWithCredits";
+import { useUserTeams } from "@/hooks/useUserTeams";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Users, UserPlus, Crown, Mail, CreditCard, TrendingUp, BarChart3, Settings2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -18,7 +20,9 @@ import { BulkActions } from "@/components/teams/BulkActions";
 
 const Teams = () => {
   const { user } = useAuth();
-  const [selectedTeamId] = useState<string | null>("demo-team-id"); // In real app, this would come from user selection or URL
+  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
+  
+  const { data: userTeams, isLoading: teamsLoading } = useUserTeams();
   
   const { 
     data: teamData, 
@@ -27,6 +31,13 @@ const Teams = () => {
     refetch 
   } = useTeamMembersWithCredits(selectedTeamId);
 
+  // Auto-select the first team if none is selected
+  React.useEffect(() => {
+    if (userTeams && userTeams.length > 0 && !selectedTeamId) {
+      setSelectedTeamId(userTeams[0].id);
+    }
+  }, [userTeams, selectedTeamId]);
+
   const handleInviteMember = () => {
     toast.info("Invite member functionality will be implemented next");
   };
@@ -34,7 +45,7 @@ const Teams = () => {
   // Get current user's role in the team
   const currentUserRole = teamData?.members.find(m => m.user_id === user?.id)?.role || 'viewer';
 
-  if (isLoading) {
+  if (teamsLoading || isLoading) {
     return (
       <AuthGuard requireAuth={true}>
         <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
@@ -50,6 +61,32 @@ const Teams = () => {
                 </div>
                 <div className="h-96 bg-gray-200 rounded"></div>
               </div>
+            </div>
+          </Layout>
+        </PlanGate>
+      </AuthGuard>
+    );
+  }
+
+  if (!userTeams || userTeams.length === 0) {
+    return (
+      <AuthGuard requireAuth={true}>
+        <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
+          <Layout>
+            <div className="max-w-7xl mx-auto space-y-8">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <h3 className="text-lg font-semibold mb-2">No Teams Found</h3>
+                    <p className="text-gray-600 mb-4">
+                      You're not a member of any teams yet. Create a new team or ask to be invited to an existing one.
+                    </p>
+                    <Button onClick={handleInviteMember}>
+                      Create Team
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </Layout>
         </PlanGate>
@@ -94,11 +131,8 @@ const Teams = () => {
                   <div className="text-center">
                     <h3 className="text-lg font-semibold mb-2">No Team Selected</h3>
                     <p className="text-gray-600 mb-4">
-                      Please select a team to manage or create a new team.
+                      Please select a team to manage.
                     </p>
-                    <Button onClick={handleInviteMember}>
-                      Create Team
-                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -119,9 +153,7 @@ const Teams = () => {
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  {team.name} - Team Management
-                </h1>
+                <h1 className="text-3xl font-bold text-gray-900">Team Management</h1>
                 <p className="text-lg text-gray-600 mt-2">
                   Manage your team members, roles, and credit usage.
                 </p>
@@ -131,6 +163,29 @@ const Teams = () => {
                 Invite Member
               </Button>
             </div>
+
+            {/* Team Selector */}
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center space-x-4">
+                  <label htmlFor="team-select" className="text-sm font-medium text-gray-700">
+                    Select Team:
+                  </label>
+                  <Select value={selectedTeamId || ""} onValueChange={setSelectedTeamId}>
+                    <SelectTrigger className="w-64">
+                      <SelectValue placeholder="Choose a team..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {userTeams.map((team) => (
+                        <SelectItem key={team.id} value={team.id}>
+                          {team.name} ({team.role})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Team Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
