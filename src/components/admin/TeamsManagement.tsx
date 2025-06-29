@@ -26,7 +26,7 @@ export const TeamsManagement = () => {
         .from('teams')
         .select(`
           *,
-          profiles!teams_owner_id_fkey(full_name, email),
+          owner:profiles!teams_owner_id_fkey(full_name, email),
           team_members(count)
         `)
         .order('created_at', { ascending: false });
@@ -65,7 +65,7 @@ export const TeamsManagement = () => {
 
   const filteredTeams = teams?.filter(team =>
     team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    team.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    team.owner?.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (isLoading) {
@@ -128,8 +128,8 @@ export const TeamsManagement = () => {
                   <TableCell className="font-medium">{team.name}</TableCell>
                   <TableCell>
                     <div>
-                      <div className="font-medium">{team.profiles?.full_name || 'Unknown'}</div>
-                      <div className="text-sm text-gray-500">{team.profiles?.email}</div>
+                      <div className="font-medium">{team.owner?.full_name || 'Unknown'}</div>
+                      <div className="text-sm text-gray-500">{team.owner?.email}</div>
                     </div>
                   </TableCell>
                   <TableCell>

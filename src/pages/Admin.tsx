@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield, Users, CreditCard, Activity } from 'lucide-react';
 import AuthGuard from '@/components/AuthGuard';
-import { Layout } from '@/components/layout/Layout';
+import Layout from '@/components/layout/Layout';
 import { TeamsManagement } from '@/components/admin/TeamsManagement';
 import { CreditsManagement } from '@/components/admin/CreditsManagement';
 import { AuditLogs } from '@/components/admin/AuditLogs';
