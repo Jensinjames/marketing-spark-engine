@@ -48,6 +48,239 @@ export type Database = {
         }
         Relationships: []
       }
+      content_analytics: {
+        Row: {
+          content_id: string
+          id: string
+          metadata: Json | null
+          metric_type: string
+          metric_value: number
+          recorded_at: string
+        }
+        Insert: {
+          content_id: string
+          id?: string
+          metadata?: Json | null
+          metric_type: string
+          metric_value?: number
+          recorded_at?: string
+        }
+        Update: {
+          content_id?: string
+          id?: string
+          metadata?: Json | null
+          metric_type?: string
+          metric_value?: number
+          recorded_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_analytics_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "generated_content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_collaborations: {
+        Row: {
+          collaborator_id: string
+          content_id: string
+          created_at: string
+          id: string
+          invited_by: string
+          permission_level: Database["public"]["Enums"]["collaboration_permission"]
+          status: Database["public"]["Enums"]["collaboration_status"]
+        }
+        Insert: {
+          collaborator_id: string
+          content_id: string
+          created_at?: string
+          id?: string
+          invited_by: string
+          permission_level?: Database["public"]["Enums"]["collaboration_permission"]
+          status?: Database["public"]["Enums"]["collaboration_status"]
+        }
+        Update: {
+          collaborator_id?: string
+          content_id?: string
+          created_at?: string
+          id?: string
+          invited_by?: string
+          permission_level?: Database["public"]["Enums"]["collaboration_permission"]
+          status?: Database["public"]["Enums"]["collaboration_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_collaborations_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "generated_content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_comments: {
+        Row: {
+          comment_text: string
+          content_id: string
+          created_at: string
+          id: string
+          is_resolved: boolean | null
+          parent_comment_id: string | null
+          user_id: string
+        }
+        Insert: {
+          comment_text: string
+          content_id: string
+          created_at?: string
+          id?: string
+          is_resolved?: boolean | null
+          parent_comment_id?: string | null
+          user_id: string
+        }
+        Update: {
+          comment_text?: string
+          content_id?: string
+          created_at?: string
+          id?: string
+          is_resolved?: boolean | null
+          parent_comment_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_comments_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "generated_content"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "content_comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_performance_summary: {
+        Row: {
+          content_id: string
+          engagement_rate: number | null
+          last_updated: string
+          total_clicks: number | null
+          total_conversions: number | null
+          total_views: number | null
+        }
+        Insert: {
+          content_id: string
+          engagement_rate?: number | null
+          last_updated?: string
+          total_clicks?: number | null
+          total_conversions?: number | null
+          total_views?: number | null
+        }
+        Update: {
+          content_id?: string
+          engagement_rate?: number | null
+          last_updated?: string
+          total_clicks?: number | null
+          total_conversions?: number | null
+          total_views?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_performance_summary_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: true
+            referencedRelation: "generated_content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_templates: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          is_public: boolean | null
+          name: string
+          tags: string[] | null
+          template_data: Json
+          type: Database["public"]["Enums"]["content_type"]
+          updated_at: string
+          usage_count: number | null
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          name: string
+          tags?: string[] | null
+          template_data: Json
+          type: Database["public"]["Enums"]["content_type"]
+          updated_at?: string
+          usage_count?: number | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          name?: string
+          tags?: string[] | null
+          template_data?: Json
+          type?: Database["public"]["Enums"]["content_type"]
+          updated_at?: string
+          usage_count?: number | null
+        }
+        Relationships: []
+      }
+      content_versions: {
+        Row: {
+          change_summary: string | null
+          content_data: Json
+          content_id: string
+          created_at: string
+          created_by: string
+          id: string
+          version_number: number
+        }
+        Insert: {
+          change_summary?: string | null
+          content_data: Json
+          content_id: string
+          created_at?: string
+          created_by: string
+          id?: string
+          version_number: number
+        }
+        Update: {
+          change_summary?: string | null
+          content_data?: Json
+          content_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_versions_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "generated_content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       generated_content: {
         Row: {
           content: Json
@@ -125,6 +358,33 @@ export type Database = {
         }
         Relationships: []
       }
+      plan_features: {
+        Row: {
+          created_at: string
+          feature_limit: number | null
+          feature_name: string
+          id: string
+          is_enabled: boolean | null
+          plan_type: Database["public"]["Enums"]["plan_type"]
+        }
+        Insert: {
+          created_at?: string
+          feature_limit?: number | null
+          feature_name: string
+          id?: string
+          is_enabled?: boolean | null
+          plan_type: Database["public"]["Enums"]["plan_type"]
+        }
+        Update: {
+          created_at?: string
+          feature_limit?: number | null
+          feature_name?: string
+          id?: string
+          is_enabled?: boolean | null
+          plan_type?: Database["public"]["Enums"]["plan_type"]
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -134,6 +394,7 @@ export type Database = {
           full_name: string | null
           id: string
           onboarded: boolean | null
+          role: Database["public"]["Enums"]["user_role"]
           updated_at: string
         }
         Insert: {
@@ -144,6 +405,7 @@ export type Database = {
           full_name?: string | null
           id: string
           onboarded?: boolean | null
+          role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string
         }
         Update: {
@@ -154,9 +416,89 @@ export type Database = {
           full_name?: string | null
           id?: string
           onboarded?: boolean | null
+          role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string
         }
         Relationships: []
+      }
+      team_activity_log: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          id: string
+          team_id: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          team_id: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          team_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_activity_log_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_invitations: {
+        Row: {
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invited_by: string
+          role: Database["public"]["Enums"]["team_role"]
+          status: Database["public"]["Enums"]["invitation_status"]
+          team_id: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          invited_by: string
+          role?: Database["public"]["Enums"]["team_role"]
+          status?: Database["public"]["Enums"]["invitation_status"]
+          team_id: string
+          token: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string
+          role?: Database["public"]["Enums"]["team_role"]
+          status?: Database["public"]["Enums"]["invitation_status"]
+          team_id?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_invitations_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       team_members: {
         Row: {
@@ -223,6 +565,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_activity_log: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          resource_id: string | null
+          resource_type: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          resource_id?: string | null
+          resource_type?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          resource_id?: string | null
+          resource_type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_credits: {
         Row: {
           created_at: string
@@ -249,6 +621,30 @@ export type Database = {
           monthly_limit?: number
           reset_at?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          item_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          item_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          item_type?: string
           user_id?: string
         }
         Relationships: []
@@ -295,11 +691,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_preferences: {
+        Row: {
+          default_content_settings: Json | null
+          email_notifications: Json | null
+          language: string | null
+          theme: string | null
+          timezone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          default_content_settings?: Json | null
+          email_notifications?: Json | null
+          language?: string | null
+          theme?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          default_content_settings?: Json | null
+          email_notifications?: Json | null
+          language?: string | null
+          theme?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      accept_team_invitation: {
+        Args: { invitation_token: string }
+        Returns: Json
+      }
       audit_sensitive_operation: {
         Args: {
           p_action: string
@@ -314,6 +744,14 @@ export type Database = {
         Args: { feature_name: string; check_user_id?: string }
         Returns: boolean
       }
+      cleanup_expired_invitations: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      generate_invitation_token: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_user_plan_info: {
         Args: { check_user_id?: string }
         Returns: {
@@ -323,16 +761,52 @@ export type Database = {
           can_manage_teams: boolean
         }[]
       }
+      get_user_recommendations: {
+        Args: { limit_count?: number }
+        Returns: {
+          content_id: string
+          title: string
+          type: Database["public"]["Enums"]["content_type"]
+          score: number
+        }[]
+      }
+      is_admin_or_super: {
+        Args: { user_id?: string }
+        Returns: boolean
+      }
       is_owner: {
         Args: { team_uuid: string; uid?: string }
+        Returns: boolean
+      }
+      is_super_admin: {
+        Args: { user_id?: string }
         Returns: boolean
       }
       is_team_admin: {
         Args: { team_uuid: string; uid?: string }
         Returns: boolean
       }
+      log_team_activity: {
+        Args: { p_team_id: string; p_action: string; p_details?: Json }
+        Returns: undefined
+      }
+      log_user_activity: {
+        Args: {
+          p_action: string
+          p_resource_type?: string
+          p_resource_id?: string
+          p_metadata?: Json
+        }
+        Returns: undefined
+      }
+      reset_monthly_credits: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
+      collaboration_permission: "view" | "edit" | "admin"
+      collaboration_status: "pending" | "accepted" | "declined"
       content_type:
         | "email_sequence"
         | "ad_copy"
@@ -347,8 +821,10 @@ export type Database = {
         | "airtable"
         | "zapier"
         | "mailerlite"
+      invitation_status: "pending" | "accepted" | "expired" | "cancelled"
       plan_type: "starter" | "pro" | "growth" | "elite"
       team_role: "owner" | "admin" | "editor" | "viewer"
+      user_role: "user" | "admin" | "super_admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -464,6 +940,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      collaboration_permission: ["view", "edit", "admin"],
+      collaboration_status: ["pending", "accepted", "declined"],
       content_type: [
         "email_sequence",
         "ad_copy",
@@ -480,8 +958,10 @@ export const Constants = {
         "zapier",
         "mailerlite",
       ],
+      invitation_status: ["pending", "accepted", "expired", "cancelled"],
       plan_type: ["starter", "pro", "growth", "elite"],
       team_role: ["owner", "admin", "editor", "viewer"],
+      user_role: ["user", "admin", "super_admin"],
     },
   },
 } as const
