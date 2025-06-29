@@ -26,7 +26,7 @@ export const CreditsManagement = () => {
         .from('user_credits')
         .select(`
           *,
-          profile:profiles!user_credits_user_id_fkey(full_name, email, role)
+          profiles!inner(full_name, email, role)
         `)
         .order('updated_at', { ascending: false });
 
@@ -95,8 +95,8 @@ export const CreditsManagement = () => {
   });
 
   const filteredCredits = userCredits?.filter(credit =>
-    credit.profile?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    credit.profile?.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    credit.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    credit.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleUpdateCredits = () => {
@@ -174,13 +174,13 @@ export const CreditsManagement = () => {
                 <TableRow key={credit.user_id}>
                   <TableCell>
                     <div>
-                      <div className="font-medium">{credit.profile?.full_name || 'Unknown'}</div>
-                      <div className="text-sm text-gray-500">{credit.profile?.email}</div>
+                      <div className="font-medium">{credit.profiles?.full_name || 'Unknown'}</div>
+                      <div className="text-sm text-gray-500">{credit.profiles?.email}</div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={credit.profile?.role === 'super_admin' ? 'default' : 'secondary'}>
-                      {credit.profile?.role || 'user'}
+                    <Badge variant={credit.profiles?.role === 'super_admin' ? 'default' : 'secondary'}>
+                      {credit.profiles?.role || 'user'}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -227,7 +227,7 @@ export const CreditsManagement = () => {
                           <DialogHeader>
                             <DialogTitle>Update Credit Limit</DialogTitle>
                             <DialogDescription>
-                              Change the monthly credit limit for {credit.profile?.full_name}
+                              Change the monthly credit limit for {credit.profiles?.full_name}
                             </DialogDescription>
                           </DialogHeader>
                           <div className="space-y-4">
