@@ -1,0 +1,86 @@
+
+import { useMutation } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+import { isRateLimited, recordAttempt, validateEmail, validatePassword } from '@/utils/authSecurity';
+import { logSecurityEvent } from '@/utils/authLogging';
+
+interface SignUpData {
+  email: string;
+  password: string;
+  fullName?: string;
+}
+
+export const useSignUpMutation = () => {
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: async ({ email, password, fullName }: SignUpData) => {
+      const normalizedEmail = email.trim().toLowerCase();
+      
+      // Security: Input validation
+      validateEmail(normalizedEmail);
+      validatePassword(password);
+      
+      // Security: Rate limiting
+      if (isRateLimited(normalizedEmail)) {
+        throw new Error('Too many signup attempts. Please try again later.');
+      }
+      
+      const redirectUrl = `${window.location.origin}/dashboard`;
+      
+      await logSecurityEvent('signup_attempt', { email: normalizedEmail });
+      
+      const { data, error } = await supabase.auth.signUp({
+        email: normalizedEmail,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: fullName ? { full_name: fullName.trim() } : undefined
+        }
+      });
+
+      if (error) {
+        recordAttempt(normalizedEmail, false);
+        await logSecurityEvent('signup_failed', { 
+          email: normalizedEmail, 
+          error: error.message 
+        });
+        throw error;
+      }
+      
+      recordAttempt(normalizedEmail, true);
+      await logSecurityEvent('signup_success', { email: normalizedEmail });
+      
+      return data;
+    },
+    onSuccess: (data) => {
+      if (data.user && !data.user.email_confirmed_at) {
+        toast.success('Account created! Please check your email to confirm your account before signing in.', {
+          duration: 5000,
+        });
+      } else if (data.user && data.user.email_confirmed_at) {
+        toast.success('Account created and confirmed! You can now sign in.');
+        navigate('/dashboard');
+      } else {
+        toast.success('Account created successfully!');
+      }
+    },
+    onError: (error: any) => {
+      if (error.message.includes('already registered')) {
+        toast.error('This email is already registered. Try signing in instead.');
+      } else if (error.message.includes('Invalid email') || error.message.includes('email format')) {
+        toast.error('Please enter a valid email address.');
+      } else if (error.message.includes('Password')) {
+        toast.error('Password must be at least 8 characters long.');
+      } else if (error.message.includes('rate limit') || error.message.includes('Too many')) {
+        toast.error('Too many attempts. Please wait before trying again.');
+      } else if (error.message.includes('Database error')) {
+        toast.error('There was an issue creating your account. Please try again.');
+      } else {
+        toast.error(error.message || 'Failed to create account. Please try again.');
+      }
+    },
+  });
+};
