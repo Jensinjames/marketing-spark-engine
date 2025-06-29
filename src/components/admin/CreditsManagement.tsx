@@ -26,7 +26,7 @@ export const CreditsManagement = () => {
         .from('user_credits')
         .select(`
           *,
-          profiles!inner(full_name, email, role)
+          profiles!fk_user_credits_profiles(full_name, email, role)
         `)
         .order('updated_at', { ascending: false });
 

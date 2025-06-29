@@ -26,7 +26,7 @@ export const TeamsManagement = () => {
         .from('teams')
         .select(`
           *,
-          profiles!inner(full_name, email),
+          profiles!fk_teams_profiles(full_name, email),
           team_members(count)
         `)
         .order('created_at', { ascending: false });
