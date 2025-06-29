@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -43,8 +42,17 @@ const Sidebar = () => {
   };
 
   const handleLogout = async () => {
-    signOut.mutate();
+    console.log('[Sidebar] Logout button clicked');
     setIsOpen(false);
+    
+    try {
+      await signOut.mutateAsync();
+      console.log('[Sidebar] Logout completed successfully');
+    } catch (error) {
+      console.error('[Sidebar] Logout failed:', error);
+      // Even if mutation fails, try to force logout
+      window.location.href = '/';
+    }
   };
 
   return (

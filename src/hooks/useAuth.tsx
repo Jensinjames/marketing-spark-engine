@@ -28,6 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('[AuthProvider] Auth state changed:', event, session?.user?.id);
         secureLog('info', 'Auth state changed', { event, userId: session?.user?.id });
         
         setSession(session);
@@ -37,6 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Handle auth events with security logging
         switch (event) {
           case 'SIGNED_IN':
+            console.log('[AuthProvider] User signed in successfully');
             secureLog('info', 'User signed in', { userId: session?.user?.id });
             // Log successful authentication for security monitoring
             try {
@@ -54,12 +56,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             break;
             
           case 'SIGNED_OUT':
+            console.log('[AuthProvider] User signed out - clearing all state');
             secureLog('info', 'User signed out');
-            // Clear any cached sensitive data on signout
+            
+            // Immediately clear state on signout
             setUser(null);
             setSession(null);
+            
             // Clear any stored tokens or sensitive data
             sessionStorage.clear();
+            
+            // Remove specific auth keys from localStorage
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+              const key = localStorage.key(i);
+              if (key && key.startsWith('supabase.auth')) {
+                keysToRemove.push(key);
+              }
+            }
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+            
+            console.log('[AuthProvider] State cleared after signout');
             break;
             
           case 'TOKEN_REFRESHED':
@@ -80,15 +97,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error) {
+        console.error('[AuthProvider] Error getting session:', error);
         secureLog('error', 'Error getting session', error);
         toast.error('Authentication error occurred');
       }
+      console.log('[AuthProvider] Initial session check:', session?.user?.id || 'No session');
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log('[AuthProvider] Cleaning up auth subscription');
+      subscription.unsubscribe();
+    };
   }, []);
 
   const value = {
