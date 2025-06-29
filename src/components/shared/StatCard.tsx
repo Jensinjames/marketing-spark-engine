@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { LucideIcon, TrendingUp, TrendingDown } from "lucide-react";
 
@@ -12,7 +13,7 @@ interface StatCardProps {
   loading?: boolean;
 }
 
-const StatCard = ({ 
+const StatCard = React.memo(({ 
   title, 
   value, 
   change, 
@@ -81,6 +82,8 @@ const StatCard = ({
       </CardContent>
     </Card>
   );
-};
+});
+
+StatCard.displayName = 'StatCard';
 
 export default StatCard;

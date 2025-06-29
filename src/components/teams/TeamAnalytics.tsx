@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { TeamAdminData } from "@/hooks/useTeamMembersWithCredits";
@@ -9,41 +10,46 @@ interface TeamAnalyticsProps {
   teamData: TeamAdminData;
 }
 
-export const TeamAnalytics = ({ teamData }: TeamAnalyticsProps) => {
+export const TeamAnalytics = React.memo(({ teamData }: TeamAnalyticsProps) => {
   const { members, statistics } = teamData;
 
-  // Credit usage by member
-  const creditUsageData = members.map(member => ({
-    name: member.name.split(' ')[0],
-    used: member.credits.credits_used,
-    remaining: member.credits.credits_remaining,
-    limit: member.credits.monthly_limit
-  }));
+  // Memoize expensive calculations
+  const creditUsageData = React.useMemo(() => 
+    members.map(member => ({
+      name: member.name.split(' ')[0],
+      used: member.credits.credits_used,
+      remaining: member.credits.credits_remaining,
+      limit: member.credits.monthly_limit
+    })), [members]
+  );
 
-  // Role distribution
-  const roleDistribution = members.reduce((acc: any[], member) => {
-    const existing = acc.find(item => item.role === member.role);
-    if (existing) {
-      existing.count += 1;
-    } else {
-      acc.push({ role: member.role, count: 1 });
-    }
-    return acc;
-  }, []);
+  const roleDistribution = React.useMemo(() => 
+    members.reduce((acc: any[], member) => {
+      const existing = acc.find(item => item.role === member.role);
+      if (existing) {
+        existing.count += 1;
+      } else {
+        acc.push({ role: member.role, count: 1 });
+      }
+      return acc;
+    }, []), [members]
+  );
 
   const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300'];
 
-  // Top credit users
-  const topUsers = [...members]
-    .sort((a, b) => b.credits.credits_used - a.credits.credits_used)
-    .slice(0, 5);
+  const topUsers = React.useMemo(() => 
+    [...members]
+      .sort((a, b) => b.credits.credits_used - a.credits.credits_used)
+      .slice(0, 5), [members]
+  );
 
-  // Usage efficiency
-  const avgUtilization = members.length > 0 
-    ? members.reduce((sum, member) => 
-        sum + (member.credits.credits_used / member.credits.monthly_limit * 100), 0
-      ) / members.length 
-    : 0;
+  const avgUtilization = React.useMemo(() => 
+    members.length > 0 
+      ? members.reduce((sum, member) => 
+          sum + (member.credits.credits_used / member.credits.monthly_limit * 100), 0
+        ) / members.length 
+      : 0, [members]
+  );
 
   return (
     <div className="space-y-6">
@@ -181,4 +187,6 @@ export const TeamAnalytics = ({ teamData }: TeamAnalyticsProps) => {
       </Card>
     </div>
   );
-};
+});
+
+TeamAnalytics.displayName = 'TeamAnalytics';

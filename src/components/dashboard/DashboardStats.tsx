@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Zap, Users, Clock } from "lucide-react";
@@ -8,8 +9,8 @@ interface DashboardStatsProps {
   assetsCount: number;
 }
 
-const DashboardStats = ({ credits, assetsCount }: DashboardStatsProps) => {
-  const statsData = [
+const DashboardStats = React.memo(({ credits, assetsCount }: DashboardStatsProps) => {
+  const statsData = React.useMemo(() => [
     {
       title: "Total Content Generated",
       value: assetsCount,
@@ -46,7 +47,7 @@ const DashboardStats = ({ credits, assetsCount }: DashboardStatsProps) => {
       bgColor: "bg-orange-50",
       borderColor: "border-orange-100"
     }
-  ];
+  ], [credits.used, assetsCount]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -79,6 +80,8 @@ const DashboardStats = ({ credits, assetsCount }: DashboardStatsProps) => {
       })}
     </div>
   );
-};
+});
+
+DashboardStats.displayName = 'DashboardStats';
 
 export default DashboardStats;

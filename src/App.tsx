@@ -17,7 +17,7 @@ import Billing from "./pages/Billing";
 import Integrations from "./pages/Integrations";
 import Teams from "./pages/Teams";
 import Settings from "./pages/Settings";
-import Admin from "./pages/Admin";
+import AdminSuspense from "./components/admin/AdminSuspense";
 import Pricing from "./pages/Pricing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -40,7 +40,7 @@ const App: React.FC = () => (
             <Route path="/integrations" element={<Integrations />} />
             <Route path="/teams" element={<Teams />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin" element={<AdminSuspense />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />

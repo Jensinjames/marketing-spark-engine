@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Users, Search, Plus, Settings, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import AdminTableRow from './AdminTableRow';
 
 export const TeamsManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -34,6 +35,7 @@ export const TeamsManagement = () => {
       if (error) throw error;
       return data;
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const deleteTeamMutation = useMutation({
@@ -67,6 +69,15 @@ export const TeamsManagement = () => {
     team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     team.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleEditTeam = (teamId: string) => {
+    // Navigate to team details - we'll implement this later
+    console.log('View team details:', teamId);
+  };
+
+  const handleDeleteTeam = (teamId: string) => {
+    deleteTeamMutation.mutate(teamId);
+  };
 
   if (isLoading) {
     return (
@@ -124,45 +135,17 @@ export const TeamsManagement = () => {
             </TableHeader>
             <TableBody>
               {filteredTeams?.map((team) => (
-                <TableRow key={team.id}>
-                  <TableCell className="font-medium">{team.name}</TableCell>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium">{team.profiles?.full_name || 'Unknown'}</div>
-                      <div className="text-sm text-gray-500">{team.profiles?.email}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">
-                      {Array.isArray(team.team_members) ? team.team_members.length : 0} members
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {new Date(team.created_at).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          // Navigate to team details - we'll implement this later
-                          console.log('View team details:', team.id);
-                        }}
-                      >
-                        <Settings className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => deleteTeamMutation.mutate(team.id)}
-                        disabled={deleteTeamMutation.isPending}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
+                <AdminTableRow
+                  key={team.id}
+                  id={team.id}
+                  name={team.name}
+                  owner={team.profiles}
+                  memberCount={Array.isArray(team.team_members) ? team.team_members.length : 0}
+                  createdAt={team.created_at}
+                  onEdit={handleEditTeam}
+                  onDelete={handleDeleteTeam}
+                  deleteLoading={deleteTeamMutation.isPending}
+                />
               ))}
             </TableBody>
           </Table>
