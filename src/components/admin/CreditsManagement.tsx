@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -66,30 +65,20 @@ export const CreditsManagement = () => {
 
   const resetCreditsMutation = useMutation({
     mutationFn: async (userId: string) => {
-      const { error } = await supabase
-        .from('user_credits')
-        .update({ 
-          credits_used: 0,
-          reset_at: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).toISOString()
-        })
-        .eq('user_id', userId);
+      const { data, error } = await supabase.functions.invoke('reset-user-credits', {
+        body: { userId }
+      });
 
       if (error) throw error;
-
-      // Log the admin action
-      await supabase.rpc('audit_sensitive_operation', {
-        p_action: 'admin_reset_credits',
-        p_table_name: 'user_credits',
-        p_record_id: userId,
-        p_new_values: { credits_used: 0, reset_at: new Date().toISOString() }
-      });
+      return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['admin-credits'] });
-      toast.success('Credits reset successfully');
+      toast.success(data?.message || 'Credits reset successfully');
     },
-    onError: (error) => {
-      toast.error('Failed to reset credits');
+    onError: (error: any) => {
+      const errorMessage = error?.message || 'Failed to reset credits';
+      toast.error(errorMessage);
       console.error('Reset credits error:', error);
     },
   });
@@ -112,6 +101,12 @@ export const CreditsManagement = () => {
       userId: editingCredit.user_id, 
       newMonthlyLimit: limit 
     });
+  };
+
+  const handleResetCredits = (userId: string, userName: string) => {
+    if (confirm(`Are you sure you want to reset credits for ${userName}? This will set their used credits to 0 and update their reset date.`)) {
+      resetCreditsMutation.mutate(userId);
+    }
   };
 
   if (isLoading) {
@@ -219,6 +214,7 @@ export const CreditsManagement = () => {
                               setEditingCredit(credit);
                               setNewLimit(credit.monthly_limit.toString());
                             }}
+                            title="Edit credit limit"
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
@@ -239,6 +235,8 @@ export const CreditsManagement = () => {
                                 value={newLimit}
                                 onChange={(e) => setNewLimit(e.target.value)}
                                 placeholder="Enter new limit"
+                                min="0"
+                                max="10000"
                               />
                             </div>
                             <div className="flex justify-end space-x-2">
@@ -255,7 +253,7 @@ export const CreditsManagement = () => {
                                 onClick={handleUpdateCredits}
                                 disabled={updateCreditsMutation.isPending}
                               >
-                                Update Limit
+                                {updateCreditsMutation.isPending ? 'Updating...' : 'Update Limit'}
                               </Button>
                             </div>
                           </div>
@@ -265,10 +263,14 @@ export const CreditsManagement = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => resetCreditsMutation.mutate(credit.user_id)}
+                        onClick={() => handleResetCredits(
+                          credit.user_id, 
+                          credit.profiles?.full_name || credit.profiles?.email || 'Unknown User'
+                        )}
                         disabled={resetCreditsMutation.isPending}
+                        title="Reset credits to 0"
                       >
-                        <RefreshCw className="h-4 w-4" />
+                        <RefreshCw className={`h-4 w-4 ${resetCreditsMutation.isPending ? 'animate-spin' : ''}`} />
                       </Button>
                     </div>
                   </TableCell>
