@@ -1,3 +1,5 @@
+
+import React, { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import AuthGuard from "@/components/AuthGuard";
 import Layout from "@/components/layout/Layout";
@@ -12,7 +14,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Users, UserPlus, Crown, Mail, CreditCard, TrendingUp, BarChart3, Settings2 } from "lucide-react";
-import { useState } from "react";
 import { toast } from "sonner";
 import { MemberManagementDialog } from "@/components/teams/MemberManagementDialog";
 import { TeamAnalytics } from "@/components/teams/TeamAnalytics";
