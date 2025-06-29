@@ -13,13 +13,12 @@ import {
   Users,
   Puzzle
 } from "lucide-react";
-import { useAuthMutations } from "@/hooks/useAuthMutations";
 import { useUserPlan } from "@/hooks/useUserPlanQuery";
+import LogoutButton from "@/components/auth/LogoutButton";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const { signOut } = useAuthMutations();
   const { plan } = useUserPlan();
 
   const navigation = [
@@ -39,20 +38,6 @@ const Sidebar = () => {
     if (requiredPlan.length === 0) return true;
     if (!plan) return false;
     return requiredPlan.includes(plan.planType);
-  };
-
-  const handleLogout = async () => {
-    console.log('[Sidebar] Logout button clicked');
-    setIsOpen(false);
-    
-    try {
-      await signOut.mutateAsync();
-      console.log('[Sidebar] Logout completed successfully');
-    } catch (error) {
-      console.error('[Sidebar] Logout failed:', error);
-      // Even if mutation fails, try to force logout
-      window.location.href = '/';
-    }
   };
 
   return (
@@ -137,17 +122,13 @@ const Sidebar = () => {
             })}
           </nav>
 
-          {/* User section */}
+          {/* User section with LogoutButton */}
           <div className="border-t border-gray-200 p-4">
-            <Button
+            <LogoutButton 
               variant="ghost"
-              onClick={handleLogout}
-              disabled={signOut.isPending}
-              className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-            >
-              <Settings className="h-4 w-4 mr-3" aria-hidden="true" />
-              {signOut.isPending ? 'Logging out...' : 'Logout'}
-            </Button>
+              showConfirmation={true}
+              className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+            />
           </div>
         </div>
       </aside>
