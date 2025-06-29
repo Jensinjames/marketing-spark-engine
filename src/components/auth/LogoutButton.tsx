@@ -1,47 +1,43 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { LogOut, Loader2 } from 'lucide-react';
 import { useAuthMutations } from '@/hooks/useAuthMutations';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle, 
+  AlertDialogTrigger 
 } from '@/components/ui/alert-dialog';
 
-interface LogoutButtonProps {
-  variant?: 'default' | 'ghost' | 'outline';
-  size?: 'sm' | 'default' | 'lg';
+export const LogoutButton = ({ 
+  variant = 'ghost', 
+  size = 'default', 
+  showConfirmation = false,
+  className = '',
+  children,
+  ...props 
+}: {
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
   showConfirmation?: boolean;
   className?: string;
-}
-
-export const LogoutButton: React.FC<LogoutButtonProps> = ({
-  variant = 'ghost',
-  size = 'default',
-  showConfirmation = false,
-  className = ''
+  children?: React.ReactNode;
+  [key: string]: any;
 }) => {
   const { signOut } = useAuthMutations();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
-    console.log('[LogoutButton] Logout initiated by user');
-    setIsLoggingOut(true);
-    
+    console.log('[LogoutButton] Logout initiated');
     try {
       await signOut.mutateAsync();
       console.log('[LogoutButton] Logout completed successfully');
     } catch (error) {
       console.error('[LogoutButton] Logout failed:', error);
-      // The mutation handles error display and navigation
-    } finally {
-      setIsLoggingOut(false);
     }
   };
 
@@ -50,19 +46,19 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({
       variant={variant}
       size={size}
       onClick={showConfirmation ? undefined : handleLogout}
-      disabled={isLoggingOut || signOut.isPending}
-      className={`${className} focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2`}
-      aria-label="Sign out of your account"
+      disabled={signOut.isPending}
+      className={className}
+      {...props}
     >
-      {isLoggingOut || signOut.isPending ? (
+      {signOut.isPending ? (
         <>
-          <Loader2 className="h-4 w-4 mr-2 animate-spin" aria-hidden="true" />
+          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
           Signing out...
         </>
       ) : (
         <>
-          <LogOut className="h-4 w-4 mr-2" aria-hidden="true" />
-          Sign Out
+          <LogOut className="h-4 w-4 mr-2" />
+          {children || 'Logout'}
         </>
       )}
     </Button>
@@ -76,19 +72,19 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Sign Out</AlertDialogTitle>
+            <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to sign out? You'll need to sign in again to access your account.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
+            <AlertDialogAction 
               onClick={handleLogout}
-              disabled={isLoggingOut || signOut.isPending}
-              className="bg-red-600 hover:bg-red-700 focus:ring-red-500"
+              disabled={signOut.isPending}
+              className="bg-red-600 hover:bg-red-700"
             >
-              {isLoggingOut || signOut.isPending ? (
+              {signOut.isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Signing out...
@@ -105,5 +101,3 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({
 
   return <LogoutButtonContent />;
 };
-
-export default LogoutButton;
