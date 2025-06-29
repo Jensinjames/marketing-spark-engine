@@ -101,3 +101,5 @@ export const LogoutButton = ({
 
   return <LogoutButtonContent />;
 };
+
+export default LogoutButton
