@@ -9,6 +9,259 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      app_38b06dea2963452f9265ca4a0de19e02_audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          data: Json | null
+          id: string
+          ip_address: unknown | null
+          resource_id: string | null
+          resource_type: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          data?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          resource_id?: string | null
+          resource_type?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          data?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          resource_id?: string | null
+          resource_type?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      app_38b06dea2963452f9265ca4a0de19e02_generated_content: {
+        Row: {
+          created_at: string
+          credits_used: number | null
+          id: string
+          output: Json
+          prompt: string
+          team_id: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          output: Json
+          prompt: string
+          team_id?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          output?: Json
+          prompt?: string
+          team_id?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "app_38b06dea2963452f9265ca4a0de19e02_generated_con_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "app_38b06dea2963452f9265ca4a0de19e02_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      app_38b06dea2963452f9265ca4a0de19e02_integration_tokens: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          provider: string
+          refresh_token_encrypted: string | null
+          scopes: string[] | null
+          token_encrypted: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          provider: string
+          refresh_token_encrypted?: string | null
+          scopes?: string[] | null
+          token_encrypted: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          provider?: string
+          refresh_token_encrypted?: string | null
+          scopes?: string[] | null
+          token_encrypted?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      app_38b06dea2963452f9265ca4a0de19e02_team_members: {
+        Row: {
+          created_at: string
+          id: string
+          invited_at: string | null
+          invited_email: string | null
+          joined_at: string | null
+          role: string | null
+          status: string | null
+          team_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          invited_at?: string | null
+          invited_email?: string | null
+          joined_at?: string | null
+          role?: string | null
+          status?: string | null
+          team_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          invited_at?: string | null
+          invited_email?: string | null
+          joined_at?: string | null
+          role?: string | null
+          status?: string | null
+          team_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "app_38b06dea2963452f9265ca4a0de19e02_team_members_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "app_38b06dea2963452f9265ca4a0de19e02_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      app_38b06dea2963452f9265ca4a0de19e02_teams: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      app_38b06dea2963452f9265ca4a0de19e02_user_credits: {
+        Row: {
+          created_at: string
+          credits_used: number | null
+          id: string
+          monthly_limit: number | null
+          reset_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          monthly_limit?: number | null
+          reset_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          monthly_limit?: number | null
+          reset_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      app_38b06dea2963452f9265ca4a0de19e02_user_plans: {
+        Row: {
+          created_at: string
+          credits: number | null
+          id: string
+          plan: string | null
+          seat_count: number | null
+          status: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits?: number | null
+          id?: string
+          plan?: string | null
+          seat_count?: number | null
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits?: number | null
+          id?: string
+          plan?: string | null
+          seat_count?: number | null
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
@@ -768,6 +1021,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_team_member_count: {
+        Args: { team_uuid: string }
+        Returns: number
+      }
       get_user_plan_info: {
         Args: { check_user_id?: string }
         Returns: {
@@ -786,6 +1043,14 @@ export type Database = {
           score: number
         }[]
       }
+      get_user_team_seats: {
+        Args: { user_uuid?: string }
+        Returns: number
+      }
+      has_team_plan: {
+        Args: { user_uuid?: string }
+        Returns: boolean
+      }
       is_admin_or_super: {
         Args: { user_id?: string }
         Returns: boolean
@@ -800,6 +1065,14 @@ export type Database = {
       }
       is_team_admin: {
         Args: { team_uuid: string; uid?: string }
+        Returns: boolean
+      }
+      is_team_member_direct: {
+        Args: { team_uuid: string; user_uuid?: string }
+        Returns: boolean
+      }
+      is_team_owner_direct: {
+        Args: { team_uuid: string; user_uuid?: string }
         Returns: boolean
       }
       log_team_activity: {
@@ -818,6 +1091,18 @@ export type Database = {
       reset_monthly_credits: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      test_team_members_rls_fix: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          test_name: string
+          status: string
+          details: string
+        }[]
+      }
+      test_team_policies: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
     }
     Enums: {
