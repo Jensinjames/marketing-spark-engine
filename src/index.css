@@ -6,93 +6,103 @@
 
 @layer base {
   :root {
-    --background: 248 250 252; /* #F8FAFC */
-    --foreground: 26 32 44; /* #1A202C */
+    --background: 248 250 252; /* #F8FAFC - rgb(248, 250, 252) */
+    --foreground: 15 23 42; /* #0F172A - rgb(15, 23, 42) */
 
-    --card: 255 255 255; /* #FFFFFF */
-    --card-foreground: 26 32 44; /* #1A202C */
+    --card: 255 255 255; /* #FFFFFF - rgb(255, 255, 255) */
+    --card-foreground: 15 23 42; /* #0F172A - rgb(15, 23, 42) */
 
-    --popover: 255 255 255; /* #FFFFFF */
-    --popover-foreground: 26 32 44; /* #1A202C */
+    --popover: 255 255 255; /* #FFFFFF - rgb(255, 255, 255) */
+    --popover-foreground: 15 23 42; /* #0F172A - rgb(15, 23, 42) */
 
-    --primary: 106 13 173; /* #6A0DAD */
-    --primary-foreground: 255 255 255; /* #FFFFFF */
+    --primary: 99 102 241; /* #6366F1 - rgb(99, 102, 241) */
+    --primary-foreground: 248 250 252; /* #F8FAFC - rgb(248, 250, 252) */
 
-    --secondary: 65 105 225; /* #4169E1 */
-    --secondary-foreground: 26 32 44; /* #1A202C */
+    --secondary: 59 130 246; /* #3B82F6 - rgb(59, 130, 246) */
+    --secondary-foreground: 248 250 252; /* #F8FAFC - rgb(248, 250, 252) */
 
-    --muted: 241 245 249; /* #F1F5F9 */
-    --muted-foreground: 100 116 139; /* #64748B */
+    --muted: 241 245 249; /* #F1F5F9 - rgb(241, 245, 249) */
+    --muted-foreground: 100 116 139; /* #64748B - rgb(100, 116, 139) */
 
-    --accent: 138 43 226; /* #8A2BE2 */
-    --accent-foreground: 26 32 44; /* #1A202C */
+    --accent: 129 140 248; /* #818CF8 - rgb(129, 140, 248) */
+    --accent-foreground: 15 23 42; /* #0F172A - rgb(15, 23, 42) */
 
-    --destructive: 239 68 68; /* #EF4444 */
-    --destructive-foreground: 255 255 255; /* #FFFFFF */
+    --destructive: 239 68 68; /* #EF4444 - rgb(239, 68, 68) */
+    --destructive-foreground: 248 250 252; /* #F8FAFC - rgb(248, 250, 252) */
 
-    --border: 226 232 240; /* #E2E8F0 */
-    --input: 226 232 240; /* #E2E8F0 */
-    --ring: 106 13 173; /* #6A0DAD */
+    --border: 226 232 240; /* #E2E8F0 - rgb(226, 232, 240) */
+    --input: 226 232 240; /* #E2E8F0 - rgb(226, 232, 240) */
+    --ring: 99 102 241; /* #6366F1 - rgb(99, 102, 241) */
 
-    --success: 34 197 94; /* #22C55E */
-    --warning: 245 158 11; /* #F59E0B */
-    --error: 239 68 68; /* #EF4444 */
-    --info: 59 130 246; /* #3B82F6 */
+    --success: 34 197 94; /* #22C55E - rgb(34, 197, 94) */
+    --warning: 245 158 11; /* #F59E0B - rgb(245, 158, 11) */
+    --error: 239 68 68; /* #EF4444 - rgb(239, 68, 68) */
+    --info: 59 130 246; /* #3B82F6 - rgb(59, 130, 246) */
 
     --radius: 0.5rem;
 
-    --sidebar-background: 248 250 252; /* #F8FAFC */
-    --sidebar-foreground: 100 116 139; /* #64748B */
-    --sidebar-primary: 26 32 44; /* #1A202C */
-    --sidebar-primary-foreground: 255 255 255; /* #FFFFFF */
-    --sidebar-accent: 241 245 249; /* #F1F5F9 */
-    --sidebar-accent-foreground: 26 32 44; /* #1A202C */
-    --sidebar-border: 226 232 240; /* #E2E8F0 */
-    --sidebar-ring: 106 13 173; /* #6A0DAD */
+    --sidebar-background: 248 250 252; /* #F8FAFC - rgb(248, 250, 252) */
+    --sidebar-foreground: 100 116 139; /* #64748B - rgb(100, 116, 139) */
+    --sidebar-primary: 15 23 42; /* #0F172A - rgb(15, 23, 42) */
+    --sidebar-primary-foreground: 248 250 252; /* #F8FAFC - rgb(248, 250, 252) */
+    --sidebar-accent: 241 245 249; /* #F1F5F9 - rgb(241, 245, 249) */
+    --sidebar-accent-foreground: 15 23 42; /* #0F172A - rgb(15, 23, 42) */
+    --sidebar-border: 226 232 240; /* #E2E8F0 - rgb(226, 232, 240) */
+    --sidebar-ring: 99 102 241; /* #6366F1 - rgb(99, 102, 241) */
   }
 
   .dark {
-    --background: 26 32 44; /* #1A202C */
-    --foreground: 226 232 240; /* #E2E8F0 */
+    /* Enhanced dark theme optimized for readability and reduced eye strain */
+    
+    /* Main backgrounds - using warmer, less harsh blacks */
+    --background: 16 20 24; /* #101418 - rgb(16, 20, 24) - Warm dark background */
+    --foreground: 226 232 240; /* #E2E8F0 - rgb(226, 232, 240) - High contrast text */
 
-    --card: 45 55 72; /* #2D3748 */
-    --card-foreground: 226 232 240; /* #E2E8F0 */
+    /* Card and surface colors - subtle elevation with warm undertones */
+    --card: 24 30 36; /* #181E24 - rgb(24, 30, 36) - Elevated surface */
+    --card-foreground: 226 232 240; /* #E2E8F0 - rgb(226, 232, 240) - High contrast */
 
-    --popover: 45 55 72; /* #2D3748 */
-    --popover-foreground: 226 232 240; /* #E2E8F0 */
+    --popover: 28 35 42; /* #1C232A - rgb(28, 35, 42) - Slightly elevated */
+    --popover-foreground: 226 232 240; /* #E2E8F0 - rgb(226, 232, 240) */
 
-    --primary: 123 104 238; /* #7B68EE */
-    --primary-foreground: 226 232 240; /* #E2E8F0 */
+    /* Primary colors - softer, less saturated for reduced eye strain */
+    --primary: 129 140 248; /* #818CF8 - rgb(129, 140, 248) - Softer indigo */
+    --primary-foreground: 16 20 24; /* #101418 - rgb(16, 20, 24) - Dark text on light */
 
-    --secondary: 90 125 204; /* #5A7DCC */
-    --secondary-foreground: 226 232 240; /* #E2E8F0 */
+    --secondary: 96 165 250; /* #60A5FA - rgb(96, 165, 250) - Softer blue */
+    --secondary-foreground: 16 20 24; /* #101418 - rgb(16, 20, 24) */
 
-    --muted: 74 85 104; /* #4A5568 */
-    --muted-foreground: 160 174 192; /* #A0AEC0 */
+    /* Muted colors - improved contrast while maintaining subtlety */
+    --muted: 39 48 58; /* #27303A - rgb(39, 48, 58) - Warmer muted background */
+    --muted-foreground: 156 163 175; /* #9CA3AF - rgb(156, 163, 175) - Better contrast */
 
-    --accent: 147 112 219; /* #9370DB */
-    --accent-foreground: 226 232 240; /* #E2E8F0 */
+    --accent: 45 55 72; /* #2D3748 - rgb(45, 55, 72) - Subtle accent background */
+    --accent-foreground: 203 213 225; /* #CBD5E1 - rgb(203, 213, 225) - Clear text */
 
-    --destructive: 220 38 38; /* #DC2626 */
-    --destructive-foreground: 226 232 240; /* #E2E8F0 */
+    /* Destructive colors - toned down for less harshness */
+    --destructive: 248 113 113; /* #F87171 - rgb(248, 113, 113) - Softer red */
+    --destructive-foreground: 16 20 24; /* #101418 - rgb(16, 20, 24) */
 
-    --border: 74 85 104; /* #4A5568 */
-    --input: 74 85 104; /* #4A5568 */
-    --ring: 123 104 238; /* #7B68EE */
+    /* Borders and inputs - subtle but visible */
+    --border: 51 65 85; /* #334155 - rgb(51, 65, 85) - Visible but not harsh */
+    --input: 51 65 85; /* #334155 - rgb(51, 65, 85) - Consistent with borders */
+    --ring: 129 140 248; /* #818CF8 - rgb(129, 140, 248) - Focus ring */
 
-    --success: 16 185 129; /* #10B981 */
-    --warning: 251 191 36; /* #FBBF24 */
-    --error: 220 38 38; /* #DC2626 */
-    --info: 37 99 235; /* #2563EB */
+    /* Status colors - optimized for dark backgrounds */
+    --success: 74 222 128; /* #4ADE80 - rgb(74, 222, 128) - Bright but not harsh green */
+    --warning: 251 191 36; /* #FBBF24 - rgb(251, 191, 36) - Warm amber */
+    --error: 248 113 113; /* #F87171 - rgb(248, 113, 113) - Softer red */
+    --info: 96 165 250; /* #60A5FA - rgb(96, 165, 250) - Gentle blue */
 
-    --sidebar-background: 26 32 44; /* #1A202C */
-    --sidebar-foreground: 160 174 192; /* #A0AEC0 */
-    --sidebar-primary: 123 104 238; /* #7B68EE */
-    --sidebar-primary-foreground: 226 232 240; /* #E2E8F0 */
-    --sidebar-accent: 45 55 72; /* #2D3748 */
-    --sidebar-accent-foreground: 226 232 240; /* #E2E8F0 */
-    --sidebar-border: 74 85 104; /* #4A5568 */
-    --sidebar-ring: 123 104 238; /* #7B68EE */
+    /* Sidebar colors - consistent with main theme */
+    --sidebar-background: 16 20 24; /* #101418 - rgb(16, 20, 24) */
+    --sidebar-foreground: 156 163 175; /* #9CA3AF - rgb(156, 163, 175) */
+    --sidebar-primary: 129 140 248; /* #818CF8 - rgb(129, 140, 248) */
+    --sidebar-primary-foreground: 16 20 24; /* #101418 - rgb(16, 20, 24) */
+    --sidebar-accent: 39 48 58; /* #27303A - rgb(39, 48, 58) */
+    --sidebar-accent-foreground: 203 213 225; /* #CBD5E1 - rgb(203, 213, 225) */
+    --sidebar-border: 51 65 85; /* #334155 - rgb(51, 65, 85) */
+    --sidebar-ring: 129 140 248; /* #818CF8 - rgb(129, 140, 248) */
   }
 }
 
@@ -106,6 +116,10 @@
 
   body {
     @apply bg-background text-foreground;
+    /* Improved font rendering for better readability */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   /* Smooth theme transitions */
@@ -121,28 +135,47 @@
     color-scheme: light;
   }
 
-  /* Custom scrollbar for dark theme */
+  /* Enhanced scrollbar styling for dark theme */
   .dark ::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
   }
 
   .dark ::-webkit-scrollbar-track {
     background: hsl(var(--muted));
-  }
-
-  .dark ::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted-foreground));
     border-radius: 4px;
   }
 
-  .dark ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--accent));
+  .dark ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.5);
+    border-radius: 4px;
+    border: 1px solid hsl(var(--muted));
   }
 
-  /* Focus styles for better accessibility */
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.7);
+  }
+
+  .dark ::-webkit-scrollbar-corner {
+    background: hsl(var(--muted));
+  }
+
+  /* Enhanced focus styles for better accessibility */
   :focus-visible {
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Improved button focus states */
+  .dark button:focus-visible {
+    box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));
+  }
+
+  /* Better text selection in dark mode */
+  .dark ::selection {
+    background: hsl(var(--primary) / 0.3);
+    color: hsl(var(--foreground));
   }
 
   /* Reduced motion support */
@@ -153,9 +186,52 @@
       transition-duration: 0.01ms !important;
     }
   }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .dark {
+      --foreground: 255 255 255; /* Pure white for maximum contrast */
+      --background: 0 0 0; /* Pure black for maximum contrast */
+      --border: 128 128 128; /* Mid-gray for better visibility */
+    }
+  }
+
+  /* Improved link styling for dark mode */
+  .dark a {
+    color: hsl(var(--primary));
+    text-decoration-color: hsl(var(--primary) / 0.3);
+  }
+
+  .dark a:hover {
+    color: hsl(var(--primary) / 0.8);
+    text-decoration-color: hsl(var(--primary) / 0.6);
+  }
+
+  /* Better form input styling in dark mode */
+  .dark input[type="text"],
+  .dark input[type="email"],
+  .dark input[type="password"],
+  .dark textarea {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+  }
+
+  .dark input[type="text"]:focus,
+  .dark input[type="email"]:focus,
+  .dark input[type="password"]:focus,
+  .dark textarea:focus {
+    border-color: hsl(var(--ring));
+    box-shadow: 0 0 0 1px hsl(var(--ring));
+  }
+
+  /* Improved placeholder text contrast */
+  .dark ::placeholder {
+    color: hsl(var(--muted-foreground) / 0.7);
+  }
 }
 
-/* Status color utilities */
+/* Enhanced status color utilities with better contrast */
 @layer utilities {
   .text-success {
     color: hsl(var(--success));
@@ -203,5 +279,31 @@
   
   .border-info {
     border-color: hsl(var(--info));
+  }
+
+  /* Dark mode specific utilities for better contrast */
+  .dark .text-success-dark {
+    color: hsl(74 222 128); /* #4ADE80 - Brighter green for dark backgrounds */
+  }
+  
+  .dark .text-warning-dark {
+    color: hsl(251 191 36); /* #FBBF24 - Warm amber for dark backgrounds */
+  }
+  
+  .dark .text-error-dark {
+    color: hsl(248 113 113); /* #F87171 - Softer red for dark backgrounds */
+  }
+  
+  .dark .text-info-dark {
+    color: hsl(96 165 250); /* #60A5FA - Gentle blue for dark backgrounds */
+  }
+
+  /* Improved card shadows for dark mode */
+  .dark .shadow-card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  .dark .shadow-card-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
   }
 }
