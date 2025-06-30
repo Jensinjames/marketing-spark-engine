@@ -14,6 +14,7 @@ import {
   Puzzle
 } from "lucide-react";
 import { useUserPlan } from "@/hooks/useUserPlanQuery";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import LogoutButton from "@/components/auth/LogoutButton";
 
 const Sidebar = () => {
@@ -48,7 +49,7 @@ const Sidebar = () => {
           variant="outline"
           size="icon"
           onClick={() => setIsOpen(!isOpen)}
-          className="bg-white shadow-md"
+          className="bg-background shadow-md"
           aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
         >
           {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -67,20 +68,23 @@ const Sidebar = () => {
       {/* Sidebar */}
       <aside 
         className={`
-          fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
+          fixed inset-y-0 left-0 z-50 w-64 bg-sidebar-background border-r border-sidebar-border transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
         aria-label="Main navigation"
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center px-6 py-8 border-b border-gray-200">
-            <div className="p-2.5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl shadow-lg">
-              <Zap className="h-7 w-7 text-white" />
+          <div className="flex items-center justify-between px-6 py-8 border-b border-sidebar-border">
+            <div className="flex items-center">
+              <div className="p-2.5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl shadow-lg">
+                <Zap className="h-7 w-7 text-white" />
+              </div>
+              <span className="ml-3 text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                AMAP
+              </span>
             </div>
-            <span className="ml-3 text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              AMAP
-            </span>
+            <ThemeToggle variant="ghost" size="sm" />
           </div>
 
           {/* Navigation */}
@@ -95,12 +99,12 @@ const Sidebar = () => {
                   to={hasAccess ? item.href : "#"}
                   onClick={() => hasAccess && setIsOpen(false)}
                   className={`
-                    flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2
+                    flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sidebar-ring focus:ring-offset-2
                     ${isActive(item.href)
-                      ? 'bg-purple-50 text-purple-700 border-r-2 border-purple-600'
+                      ? 'bg-sidebar-accent text-sidebar-primary border-r-2 border-sidebar-primary'
                       : hasAccess
-                        ? 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                        : 'text-gray-400 cursor-not-allowed'
+                        ? 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-primary'
+                        : 'text-muted-foreground cursor-not-allowed'
                     }
                     ${!hasAccess && 'opacity-50'}
                   `}
@@ -111,7 +115,7 @@ const Sidebar = () => {
                   {item.name}
                   {!hasAccess && item.requiredPlan.length > 0 && (
                     <>
-                      <div className="ml-auto w-2 h-2 bg-orange-400 rounded-full" aria-hidden="true" />
+                      <div className="ml-auto w-2 h-2 bg-warning rounded-full" aria-hidden="true" />
                       <span id={`${item.name}-upgrade-needed`} className="sr-only">
                         Requires {item.requiredPlan.join(' or ')} plan
                       </span>
@@ -123,11 +127,11 @@ const Sidebar = () => {
           </nav>
 
           {/* User section with LogoutButton */}
-          <div className="border-t border-gray-200 p-4">
+          <div className="border-t border-sidebar-border p-4">
             <LogoutButton 
               variant="ghost"
               showConfirmation={true}
-              className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              className="w-full justify-start text-sidebar-foreground hover:text-sidebar-primary hover:bg-sidebar-accent"
             />
           </div>
         </div>
