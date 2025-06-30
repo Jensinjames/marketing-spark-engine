@@ -44,7 +44,11 @@ export const queryClient = new QueryClient({
   },
 });
 
-// Handle session expiry by signing out and redirecting to login
+/**
+ * Handles user session expiration by signing out, clearing cached data, notifying the user, and redirecting to the login page.
+ *
+ * If an error occurs during sign-out, the user is still redirected to the login page.
+ */
 async function handleSessionExpired() {
   try {
     // Clear the session
