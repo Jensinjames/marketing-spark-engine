@@ -1,0 +1,279 @@
+/* LaunchClick Brand Color System */
+/* Comprehensive color scheme for light and dark themes */
+
+:root {
+  /* === PRIMARY BRAND ELEMENTS === */
+  
+  /* Rocket Gradient - Core brand identity */
+  --brand-gradient-start: 143 54 255; /* #8F36FF - rgb(143, 54, 255) */
+  --brand-gradient-end: 45 127 255; /* #2D7FFF - rgb(45, 127, 255) */
+  
+  /* Primary Blue - CTAs and interactive elements */
+  --brand-primary-blue: 34 109 255; /* #226DFF - rgb(34, 109, 255) */
+  --brand-primary-blue-hover: 28 87 204; /* #1C57CC - rgb(28, 87, 204) */
+  --brand-primary-blue-active: 22 69 163; /* #1645A3 - rgb(22, 69, 163) */
+  
+  /* Secondary Purple - Supporting interactive elements */
+  --brand-secondary-purple: 162 89 255; /* #A259FF - rgb(162, 89, 255) */
+  --brand-secondary-purple-hover: 130 71 204; /* #8247CC - rgb(130, 71, 204) */
+  --brand-secondary-purple-active: 98 53 153; /* #623599 - rgb(98, 53, 153) */
+  
+  /* === STATUS COLORS === */
+  --brand-success: 0 232 135; /* #00E887 - rgb(0, 232, 135) */
+  --brand-warning: 255 214 0; /* #FFD600 - rgb(255, 214, 0) */
+  --brand-error: 255 71 71; /* #FF4747 - rgb(255, 71, 71) */
+  
+  /* === LIGHT THEME COLORS === */
+  --light-background: 249 250 251; /* #F9FAFB - rgb(249, 250, 251) */
+  --light-surface: 255 255 255; /* #FFFFFF - rgb(255, 255, 255) */
+  --light-surface-elevated: 248 250 252; /* #F8FAFC - rgb(248, 250, 252) */
+  
+  --light-text-primary: 17 24 39; /* #111827 - rgb(17, 24, 39) */
+  --light-text-secondary: 55 65 81; /* #374151 - rgb(55, 65, 81) */
+  --light-text-tertiary: 107 114 128; /* #6B7280 - rgb(107, 114, 128) */
+  
+  --light-border: 229 231 235; /* #E5E7EB - rgb(229, 231, 235) */
+  --light-border-strong: 209 213 219; /* #D1D5DB - rgb(209, 213, 219) */
+  
+  /* === DARK THEME COLORS === */
+  --dark-background: 14 17 23; /* #0E1117 - rgb(14, 17, 23) */
+  --dark-surface: 26 30 36; /* #1A1E24 - rgb(26, 30, 36) */
+  --dark-surface-elevated: 31 37 45; /* #1F252D - rgb(31, 37, 45) */
+  
+  --dark-text-primary: 243 244 246; /* #F3F4F6 - rgb(243, 244, 246) */
+  --dark-text-secondary: 229 231 235; /* #E5E7EB - rgb(229, 231, 235) */
+  --dark-text-tertiary: 156 163 175; /* #9CA3AF - rgb(156, 163, 175) */
+  
+  --dark-border: 55 65 81; /* #374151 - rgb(55, 65, 81) */
+  --dark-border-strong: 75 85 99; /* #4B5563 - rgb(75, 85, 99) */
+}
+
+/* === LIGHT THEME IMPLEMENTATION === */
+.light {
+  /* Backgrounds */
+  --background: var(--light-background);
+  --surface: var(--light-surface);
+  --surface-elevated: var(--light-surface-elevated);
+  
+  /* Typography */
+  --text-primary: var(--light-text-primary);
+  --text-secondary: var(--light-text-secondary);
+  --text-tertiary: var(--light-text-tertiary);
+  
+  /* Borders */
+  --border: var(--light-border);
+  --border-strong: var(--light-border-strong);
+  
+  /* Interactive Elements */
+  --primary: var(--brand-primary-blue);
+  --primary-hover: var(--brand-primary-blue-hover);
+  --primary-active: var(--brand-primary-blue-active);
+  --primary-foreground: 255 255 255; /* White text on blue */
+  
+  --secondary: var(--brand-secondary-purple);
+  --secondary-hover: var(--brand-secondary-purple-hover);
+  --secondary-active: var(--brand-secondary-purple-active);
+  --secondary-foreground: 255 255 255; /* White text on purple */
+  
+  /* Focus and selection */
+  --focus-ring: var(--brand-primary-blue);
+  --selection-bg: var(--brand-primary-blue);
+  --selection-text: 255 255 255;
+}
+
+/* === DARK THEME IMPLEMENTATION === */
+.dark {
+  /* Backgrounds */
+  --background: var(--dark-background);
+  --surface: var(--dark-surface);
+  --surface-elevated: var(--dark-surface-elevated);
+  
+  /* Typography */
+  --text-primary: var(--dark-text-primary);
+  --text-secondary: var(--dark-text-secondary);
+  --text-tertiary: var(--dark-text-tertiary);
+  
+  /* Borders */
+  --border: var(--dark-border);
+  --border-strong: var(--dark-border-strong);
+  
+  /* Interactive Elements - Adjusted for dark theme */
+  --primary: 54 109 255; /* #366DFF - Slightly brighter for dark bg */
+  --primary-hover: 74 129 255; /* #4A81FF - Lighter hover state */
+  --primary-active: 34 89 235; /* #2259EB - Darker active state */
+  --primary-foreground: 255 255 255; /* White text */
+  
+  --secondary: 182 109 255; /* #B66DFF - Brighter purple for dark bg */
+  --secondary-hover: 202 129 255; /* #CA81FF - Lighter hover */
+  --secondary-active: 162 89 235; /* #A259EB - Darker active */
+  --secondary-foreground: 255 255 255; /* White text */
+  
+  /* Focus and selection */
+  --focus-ring: 54 109 255; /* Brighter blue for visibility */
+  --selection-bg: 54 109 255;
+  --selection-text: 255 255 255;
+}
+
+/* === COMPONENT-SPECIFIC IMPLEMENTATIONS === */
+
+/* Buttons and CTAs */
+.btn-primary {
+  background: linear-gradient(135deg, rgb(var(--brand-gradient-start)), rgb(var(--brand-gradient-end)));
+  color: rgb(255 255 255);
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--brand-primary-blue), 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(var(--brand-primary-blue), 0.2);
+}
+
+.btn-secondary {
+  background: rgb(var(--secondary));
+  color: rgb(var(--secondary-foreground));
+  border: 1px solid rgb(var(--secondary));
+}
+
+.btn-secondary:hover {
+  background: rgb(var(--secondary-hover));
+  border-color: rgb(var(--secondary-hover));
+}
+
+.btn-outline {
+  background: transparent;
+  color: rgb(var(--primary));
+  border: 1px solid rgb(var(--primary));
+}
+
+.btn-outline:hover {
+  background: rgb(var(--primary));
+  color: rgb(var(--primary-foreground));
+}
+
+/* Form Elements */
+.form-input {
+  background: rgb(var(--surface));
+  border: 1px solid rgb(var(--border));
+  color: rgb(var(--text-primary));
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus {
+  border-color: rgb(var(--primary));
+  box-shadow: 0 0 0 3px rgba(var(--primary), 0.1);
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: rgb(var(--text-tertiary));
+}
+
+/* Navigation Items */
+.nav-item {
+  color: rgb(var(--text-secondary));
+  transition: color 0.2s ease;
+}
+
+.nav-item:hover {
+  color: rgb(var(--primary));
+}
+
+.nav-item.active {
+  color: rgb(var(--primary));
+  font-weight: 600;
+}
+
+/* Icons and Decorative Elements */
+.icon-primary {
+  color: rgb(var(--primary));
+}
+
+.icon-secondary {
+  color: rgb(var(--secondary));
+}
+
+.icon-gradient {
+  background: linear-gradient(135deg, rgb(var(--brand-gradient-start)), rgb(var(--brand-gradient-end)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Dividers and Borders */
+.divider {
+  border-color: rgb(var(--border));
+}
+
+.divider-strong {
+  border-color: rgb(var(--border-strong));
+}
+
+/* Status Colors */
+.status-success {
+  color: rgb(var(--brand-success));
+}
+
+.status-warning {
+  color: rgb(var(--brand-warning));
+}
+
+.status-error {
+  color: rgb(var(--brand-error));
+}
+
+.bg-status-success {
+  background: rgba(var(--brand-success), 0.1);
+  border: 1px solid rgba(var(--brand-success), 0.2);
+}
+
+.bg-status-warning {
+  background: rgba(var(--brand-warning), 0.1);
+  border: 1px solid rgba(var(--brand-warning), 0.2);
+}
+
+.bg-status-error {
+  background: rgba(var(--brand-error), 0.1);
+  border: 1px solid rgba(var(--brand-error), 0.2);
+}
+
+/* === ACCESSIBILITY ENHANCEMENTS === */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .light {
+    --text-primary: 0 0 0; /* Pure black */
+    --border: 128 128 128; /* Mid-gray for better visibility */
+  }
+  
+  .dark {
+    --text-primary: 255 255 255; /* Pure white */
+    --background: 0 0 0; /* Pure black */
+    --border: 128 128 128; /* Mid-gray */
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* Focus indicators for keyboard navigation */
+.focus-visible {
+  outline: 2px solid rgb(var(--focus-ring));
+  outline-offset: 2px;
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(var(--selection-bg), 0.3);
+  color: rgb(var(--selection-text));
+}
