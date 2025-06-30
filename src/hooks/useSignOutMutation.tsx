@@ -1,3 +1,4 @@
+
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -27,15 +28,25 @@ export const useSignOutMutation = () => {
         // Step 4: Sign out from Supabase with timeout
         console.log('[Logout] Calling Supabase signOut...');
         const signOutPromise = supabase.auth.signOut();
-        const timeoutPromise = new Promise((_, reject) => 
+        const timeoutPromise = new Promise<{ error: Error }>((_, reject) => 
           setTimeout(() => reject(new Error('Signout timeout after 10 seconds')), 10000)
         );
         
-        const { error } = await Promise.race([signOutPromise, timeoutPromise]);
+        let signOutResult;
+        try {
+          signOutResult = await Promise.race([signOutPromise, timeoutPromise]);
+        } catch (timeoutError) {
+          console.error('[Logout] Supabase signout timeout:', timeoutError);
+          await logSecurityEvent('signout_failed', { error: 'timeout' });
+          
+          // Don't throw error - continue with local cleanup
+          console.warn('[Logout] Continuing with local cleanup despite timeout');
+          signOutResult = { error: null };
+        }
         
-        if (error) {
-          console.error('[Logout] Supabase signout failed:', error);
-          await logSecurityEvent('signout_failed', { error: error.message });
+        if (signOutResult.error) {
+          console.error('[Logout] Supabase signout failed:', signOutResult.error);
+          await logSecurityEvent('signout_failed', { error: signOutResult.error.message });
           
           // Don't throw error - continue with local cleanup
           console.warn('[Logout] Continuing with local cleanup despite Supabase error');
