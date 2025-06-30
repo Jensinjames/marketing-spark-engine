@@ -71,7 +71,6 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 262 80% 50%;
-    --focus-ring: 262 80% 50%;
 
     --radius: 0.5rem;
     --radius-sm: 0.25rem;
@@ -229,7 +228,6 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 262 80% 60%;
-    --focus-ring: 262 80% 60%;
 
     /* Dark Mode Sidebar */
     --sidebar-background: 240 5.9% 10%;
@@ -372,7 +370,7 @@
 
   /* Focus Styles for Better Accessibility */
   .focus-visible {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 
   /* High Contrast Mode Support */
