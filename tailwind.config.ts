@@ -226,6 +226,10 @@ export default {
 				'bounce-subtle': {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(-2px)' }
+				},
+				'card-hover': {
+					'0%': { transform: 'translateY(0) scale(1)' },
+					'100%': { transform: 'translateY(-2px) scale(1.02)' }
 				}
 			},
 			animation: {
@@ -239,6 +243,7 @@ export default {
 				'slide-out-right': 'slide-out-right var(--duration-slow) var(--easing-out)',
 				'pulse-subtle': 'pulse-subtle 2s var(--easing-in-out) infinite',
 				'bounce-subtle': 'bounce-subtle 1s var(--easing-in-out) infinite',
+				'card-hover': 'card-hover var(--duration-normal) var(--easing-out)',
 				'enter': 'fade-in var(--duration-slow) var(--easing-out), scale-in var(--duration-normal) var(--easing-out)',
 				'exit': 'fade-out var(--duration-slow) var(--easing-out), scale-out var(--duration-normal) var(--easing-out)'
 			}
