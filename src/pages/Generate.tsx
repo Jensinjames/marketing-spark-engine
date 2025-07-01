@@ -5,13 +5,29 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Mail, Share2, FileText, PenTool, Megaphone, TrendingUp, Loader2 } from "lucide-react";
+import { Mail, Share2, FileText, PenTool, Megaphone, TrendingUp, Loader2, Sparkles } from "lucide-react";
 import AuthGuard from "@/components/AuthGuard";
 import Layout from "@/components/layout/Layout";
+import { TemplateSelector } from "@/components/templates/TemplateSelector";
+import type { Database } from '@/integrations/supabase/types';
+
+type ContentTemplate = Database['public']['Tables']['content_templates']['Row'];
+
+// Map frontend content type IDs to database enum values
+const contentTypeMapping: Record<string, Database['public']['Enums']['content_type']> = {
+  email: 'email_sequence',
+  social: 'social_post',
+  landing: 'landing_page',
+  blog: 'blog_post',
+  ad: 'ad_copy',
+  funnel: 'funnel'
+};
+
 const Generate = () => {
   const [selectedType, setSelectedType] = useState<string>("");
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<ContentTemplate | null>(null);
   const contentTypes = [{
     id: "email",
     title: "Email Campaign",
@@ -49,6 +65,15 @@ const Generate = () => {
     icon: TrendingUp,
     credits: 20
   }];
+  const handleTemplateSelect = (template: ContentTemplate) => {
+    setSelectedTemplate(template);
+    // Apply template data to the form
+    const templateData = template.template_data as any;
+    if (templateData?.prompt) {
+      setPrompt(templateData.prompt);
+    }
+  };
+
   const handleGenerate = async () => {
     if (!selectedType || !prompt.trim()) return;
     setIsGenerating(true);
@@ -119,6 +144,44 @@ const Generate = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  {/* Template Selection */}
+                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border">
+                    <div className="flex items-center gap-3">
+                      <Sparkles className="h-5 w-5 text-purple-600" />
+                      <div>
+                        <h3 className="font-medium text-gray-900">Start with a Template</h3>
+                        <p className="text-sm text-gray-600">Jump start your content with pre-made templates</p>
+                      </div>
+                    </div>
+                    <TemplateSelector 
+                      contentType={contentTypeMapping[selectedType]} 
+                      onTemplateSelect={handleTemplateSelect}
+                    >
+                      <Button variant="outline" className="flex items-center gap-2">
+                        <Sparkles className="h-4 w-4" />
+                        Browse Templates
+                      </Button>
+                    </TemplateSelector>
+                  </div>
+
+                  {selectedTemplate && (
+                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Sparkles className="h-4 w-4 text-green-600" />
+                        <span className="font-medium text-green-800">Template Applied: {selectedTemplate.name}</span>
+                      </div>
+                      <p className="text-sm text-green-700">{selectedTemplate.description}</p>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => setSelectedTemplate(null)}
+                        className="mt-2 text-green-700 hover:text-green-800"
+                      >
+                        Clear Template
+                      </Button>
+                    </div>
+                  )}
+
                   <form onSubmit={e => {
                 e.preventDefault();
                 handleGenerate();
