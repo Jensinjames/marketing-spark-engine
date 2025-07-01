@@ -578,6 +578,36 @@ export type Database = {
           },
         ]
       }
+      feature_usage_tracking: {
+        Row: {
+          feature_name: string
+          id: string
+          last_used_at: string | null
+          period_start: string | null
+          updated_at: string | null
+          usage_count: number | null
+          user_id: string
+        }
+        Insert: {
+          feature_name: string
+          id?: string
+          last_used_at?: string | null
+          period_start?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+          user_id: string
+        }
+        Update: {
+          feature_name?: string
+          id?: string
+          last_used_at?: string | null
+          period_start?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       generated_content: {
         Row: {
           content: Json
@@ -1084,6 +1114,15 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_feature_usage_with_limits: {
+        Args: { p_user_id: string; p_feature_name: string }
+        Returns: {
+          usage_count: number
+          feature_limit: number
+          remaining: number
+          period_start: string
+        }[]
+      }
       get_team_member_count: {
         Args: { team_uuid: string }
         Returns: number
@@ -1164,6 +1203,10 @@ export type Database = {
         Returns: undefined
       }
       reset_monthly_credits: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      reset_monthly_feature_usage: {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
