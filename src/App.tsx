@@ -21,6 +21,8 @@ import AdminSuspense from "./components/admin/AdminSuspense";
 import Pricing from "./pages/Pricing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import AcceptInvitation from "./pages/AcceptInvitation";
+import UnsubscribePage from "./pages/UnsubscribePage";
 import NotFound from "./pages/NotFound";
 
 const App: React.FC = () => (
@@ -45,6 +47,8 @@ const App: React.FC = () => (
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/accept-invitation" element={<AcceptInvitation />} />
+              <Route path="/unsubscribe" element={<UnsubscribePage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
