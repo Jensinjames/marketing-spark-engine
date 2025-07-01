@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useUserPlan } from "@/hooks/useUserPlanQuery";
 import LogoutButton from "@/components/auth/LogoutButton";
-import cn from "classnames";
+import { cn } from "@/lib/utils";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,7 +49,7 @@ const Sidebar = () => {
           variant="outline"
           size="icon"
           onClick={() => setIsOpen(!isOpen)}
-          className="bg-card shadow-md border-border hover:bg-surface-elevated"
+          className="bg-card shadow-md border-border hover:bg-accent"
           aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
         >
           {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -59,7 +59,7 @@ const Sidebar = () => {
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+          className="lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
           aria-hidden="true"
         />
@@ -67,19 +67,19 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <aside 
-        className={`
-          fixed inset-y-0 left-0 z-50 w-64 bg-sidebar-background border-r border-sidebar-border transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 shadow-lg
-          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        `}
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 w-64 bg-card/95 backdrop-blur-sm border-r border-border transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 shadow-xl",
+          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        )}
         aria-label="Main navigation"
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center px-6 py-8 border-b border-sidebar-border">
-            <div className="p-2.5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl shadow-lg">
-              <Zap className="h-7 w-7 text-white" />
+          <div className="flex items-center px-6 py-8 border-b border-border/50">
+            <div className="p-2.5 bg-gradient-to-r from-primary to-primary/80 rounded-xl shadow-lg">
+              <Zap className="h-7 w-7 text-primary-foreground" />
             </div>
-            <span className="ml-3 text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <span className="ml-3 text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
               AMAP
             </span>
           </div>
@@ -96,21 +96,21 @@ const Sidebar = () => {
                   to={hasAccess ? item.href : "#"}
                   onClick={() => hasAccess && setIsOpen(false)}
                   className={cn(
-                    "flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-sidebar-background",
+                    "flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background group",
                     isActive(item.href)
-                      ? "sidebar-item-active bg-primary/10 text-primary border-r-2 border-primary"
+                      ? "bg-primary/10 text-primary border-r-2 border-primary shadow-sm"
                       : hasAccess
-                        ? "sidebar-item-hover text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                        ? "text-foreground hover:bg-accent hover:text-accent-foreground hover:shadow-sm"
                         : "text-muted-foreground cursor-not-allowed opacity-50"
                   )}
                   aria-current={isActive(item.href) ? 'page' : undefined}
                   aria-describedby={!hasAccess && item.requiredPlan.length > 0 ? `${item.name}-upgrade-needed` : undefined}
                 >
-                  <Icon className="h-5 w-5 mr-3" aria-hidden="true" />
+                  <Icon className="h-5 w-5 mr-3 transition-colors" aria-hidden="true" />
                   {item.name}
                   {!hasAccess && item.requiredPlan.length > 0 && (
                     <>
-                      <div className="ml-auto w-2 h-2 bg-warning rounded-full shadow-sm" aria-hidden="true" />
+                      <div className="ml-auto w-2 h-2 bg-orange-500 rounded-full shadow-sm animate-pulse" aria-hidden="true" />
                       <span id={`${item.name}-upgrade-needed`} className="sr-only">
                         Requires {item.requiredPlan.join(' or ')} plan
                       </span>
@@ -122,11 +122,11 @@ const Sidebar = () => {
           </nav>
 
           {/* User section with LogoutButton */}
-          <div className="border-t border-sidebar-border p-4">
+          <div className="border-t border-border/50 p-4">
             <LogoutButton 
               variant="ghost"
               showConfirmation={true}
-              className="w-full justify-start text-sidebar-foreground hover:text-sidebar-accent-foreground hover:bg-sidebar-accent"
+              className="w-full justify-start text-foreground hover:text-accent-foreground hover:bg-accent"
             />
           </div>
         </div>
