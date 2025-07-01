@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { render, RenderOptions, screen } from '@testing-library/react';
+import { render, RenderOptions } from '@testing-library/react';
+import { screen } from '@testing-library/dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { ErrorBoundaryProvider } from '@/components/shared/ErrorBoundaryProvider';
