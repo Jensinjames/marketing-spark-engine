@@ -21,40 +21,7 @@ export interface LogoutButtonProps {
   showConfirmation?: boolean;
   className?: string;
   children?: React.ReactNode;
-  [key: string]: any;
 }
-
-// Forward ref component for the button content
-const LogoutButtonContent = React.forwardRef<HTMLButtonElement, LogoutButtonProps>(
-  ({ variant = 'ghost', size = 'default', className = '', children, signOut, ...props }, ref) => {
-    console.log('[LogoutButtonContent] Rendering button, isPending:', signOut?.isPending);
-    
-    return (
-      <Button
-        ref={ref}
-        variant={variant}
-        size={size}
-        disabled={signOut?.isPending}
-        className={className}
-        {...props}
-      >
-        {signOut?.isPending ? (
-          <>
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            Signing out...
-          </>
-        ) : (
-          <>
-            <LogOut className="h-4 w-4 mr-2" />
-            {children || 'Logout'}
-          </>
-        )}
-      </Button>
-    );
-  }
-);
-
-LogoutButtonContent.displayName = 'LogoutButtonContent';
 
 export const LogoutButton = ({ 
   variant = 'ghost', 
@@ -66,7 +33,7 @@ export const LogoutButton = ({
 }: LogoutButtonProps) => {
   const { signOut } = useAuthMutations();
 
-  const handleLogout = async () => {
+  const handleDirectLogout = async () => {
     console.log('[LogoutButton] Direct logout initiated');
     
     try {
@@ -74,7 +41,6 @@ export const LogoutButton = ({
       console.log('[LogoutButton] Direct logout completed successfully');
     } catch (error) {
       console.error('[LogoutButton] Direct logout failed:', error);
-      // The mutation already handles error display, so we don't need to show another toast
     }
   };
 
@@ -86,25 +52,37 @@ export const LogoutButton = ({
       console.log('[LogoutButton] Confirmed logout completed successfully');
     } catch (error) {
       console.error('[LogoutButton] Confirmed logout failed:', error);
-      // The mutation already handles error display
     }
   };
+
+  // Button content component
+  const ButtonContent = ({ onClick }: { onClick?: () => void }) => (
+    <Button
+      variant={variant}
+      size={size}
+      disabled={signOut.isPending}
+      className={className}
+      onClick={onClick}
+      {...props}
+    >
+      {signOut.isPending ? (
+        <>
+          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          Signing out...
+        </>
+      ) : (
+        <>
+          <LogOut className="h-4 w-4 mr-2" />
+          {children || 'Logout'}
+        </>
+      )}
+    </Button>
+  );
 
   // For non-confirmation mode, use the button directly
   if (!showConfirmation) {
     console.log('[LogoutButton] Rendering direct logout button');
-    return (
-      <LogoutButtonContent
-        variant={variant}
-        size={size}
-        className={className}
-        signOut={signOut}
-        onClick={handleLogout}
-        {...props}
-      >
-        {children}
-      </LogoutButtonContent>
-    );
+    return <ButtonContent onClick={handleDirectLogout} />;
   }
 
   // For confirmation mode, wrap with AlertDialog
@@ -112,15 +90,7 @@ export const LogoutButton = ({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <LogoutButtonContent
-          variant={variant}
-          size={size}
-          className={className}
-          signOut={signOut}
-          {...props}
-        >
-          {children}
-        </LogoutButtonContent>
+        <ButtonContent />
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

@@ -126,13 +126,11 @@ const Sidebar = () => {
 
           {/* User section with LogoutButton */}
           <div className="border-t border-border/50 p-4">
-            <div onClick={() => console.log('[Sidebar] Logout button area clicked')}>
-              <LogoutButton 
-                variant="ghost"
-                showConfirmation={true}
-                className="w-full justify-start text-foreground hover:text-accent-foreground hover:bg-accent"
-              />
-            </div>
+            <LogoutButton 
+              variant="ghost"
+              showConfirmation={true}
+              className="w-full justify-start text-foreground hover:text-accent-foreground hover:bg-accent"
+            />
           </div>
         </div>
       </aside>
