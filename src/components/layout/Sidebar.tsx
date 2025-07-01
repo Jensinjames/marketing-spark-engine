@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,8 @@ const Sidebar = () => {
     if (!plan) return false;
     return requiredPlan.includes(plan.planType);
   };
+
+  console.log('[Sidebar] Rendering sidebar, current location:', location.pathname);
 
   return (
     <>
@@ -123,11 +126,13 @@ const Sidebar = () => {
 
           {/* User section with LogoutButton */}
           <div className="border-t border-border/50 p-4">
-            <LogoutButton 
-              variant="ghost"
-              showConfirmation={true}
-              className="w-full justify-start text-foreground hover:text-accent-foreground hover:bg-accent"
-            />
+            <div onClick={() => console.log('[Sidebar] Logout button area clicked')}>
+              <LogoutButton 
+                variant="ghost"
+                showConfirmation={true}
+                className="w-full justify-start text-foreground hover:text-accent-foreground hover:bg-accent"
+              />
+            </div>
           </div>
         </div>
       </aside>
