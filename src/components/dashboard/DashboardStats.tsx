@@ -61,7 +61,7 @@ const DashboardStats = React.memo(({
             <CardContent className="pt-0">
               <div className="flex items-end justify-between">
                 <div>
-                  <div className="text-3xl font-bold text-gray-900 mb-1">
+                  <div className="text-3xl font-bold text-gray-900 mb-1 rounded-sm bg-transparent">
                     {stat.value}
                   </div>
                   <div className="text-sm text-green-600 font-medium">

@@ -29,7 +29,7 @@ const AssetGeneratorGrid = () => {
   }];
   return <div className="mb-12">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Quick Actions</h2>
+        <h2 className="text-2xl font-bold text-zinc-50">Quick Actions</h2>
         <Button variant="ghost" className="text-purple-600 hover:text-purple-700 font-medium">
           View all options →
         </Button>
