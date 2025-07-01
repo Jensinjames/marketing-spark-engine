@@ -5,10 +5,10 @@ interface LayoutProps {
 const Layout = ({
   children
 }: LayoutProps) => {
-  return <div className="min-h-screen flex bg-inherit px-0">
+  return <div className="min-h-screen flex bg-inherit py-0 px-[13px] my-0 rounded-full">
       <Sidebar />
       <div className="flex-1 lg:ml-64">
-        <main className="p-6 lg:p-8 my-0 mx-0 py-[31px] px-[32px] rounded-md">
+        <main className="p-6 lg:p-8 my-0 mx-0 px-[32px] rounded-md py-[193px]">
           {children}
         </main>
       </div>
