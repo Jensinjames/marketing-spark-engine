@@ -79,13 +79,13 @@ const IntegrationCard = ({
           </div>
         </div>
         
-        <h3 id={`integration-${integration.id}-name`} className="font-semibold mb-1 text-white">
+        <h3 id={`integration-${integration.id}-name`} className="font-semibold mb-1 text-zinc-900">
           {integration.name}
         </h3>
-        <p aria-label={`Category: ${integration.category}`} className="text-xs mb-3 text-slate-50">
+        <p aria-label={`Category: ${integration.category}`} className="text-xs mb-3 text-gray-800">
           {integration.category}
         </p>
-        <p id={`integration-${integration.id}-description`} className="text-sm mb-6 text-zinc-50">
+        <p id={`integration-${integration.id}-description`} className="text-sm mb-6 text-zinc-800">
           {integration.description}
         </p>
         
