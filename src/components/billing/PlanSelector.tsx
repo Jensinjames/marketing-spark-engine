@@ -56,7 +56,7 @@ const PlanSelector = () => {
               <CardTitle className="text-lg">{plan.name}</CardTitle>
               <div className="text-3xl font-bold">
                 ${isYearly ? plan.yearly : plan.monthly}
-                <span className="text-base font-normal text-gray-600">
+                <span className="text-base font-normal text-gray-50">
                   /{isYearly ? "year" : "month"}
                 </span>
               </div>
