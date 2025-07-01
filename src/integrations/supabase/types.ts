@@ -930,6 +930,44 @@ export type Database = {
           },
         ]
       }
+      template_assets: {
+        Row: {
+          asset_data: Json
+          asset_type: Database["public"]["Enums"]["asset_type"]
+          created_at: string
+          id: string
+          position: number
+          template_id: string
+          updated_at: string
+        }
+        Insert: {
+          asset_data: Json
+          asset_type: Database["public"]["Enums"]["asset_type"]
+          created_at?: string
+          id?: string
+          position?: number
+          template_id: string
+          updated_at?: string
+        }
+        Update: {
+          asset_data?: Json
+          asset_type?: Database["public"]["Enums"]["asset_type"]
+          created_at?: string
+          id?: string
+          position?: number
+          template_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_assets_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "content_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_activity_log: {
         Row: {
           action: string
@@ -1262,6 +1300,7 @@ export type Database = {
       }
     }
     Enums: {
+      asset_type: "text" | "image" | "code" | "logic" | "other"
       collaboration_permission: "view" | "edit" | "admin"
       collaboration_status: "pending" | "accepted" | "declined"
       content_type:
@@ -1397,6 +1436,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      asset_type: ["text", "image", "code", "logic", "other"],
       collaboration_permission: ["view", "edit", "admin"],
       collaboration_status: ["pending", "accepted", "declined"],
       content_type: [
