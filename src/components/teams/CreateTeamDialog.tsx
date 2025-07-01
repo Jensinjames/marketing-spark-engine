@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,7 @@ export const CreateTeamDialog = ({ trigger, onSuccess }: CreateTeamDialogProps) 
   });
   
   const createTeam = useCreateTeam();
-  const { canManageTeams, plan: userPlan } = useUserPlan();
+  const { plan: userPlan, canManageTeams } = useUserPlan();
 
   const canCreateTeam = canManageTeams() && 
     userPlan?.planType && 
