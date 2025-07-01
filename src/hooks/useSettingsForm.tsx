@@ -4,6 +4,18 @@ import { useAuth } from '@/hooks/useAuth';
 import { SettingsService, UserSettings, NotificationSettings, PrivacySettings } from '@/services/settingsService';
 import { toast } from 'sonner';
 
+// Type guards for JSONB data validation
+const isObject = (value: any): value is Record<string, any> => {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+};
+
+const getObjectProperty = (obj: any, key: string, defaultValue: any = null) => {
+  if (isObject(obj) && key in obj) {
+    return obj[key];
+  }
+  return defaultValue;
+};
+
 export const useSettingsForm = () => {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -56,24 +68,24 @@ export const useSettingsForm = () => {
           }));
         }
 
-        // Update notification preferences
+        // Update notification preferences with proper type checking
         if (settings.preferences?.email_notifications) {
           const emailNotifs = settings.preferences.email_notifications;
           setNotifications({
-            emailUpdates: emailNotifs.content_ready ?? true,
-            creditAlerts: emailNotifs.credit_alerts ?? true,
-            weeklyReport: emailNotifs.weekly_summary ?? false,
-            marketingEmails: emailNotifs.marketing ?? false
+            emailUpdates: getObjectProperty(emailNotifs, 'content_ready', true),
+            creditAlerts: getObjectProperty(emailNotifs, 'credit_alerts', true),
+            weeklyReport: getObjectProperty(emailNotifs, 'weekly_summary', false),
+            marketingEmails: getObjectProperty(emailNotifs, 'marketing', false)
           });
         }
 
-        // Update privacy settings
+        // Update privacy settings with proper type checking
         if (settings.preferences?.default_content_settings) {
           const contentSettings = settings.preferences.default_content_settings;
           setPrivacy({
-            profileVisible: contentSettings.profile_visible ?? true,
-            analyticsSharing: contentSettings.analytics_sharing ?? false,
-            dataExport: contentSettings.data_export_enabled ?? true
+            profileVisible: getObjectProperty(contentSettings, 'profile_visible', true),
+            analyticsSharing: getObjectProperty(contentSettings, 'analytics_sharing', false),
+            dataExport: getObjectProperty(contentSettings, 'data_export_enabled', true)
           });
         }
 
