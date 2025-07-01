@@ -70,7 +70,7 @@ export const useTeamMembersWithCredits = (teamId: string | null) => {
       return data as TeamAdminData;
     },
     enabled: !!teamId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 20 * 60 * 1000, // 20 minutes
   });
 };

@@ -1,3 +1,4 @@
+
 import { QueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -5,8 +6,8 @@ import { supabase } from '@/integrations/supabase/client';
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+      staleTime: 15 * 60 * 1000, // 15 minutes instead of 5
+      gcTime: 30 * 60 * 1000, // 30 minutes (formerly cacheTime)
       retry: (failureCount, error: any) => {
         // Handle invalid refresh token errors
         if (error?.message?.includes('Invalid Refresh Token') || 
@@ -19,10 +20,12 @@ export const queryClient = new QueryClient({
         if (error?.message?.includes('JWT') || error?.message?.includes('auth')) {
           return false;
         }
-        return failureCount < 3;
+        return failureCount < 2; // Reduced from 3 to 2
       },
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
+      // Add query deduplication
+      refetchOnMount: 'always',
     },
     mutations: {
       onError: (error: any) => {
