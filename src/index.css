@@ -6,7 +6,7 @@
 /* Import Google Fonts for better typography */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
 
-/* Refined Design System - Balanced Colors & Harmonious Contrast */
+/* Comprehensive Design System - Enhanced Color Palette & Typography */
 
 @layer base {
   :root {
@@ -15,29 +15,38 @@
     --brand-secondary: 217 91% 60%;
     --brand-accent: 275 85% 65%;
     
-    /* Light Mode - Warmer, More Inviting */
-    --background: 0 0% 99%;
-    --foreground: 220 15% 15%;
-    --surface: 0 0% 97%;
-    --surface-elevated: 0 0% 95%;
-    --surface-elevated-2: 0 0% 93%;
+    /* Light Mode - Enhanced Readability & Visual Hierarchy */
+    --background: 0 0% 100%;
+    --foreground: 217 19% 27%;
+    --surface: 210 20% 98%;
+    --surface-elevated: 210 17% 96%;
+    --surface-elevated-2: 210 14% 94%;
 
-    --card: 0 0% 98%;
-    --card-foreground: 220 15% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 217 19% 27%;
 
-    --popover: 0 0% 98%;
-    --popover-foreground: 220 15% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 217 19% 27%;
 
+    /* Enhanced Text Hierarchy - Light Mode */
+    --text-primary: 217 19% 27%;
+    --text-secondary: 215 16% 47%;
+    --text-tertiary: 213 13% 65%;
+    --text-muted: 210 9% 71%;
+    --text-inverse: 0 0% 100%;
+
+    /* Interactive Colors - Refined */
     --primary: 258 84% 60%;
     --primary-foreground: 0 0% 100%;
     --primary-hover: 258 84% 55%;
     --primary-active: 258 84% 50%;
 
-    --secondary: 215 25% 94%;
-    --secondary-foreground: 220 15% 25%;
-    --secondary-hover: 215 25% 90%;
-    --secondary-active: 215 25% 86%;
+    --secondary: 210 17% 93%;
+    --secondary-foreground: 217 19% 27%;
+    --secondary-hover: 210 17% 89%;
+    --secondary-active: 210 17% 85%;
 
+    /* Status Colors - WCAG AA Compliant */
     --success: 142 69% 45%;
     --success-foreground: 0 0% 100%;
     --success-hover: 142 69% 42%;
@@ -58,18 +67,18 @@
     --info-hover: 217 85% 60%;
     --info-light: 217 85% 96%;
 
-    --muted: 215 25% 92%;
-    --muted-foreground: 220 15% 55%;
-    --muted-hover: 215 25% 88%;
+    --muted: 210 17% 93%;
+    --muted-foreground: 215 16% 47%;
+    --muted-hover: 210 17% 89%;
 
-    --accent: 215 25% 92%;
-    --accent-foreground: 220 15% 25%;
+    --accent: 210 17% 93%;
+    --accent-foreground: 217 19% 27%;
 
     --destructive: 0 65% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 88%;
-    --input: 220 15% 90%;
+    --border: 213 13% 91%;
+    --input: 210 17% 93%;
     --ring: 258 84% 60%;
 
     /* Enhanced radius system */
@@ -80,13 +89,13 @@
     --radius-xl: 1rem;
 
     /* Sidebar Colors - Light Mode */
-    --sidebar-background: 0 0% 97%;
-    --sidebar-foreground: 220 15% 25%;
-    --sidebar-primary: 220 15% 15%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 215 25% 92%;
-    --sidebar-accent-foreground: 220 15% 15%;
-    --sidebar-border: 220 15% 85%;
+    --sidebar-background: 210 20% 98%;
+    --sidebar-foreground: 217 19% 27%;
+    --sidebar-primary: 217 19% 27%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 17% 93%;
+    --sidebar-accent-foreground: 217 19% 27%;
+    --sidebar-border: 213 13% 91%;
     --sidebar-ring: 258 84% 60%;
 
     /* Typography Scale */
@@ -163,7 +172,7 @@
     --easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --easing-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-    /* Refined Shadows - Light Mode */
+    /* Enhanced Shadows - Light Mode */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
     --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
@@ -175,9 +184,9 @@
   .dark {
     /* Dark Mode - Warmer, More Comfortable */
     
-    /* Refined Dark Backgrounds - Warmer Tones */
+    /* Enhanced Dark Backgrounds - Warmer Tones */
     --background: 222 47% 11%;
-    --foreground: 215 25% 92%;
+    --foreground: 213 31% 91%;
     
     /* Surface Hierarchy - Warmer Grays */
     --surface: 220 39% 14%;
@@ -186,10 +195,17 @@
 
     /* Card System - Balanced Contrast */
     --card: 220 39% 14%;
-    --card-foreground: 215 25% 92%;
+    --card-foreground: 213 31% 91%;
 
     --popover: 218 35% 17%;
-    --popover-foreground: 215 25% 92%;
+    --popover-foreground: 213 31% 91%;
+
+    /* Enhanced Text Hierarchy - Dark Mode */
+    --text-primary: 213 31% 91%;
+    --text-secondary: 215 20% 65%;
+    --text-tertiary: 217 17% 46%;
+    --text-muted: 215 15% 35%;
+    --text-inverse: 217 19% 27%;
 
     /* Interactive Colors - Softer Approach */
     --primary: 258 84% 70%;
@@ -198,7 +214,7 @@
     --primary-active: 258 84% 65%;
 
     --secondary: 215 25% 22%;
-    --secondary-foreground: 215 25% 85%;
+    --secondary-foreground: 213 31% 91%;
     --secondary-hover: 215 25% 26%;
     --secondary-active: 215 25% 30%;
 
@@ -225,11 +241,11 @@
 
     /* Text Hierarchy - Better Readability */
     --muted: 215 25% 22%;
-    --muted-foreground: 215 25% 65%;
+    --muted-foreground: 215 20% 65%;
     --muted-hover: 215 25% 26%;
 
     --accent: 215 25% 22%;
-    --accent-foreground: 215 25% 85%;
+    --accent-foreground: 213 31% 91%;
 
     --destructive: 0 65% 68%;
     --destructive-foreground: 0 0% 100%;
@@ -241,15 +257,15 @@
 
     /* Dark Mode Sidebar - Cohesive with Main Theme */
     --sidebar-background: 222 47% 9%;
-    --sidebar-foreground: 215 25% 92%;
+    --sidebar-foreground: 213 31% 91%;
     --sidebar-primary: 258 84% 70%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 215 25% 20%;
-    --sidebar-accent-foreground: 215 25% 85%;
+    --sidebar-accent-foreground: 213 31% 91%;
     --sidebar-border: 215 25% 25%;
     --sidebar-ring: 258 84% 70%;
 
-    /* Refined Dark Mode Shadows */
+    /* Enhanced Dark Mode Shadows */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
     --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
@@ -276,13 +292,35 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Typography Styles */
+  /* Enhanced Typography System */
+  .text-primary {
+    color: hsl(var(--text-primary));
+  }
+
+  .text-secondary {
+    color: hsl(var(--text-secondary));
+  }
+
+  .text-tertiary {
+    color: hsl(var(--text-tertiary));
+  }
+
+  .text-muted-semantic {
+    color: hsl(var(--text-muted));
+  }
+
+  .text-inverse {
+    color: hsl(var(--text-inverse));
+  }
+
+  /* Typography Styles - Enhanced */
   .text-display-2xl {
     font-size: var(--text-6xl);
     line-height: var(--leading-tight);
     font-family: var(--font-family-display);
     font-weight: 700;
     letter-spacing: -0.025em;
+    color: hsl(var(--text-primary));
   }
 
   .text-display-xl {
@@ -291,6 +329,7 @@
     font-family: var(--font-family-display);
     font-weight: 700;
     letter-spacing: -0.025em;
+    color: hsl(var(--text-primary));
   }
 
   .text-display-lg {
@@ -299,6 +338,7 @@
     font-family: var(--font-family-display);
     font-weight: 600;
     letter-spacing: -0.025em;
+    color: hsl(var(--text-primary));
   }
 
   .text-display-md {
@@ -307,6 +347,7 @@
     font-family: var(--font-family-display);
     font-weight: 600;
     letter-spacing: -0.025em;
+    color: hsl(var(--text-primary));
   }
 
   .text-display-sm {
@@ -315,6 +356,7 @@
     font-family: var(--font-family-display);
     font-weight: 600;
     letter-spacing: -0.025em;
+    color: hsl(var(--text-primary));
   }
 
   .text-display-xs {
@@ -323,9 +365,10 @@
     font-family: var(--font-family-display);
     font-weight: 600;
     letter-spacing: -0.025em;
+    color: hsl(var(--text-primary));
   }
 
-  /* Heading Styles */
+  /* Heading Styles - Enhanced */
   h1, .heading-1 {
     @apply text-display-lg;
   }
@@ -347,6 +390,7 @@
     line-height: var(--leading-snug);
     font-weight: 600;
     letter-spacing: -0.025em;
+    color: hsl(var(--text-primary));
   }
 
   h6, .heading-6 {
@@ -354,28 +398,33 @@
     line-height: var(--leading-snug);
     font-weight: 600;
     letter-spacing: -0.025em;
+    color: hsl(var(--text-primary));
   }
 
-  /* Body Text Styles */
+  /* Body Text Styles - Enhanced */
   .text-body-lg {
     font-size: var(--text-lg);
     line-height: var(--leading-relaxed);
+    color: hsl(var(--text-secondary));
   }
 
   .text-body {
     font-size: var(--text-base);
     line-height: var(--leading-normal);
+    color: hsl(var(--text-secondary));
   }
 
   .text-body-sm {
     font-size: var(--text-sm);
     line-height: var(--leading-normal);
+    color: hsl(var(--text-secondary));
   }
 
   .text-caption {
     font-size: var(--text-xs);
     line-height: var(--leading-normal);
     font-weight: 500;
+    color: hsl(var(--text-tertiary));
   }
 
   /* Enhanced Focus Styles for Better Accessibility */
@@ -388,6 +437,8 @@
     :root {
       --border: 0 0% 0%;
       --ring: 0 0% 0%;
+      --text-primary: 0 0% 0%;
+      --text-secondary: 0 0% 20%;
     }
     
     .dark {
@@ -395,6 +446,8 @@
       --ring: 0 0% 100%;
       --card: 0 0% 0%;
       --card-foreground: 0 0% 100%;
+      --text-primary: 0 0% 100%;
+      --text-secondary: 0 0% 80%;
     }
   }
 
@@ -477,7 +530,7 @@
     @apply bg-surface-elevated-2 border border-border rounded-lg shadow-md hover:shadow-lg transition-all duration-200;
   }
 
-  /* Card Variants - Refined Visual Hierarchy */
+  /* Card Variants - Enhanced Visual Hierarchy */
   .card-flat {
     @apply bg-card text-card-foreground border border-border rounded-lg;
   }
@@ -494,7 +547,7 @@
     @apply bg-transparent text-card-foreground border-2 border-border rounded-lg hover:border-ring/50 hover:bg-surface/50 transition-all duration-200;
   }
 
-  /* Interactive States - Refined Feedback */
+  /* Interactive States - Enhanced Feedback */
   .interactive {
     @apply transition-all duration-200 ease-in-out;
   }
@@ -507,16 +560,16 @@
     @apply bg-surface-elevated-2 transform translate-y-[0px] shadow-sm;
   }
 
-  /* Link Styles - Refined Contrast */
+  /* Link Styles - Enhanced Contrast */
   .link-default {
     @apply text-primary hover:text-primary-hover transition-colors duration-200 underline-offset-4 hover:underline;
   }
 
   .link-muted {
-    @apply text-muted-foreground hover:text-foreground transition-colors duration-200;
+    @apply text-secondary hover:text-primary transition-colors duration-200;
   }
 
-  /* Refined Gradient Backgrounds */
+  /* Enhanced Gradient Backgrounds */
   .gradient-primary {
     background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--brand-secondary)) 100%);
   }
@@ -525,7 +578,7 @@
     background: linear-gradient(135deg, hsl(var(--brand-accent)) 0%, hsl(var(--primary)) 100%);
   }
 
-  /* Status Indicators - Refined Visibility */
+  /* Status Indicators - Enhanced Visibility */
   .status-dot {
     @apply w-2 h-2 rounded-full shadow-sm;
   }
@@ -546,7 +599,7 @@
     @apply status-dot bg-info;
   }
 
-  /* Status Cards - Refined Theme Support */
+  /* Status Cards - Enhanced Theme Support */
   .card-success {
     @apply bg-success-light border-success/30 text-success rounded-lg p-3;
   }
@@ -569,17 +622,20 @@
   }
 
   .table-header {
-    @apply bg-surface-elevated border-b border-border font-medium text-foreground;
+    @apply bg-surface-elevated border-b border-border font-medium;
+    color: hsl(var(--text-primary));
   }
 
   /* Form Element Enhancements */
   .form-input-refined {
-    @apply bg-surface-elevated border-border text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-ring/20;
+    @apply bg-surface-elevated border-border placeholder:text-muted-foreground focus:border-ring focus:ring-ring/20;
+    color: hsl(var(--text-primary));
   }
 
   /* Button Enhancements */
   .button-ghost-refined {
-    @apply hover:bg-surface-elevated hover:text-foreground;
+    @apply hover:bg-surface-elevated;
+    color: hsl(var(--text-primary));
   }
 
   /* Progress Bar Refinements */
@@ -597,6 +653,7 @@
   }
 
   .sidebar-item-hover {
-    @apply hover:bg-surface-elevated hover:text-foreground;
+    @apply hover:bg-surface-elevated;
+    color: hsl(var(--text-primary));
   }
 }

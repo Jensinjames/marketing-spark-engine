@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -101,6 +100,14 @@ export default {
 					primary: 'hsl(var(--brand-primary))',
 					secondary: 'hsl(var(--brand-secondary))',
 					accent: 'hsl(var(--brand-accent))',
+				},
+				// Enhanced semantic text colors
+				text: {
+					primary: 'hsl(var(--text-primary))',
+					secondary: 'hsl(var(--text-secondary))',
+					tertiary: 'hsl(var(--text-tertiary))',
+					muted: 'hsl(var(--text-muted))',
+					inverse: 'hsl(var(--text-inverse))',
 				},
 			},
 			fontFamily: {

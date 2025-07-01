@@ -5,9 +5,9 @@ import { CreditCard, Shield } from "lucide-react";
 
 const PaymentMethodCard = () => {
   return (
-    <Card className="mb-8">
+    <Card className="mb-8 surface-elevated">
       <CardHeader>
-        <CardTitle className="flex items-center">
+        <CardTitle className="flex items-center text-primary">
           <CreditCard className="h-5 w-5 mr-2" />
           Payment Method
         </CardTitle>
@@ -19,13 +19,13 @@ const PaymentMethodCard = () => {
               <span className="text-white text-xs font-bold">VISA</span>
             </div>
             <div>
-              <p className="font-medium">•••• •••• •••• 4242</p>
-              <p className="text-sm text-gray-600">Expires 12/25</p>
+              <p className="font-medium text-primary">•••• •••• •••• 4242</p>
+              <p className="text-sm text-secondary">Expires 12/25</p>
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <div className="flex items-center text-sm text-gray-600">
-              <Shield className="h-4 w-4 mr-1 text-green-500" />
+            <div className="flex items-center text-sm text-secondary">
+              <Shield className="h-4 w-4 mr-1 text-success" />
               Secure
             </div>
             <Button variant="outline">Update</Button>
