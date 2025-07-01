@@ -1,8 +1,10 @@
-
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useMutationQueue } from './useMutationQueue';
+
+// Define the allowed content types based on the database enum
+type ContentType = 'email_sequence' | 'ad_copy' | 'landing_page' | 'social_post' | 'blog_post' | 'funnel' | 'strategy_brief';
 
 export const useContentMutations = () => {
   const queryClient = useQueryClient();
@@ -10,7 +12,7 @@ export const useContentMutations = () => {
 
   const createContent = useMutation({
     mutationFn: async (data: {
-      type: string;
+      type: ContentType;
       title: string;
       content: any;
       prompt?: string;
