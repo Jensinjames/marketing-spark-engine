@@ -1,11 +1,8 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CreditCard, Shield } from "lucide-react";
-
 const PaymentMethodCard = () => {
-  return (
-    <Card className="mb-8 surface-elevated">
+  return <Card className="mb-8 surface-elevated">
       <CardHeader>
         <CardTitle className="flex items-center text-primary">
           <CreditCard className="h-5 w-5 mr-2" />
@@ -20,7 +17,7 @@ const PaymentMethodCard = () => {
             </div>
             <div>
               <p className="font-medium text-primary">•••• •••• •••• 4242</p>
-              <p className="text-sm text-secondary">Expires 12/25</p>
+              <p className="text-sm text-zinc-800">Expires 12/25</p>
             </div>
           </div>
           <div className="flex items-center space-x-4">
@@ -32,8 +29,6 @@ const PaymentMethodCard = () => {
           </div>
         </div>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };
-
 export default PaymentMethodCard;
