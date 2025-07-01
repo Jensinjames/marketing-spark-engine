@@ -2,8 +2,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { isRateLimited, recordAttempt, validateEmail } from '@/utils/authSecurity';
-import { logSecurityEvent } from '@/utils/authLogging';
+import { checkServerRateLimit, recordAttempt, validateEmail, sanitizeInput, logSecurityEvent } from '@/utils/enhancedAuthSecurity';
 
 interface SignInData {
   email: string;
@@ -15,16 +14,17 @@ export const useSignInMutation = () => {
 
   return useMutation({
     mutationFn: async ({ email, password }: SignInData) => {
-      const normalizedEmail = email.trim().toLowerCase();
+      const normalizedEmail = sanitizeInput(email.trim().toLowerCase());
       
-      // Security: Input validation
+      // Enhanced input validation
       validateEmail(normalizedEmail);
       if (!password) {
         throw new Error('Password is required');
       }
       
-      // Security: Rate limiting
-      if (isRateLimited(normalizedEmail)) {
+      // Enhanced rate limiting with server-side validation
+      const isAllowed = await checkServerRateLimit(normalizedEmail);
+      if (!isAllowed) {
         throw new Error('Too many login attempts. Please try again later.');
       }
       
@@ -52,6 +52,7 @@ export const useSignInMutation = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['user'] });
       queryClient.invalidateQueries({ queryKey: ['userPlan'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-validation'] });
       toast.success('Welcome back!');
     },
     onError: (error: any) => {

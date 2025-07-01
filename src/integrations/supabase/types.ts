@@ -461,6 +461,7 @@ export type Database = {
           description: string | null
           id: string
           is_public: boolean | null
+          min_plan_type: Database["public"]["Enums"]["plan_type"]
           name: string
           tags: string[] | null
           template_data: Json
@@ -474,6 +475,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_public?: boolean | null
+          min_plan_type?: Database["public"]["Enums"]["plan_type"]
           name: string
           tags?: string[] | null
           template_data: Json
@@ -487,6 +489,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_public?: boolean | null
+          min_plan_type?: Database["public"]["Enums"]["plan_type"]
           name?: string
           tags?: string[] | null
           template_data?: Json
@@ -1013,9 +1016,28 @@ export type Database = {
         Args: { feature_name: string; check_user_id?: string }
         Returns: boolean
       }
+      can_access_template: {
+        Args: {
+          template_plan_type: Database["public"]["Enums"]["plan_type"]
+          user_id?: string
+        }
+        Returns: boolean
+      }
+      check_rate_limit: {
+        Args: {
+          identifier: string
+          max_attempts?: number
+          time_window_minutes?: number
+        }
+        Returns: boolean
+      }
       cleanup_expired_invitations: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      enhanced_password_validation: {
+        Args: { password: string }
+        Returns: boolean
       }
       generate_invitation_token: {
         Args: Record<PropertyKey, never>
@@ -1055,11 +1077,19 @@ export type Database = {
         Args: { user_id?: string }
         Returns: boolean
       }
+      is_admin_user: {
+        Args: { user_id?: string }
+        Returns: boolean
+      }
       is_owner: {
         Args: { team_uuid: string; uid?: string }
         Returns: boolean
       }
       is_super_admin: {
+        Args: { user_id?: string }
+        Returns: boolean
+      }
+      is_super_admin_user: {
         Args: { user_id?: string }
         Returns: boolean
       }
@@ -1074,6 +1104,10 @@ export type Database = {
       is_team_owner_direct: {
         Args: { team_uuid: string; user_uuid?: string }
         Returns: boolean
+      }
+      log_security_event: {
+        Args: { event_type: string; event_data?: Json; user_id_param?: string }
+        Returns: undefined
       }
       log_team_activity: {
         Args: { p_team_id: string; p_action: string; p_details?: Json }
@@ -1103,6 +1137,10 @@ export type Database = {
       test_team_policies: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      validate_admin_session: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
     }
     Enums: {

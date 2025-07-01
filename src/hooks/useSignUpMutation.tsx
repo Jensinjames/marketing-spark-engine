@@ -3,8 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { isRateLimited, recordAttempt, validateEmail, validatePassword } from '@/utils/authSecurity';
-import { logSecurityEvent } from '@/utils/authLogging';
+import { checkServerRateLimit, recordAttempt, validateEmail, validatePassword, sanitizeInput, logSecurityEvent } from '@/utils/enhancedAuthSecurity';
 
 interface SignUpData {
   email: string;
@@ -17,14 +16,15 @@ export const useSignUpMutation = () => {
 
   return useMutation({
     mutationFn: async ({ email, password, fullName }: SignUpData) => {
-      const normalizedEmail = email.trim().toLowerCase();
+      const normalizedEmail = sanitizeInput(email.trim().toLowerCase());
       
-      // Security: Input validation
+      // Enhanced input validation
       validateEmail(normalizedEmail);
       validatePassword(password);
       
-      // Security: Rate limiting
-      if (isRateLimited(normalizedEmail)) {
+      // Enhanced rate limiting with server-side validation
+      const isAllowed = await checkServerRateLimit(normalizedEmail);
+      if (!isAllowed) {
         throw new Error('Too many signup attempts. Please try again later.');
       }
       
@@ -37,7 +37,7 @@ export const useSignUpMutation = () => {
         password,
         options: {
           emailRedirectTo: redirectUrl,
-          data: fullName ? { full_name: fullName.trim() } : undefined
+          data: fullName ? { full_name: sanitizeInput(fullName.trim()) } : undefined
         }
       });
 
@@ -72,8 +72,8 @@ export const useSignUpMutation = () => {
         toast.error('This email is already registered. Try signing in instead.');
       } else if (error.message.includes('Invalid email') || error.message.includes('email format')) {
         toast.error('Please enter a valid email address.');
-      } else if (error.message.includes('Password')) {
-        toast.error('Password must be at least 8 characters long.');
+      } else if (error.message.includes('Password') || error.message.includes('12 characters')) {
+        toast.error('Password must meet security requirements: 12+ characters with uppercase, lowercase, number, and special character.');
       } else if (error.message.includes('rate limit') || error.message.includes('Too many')) {
         toast.error('Too many attempts. Please wait before trying again.');
       } else if (error.message.includes('Database error')) {
