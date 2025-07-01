@@ -59,7 +59,7 @@ const AssetGeneratorGrid = () => {
       </div>
       
       <div 
-        ref={containerRef}
+        ref={containerRef as React.RefObject<HTMLDivElement>}
         className="grid grid-cols-1 md:grid-cols-3 gap-6"
         role="grid"
         aria-label="Asset generation options"

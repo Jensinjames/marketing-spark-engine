@@ -2,6 +2,7 @@
 import { render, screen } from '../utils/test-utils';
 import StatCard from '@/components/shared/StatCard';
 import { FileText } from 'lucide-react';
+import { describe, it, expect } from 'vitest';
 
 describe('StatCard', () => {
   const defaultProps = {
