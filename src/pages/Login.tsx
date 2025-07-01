@@ -78,7 +78,7 @@ const Login = () => {
                   <Zap className="h-6 w-6 text-white" />
                 </div>
                 <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                  AMAP
+                  Launch Click
                 </span>
               </Link>
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
