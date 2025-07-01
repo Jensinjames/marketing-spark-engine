@@ -1,17 +1,31 @@
 
-// Security Headers Utility
+// Security Headers Utility with Enhanced CSP
+export const generateCSPNonce = (): string => {
+  const array = new Uint8Array(16);
+  crypto.getRandomValues(array);
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+};
+
 export const addSecurityHeaders = () => {
-  // Content Security Policy
+  // Generate nonce for inline scripts/styles
+  const nonce = generateCSPNonce();
+  
+  // Enhanced Content Security Policy - removed unsafe directives
   const cspDirectives = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://supabase.co https://*.supabase.co",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    `script-src 'self' 'nonce-${nonce}' https://supabase.co https://*.supabase.co`,
+    `style-src 'self' 'nonce-${nonce}' https://fonts.googleapis.com`,
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https: blob:",
     "connect-src 'self' https://supabase.co https://*.supabase.co wss://*.supabase.co",
     "frame-ancestors 'none'",
     "base-uri 'self'",
-    "form-action 'self'"
+    "form-action 'self'",
+    "object-src 'none'",
+    "media-src 'self'",
+    "worker-src 'self'",
+    "manifest-src 'self'",
+    "upgrade-insecure-requests"
   ].join('; ');
 
   // Create meta tag for CSP
@@ -27,13 +41,16 @@ export const addSecurityHeaders = () => {
   
   document.head.appendChild(cspMeta);
 
-  // Add other security meta tags
+  // Add other security meta tags with enhanced settings
   const securityTags = [
     { httpEquiv: 'X-Content-Type-Options', content: 'nosniff' },
     { httpEquiv: 'X-Frame-Options', content: 'DENY' },
     { httpEquiv: 'X-XSS-Protection', content: '1; mode=block' },
     { httpEquiv: 'Referrer-Policy', content: 'strict-origin-when-cross-origin' },
-    { httpEquiv: 'Permissions-Policy', content: 'camera=(), microphone=(), geolocation=()' }
+    { httpEquiv: 'Permissions-Policy', content: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()' },
+    { httpEquiv: 'Cross-Origin-Embedder-Policy', content: 'require-corp' },
+    { httpEquiv: 'Cross-Origin-Opener-Policy', content: 'same-origin' },
+    { httpEquiv: 'Cross-Origin-Resource-Policy', content: 'same-origin' }
   ];
 
   securityTags.forEach(({ httpEquiv, content }) => {

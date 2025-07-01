@@ -1,77 +1,165 @@
 
-import { ReactNode } from 'react';
-import { useEnhancedAuth } from '@/hooks/useEnhancedAuth';
+import { useEffect, useState, ReactNode } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { validateAdminAccessEnhanced } from '@/utils/enhancedAuthSecurity';
+import { logSecurityEvent } from '@/utils/securityLogger';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Shield, AlertTriangle } from 'lucide-react';
+import { Shield, AlertTriangle, RefreshCw } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface AdminSecurityWrapperProps {
   children: ReactNode;
-  title?: string;
-  description?: string;
+  requireRecentAuth?: boolean;
+  sensitiveOperation?: string;
 }
 
 export const AdminSecurityWrapper = ({ 
   children, 
-  title = "Admin Access Required",
-  description = "This section requires administrative privileges."
+  requireRecentAuth = false,
+  sensitiveOperation 
 }: AdminSecurityWrapperProps) => {
-  const { user, isAdminValid, isValidatingAdmin } = useEnhancedAuth();
+  const { user } = useAuth();
+  const [isValidating, setIsValidating] = useState(true);
+  const [hasAccess, setHasAccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!user) {
+  useEffect(() => {
+    let mounted = true;
+
+    const validateAccess = async () => {
+      if (!user) {
+        setHasAccess(false);
+        setIsValidating(false);
+        return;
+      }
+
+      try {
+        setIsValidating(true);
+        setError(null);
+        
+        // Log admin access attempt
+        await logSecurityEvent('admin_access_attempt', {
+          userId: user.id,
+          requireRecentAuth,
+          sensitiveOperation,
+          email: user.email
+        });
+
+        const isValid = await validateAdminAccessEnhanced(requireRecentAuth);
+        
+        if (mounted) {
+          setHasAccess(isValid);
+          
+          if (!isValid) {
+            await logSecurityEvent('admin_access_denied', {
+              userId: user.id,
+              requireRecentAuth,
+              sensitiveOperation,
+              reason: requireRecentAuth ? 'recent_auth_required' : 'insufficient_privileges'
+            });
+            
+            setError(
+              requireRecentAuth 
+                ? 'This action requires recent authentication. Please sign in again.'
+                : 'Access denied. Insufficient administrative privileges.'
+            );
+          }
+        }
+      } catch (err) {
+        if (mounted) {
+          await logSecurityEvent('admin_validation_error', {
+            userId: user?.id,
+            error: err instanceof Error ? err.message : 'Unknown error'
+          });
+          
+          setError('Security validation failed. Please try again.');
+          setHasAccess(false);
+        }
+      } finally {
+        if (mounted) {
+          setIsValidating(false);
+        }
+      }
+    };
+
+    validateAccess();
+    
+    // Re-validate every 15 minutes for sensitive operations
+    const interval = requireRecentAuth ? setInterval(validateAccess, 15 * 60 * 1000) : null;
+
+    return () => {
+      mounted = false;
+      if (interval) clearInterval(interval);
+    };
+  }, [user, requireRecentAuth, sensitiveOperation]);
+
+  // Loading state
+  if (isValidating) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Shield className="h-5 w-5" />
-            <span>Authentication Required</span>
-          </CardTitle>
-          <CardDescription>Please sign in to access this area.</CardDescription>
-        </CardHeader>
-      </Card>
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <Card className="max-w-md w-full">
+          <CardContent className="pt-8 pb-8 text-center">
+            <RefreshCw className="mx-auto h-8 w-8 animate-spin text-primary mb-4" />
+            <p className="text-muted-foreground">Validating admin access...</p>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
-  if (isValidatingAdmin) {
+  // Access denied state
+  if (!hasAccess) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Shield className="h-5 w-5 animate-pulse" />
-            <span>Validating Access</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <Card className="max-w-md w-full border-destructive/20 bg-destructive/5">
+          <CardHeader className="text-center">
+            <div className="mx-auto w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center mb-4">
+              {requireRecentAuth ? (
+                <Shield className="h-6 w-6 text-destructive" />
+              ) : (
+                <AlertTriangle className="h-6 w-6 text-destructive" />
+              )}
+            </div>
+            <CardTitle className="text-xl font-bold text-destructive">
+              {requireRecentAuth ? 'Recent Authentication Required' : 'Access Denied'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <p className="text-destructive/80">
+              {error || 'You do not have permission to access this area.'}
+            </p>
+            <div className="space-y-2">
+              {requireRecentAuth ? (
+                <Link to="/login">
+                  <Button className="w-full">
+                    <Shield className="h-4 w-4 mr-2" />
+                    Re-authenticate
+                  </Button>
+                </Link>
+              ) : (
+                <Link to="/dashboard">
+                  <Button variant="outline" className="w-full">
+                    Back to Dashboard
+                  </Button>
+                </Link>
+              )}
+              <Button 
+                variant="ghost" 
+                className="w-full" 
+                onClick={() => window.location.reload()}
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Retry Validation
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
-  if (!isAdminValid) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <AlertTriangle className="h-5 w-5 text-red-500" />
-            <span>{title}</span>
-          </CardTitle>
-          <CardDescription>{description}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Alert variant="destructive">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>
-              You don't have the required permissions to access this area. 
-              Contact your administrator if you believe this is an error.
-            </AlertDescription>
-          </Alert>
-        </CardContent>
-      </Card>
-    );
-  }
-
+  // Access granted - render children
   return <>{children}</>;
 };

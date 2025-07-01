@@ -111,15 +111,76 @@ export const validateAdminAccess = async (): Promise<boolean> => {
   }
 };
 
-// Security event logging
+// Enhanced admin session validation with frequent checks
+export const validateAdminAccessEnhanced = async (requireRecentAuth = false): Promise<boolean> => {
+  try {
+    const { data: session } = await supabase.auth.getSession();
+    
+    if (!session.session) {
+      return false;
+    }
+    
+    // For sensitive operations, require recent authentication (within 30 minutes)
+    if (requireRecentAuth) {
+      const authTime = new Date(session.session.user.last_sign_in_at || 0);
+      const now = new Date();
+      const timeDiff = now.getTime() - authTime.getTime();
+      const thirtyMinutes = 30 * 60 * 1000;
+      
+      if (timeDiff > thirtyMinutes) {
+        logSecurityEvent('admin_session_expired', {
+          userId: session.session.user.id,
+          lastSignIn: session.session.user.last_sign_in_at,
+          timeDiff
+        });
+        return false;
+      }
+    }
+    
+    const { data: isValid, error } = await supabase.rpc('validate_admin_session');
+    
+    if (error) {
+      logSecurityEvent('admin_validation_error', { error: error.message });
+      return false;
+    }
+    
+    if (isValid) {
+      logSecurityEvent('admin_access_granted', { 
+        userId: session.session.user.id,
+        requireRecentAuth 
+      });
+    } else {
+      logSecurityEvent('admin_access_denied', { 
+        userId: session.session.user.id,
+        requireRecentAuth 
+      });
+    }
+    
+    return isValid || false;
+  } catch (error) {
+    logSecurityEvent('admin_validation_exception', { 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    });
+    return false;
+  }
+};
+
+// Improved security event logging with better error handling
 export const logSecurityEvent = async (eventType: string, eventData: any = {}) => {
   try {
     await supabase.rpc('log_security_event', {
       event_type: eventType,
-      event_data: eventData
+      event_data: {
+        ...eventData,
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        url: window.location.href
+      }
     });
   } catch (error) {
-    // Silently fail security logging to not disrupt user flow
-    console.warn('Security event logging failed:', error);
+    // Only log in development to avoid console noise in production
+    if (import.meta.env.DEV) {
+      console.warn('Security event logging failed:', error);
+    }
   }
 };

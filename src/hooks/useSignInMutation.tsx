@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { checkServerRateLimit, recordAttempt, validateEmail, sanitizeInput, logSecurityEvent } from '@/utils/enhancedAuthSecurity';
+import { sanitizeError } from '@/utils/securityLogger';
 
 interface SignInData {
   email: string;
@@ -56,6 +57,8 @@ export const useSignInMutation = () => {
       toast.success('Welcome back!');
     },
     onError: (error: any) => {
+      const sanitizedMessage = sanitizeError(error);
+      
       if (error.message.includes('Invalid credentials')) {
         toast.error('Invalid email or password. Please check your credentials and try again.');
       } else if (error.message.includes('Email not confirmed')) {
@@ -63,7 +66,7 @@ export const useSignInMutation = () => {
       } else if (error.message.includes('too many') || error.message.includes('rate limit')) {
         toast.error('Too many login attempts. Please wait a moment and try again.');
       } else {
-        toast.error(error.message || 'Failed to sign in. Please try again.');
+        toast.error(sanitizedMessage);
       }
     },
   });
