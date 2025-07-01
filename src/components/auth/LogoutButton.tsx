@@ -55,16 +55,9 @@ export const LogoutButton = ({
     }
   };
 
-  // Button content component
-  const ButtonContent = ({ onClick }: { onClick?: () => void }) => (
-    <Button
-      variant={variant}
-      size={size}
-      disabled={signOut.isPending}
-      className={className}
-      onClick={onClick}
-      {...props}
-    >
+  // Common button content
+  const buttonContent = (
+    <>
       {signOut.isPending ? (
         <>
           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -76,13 +69,24 @@ export const LogoutButton = ({
           {children || 'Logout'}
         </>
       )}
-    </Button>
+    </>
   );
 
   // For non-confirmation mode, use the button directly
   if (!showConfirmation) {
     console.log('[LogoutButton] Rendering direct logout button');
-    return <ButtonContent onClick={handleDirectLogout} />;
+    return (
+      <Button
+        variant={variant}
+        size={size}
+        disabled={signOut.isPending}
+        className={className}
+        onClick={handleDirectLogout}
+        {...props}
+      >
+        {buttonContent}
+      </Button>
+    );
   }
 
   // For confirmation mode, wrap with AlertDialog
@@ -90,7 +94,15 @@ export const LogoutButton = ({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <ButtonContent />
+        <Button
+          variant={variant}
+          size={size}
+          disabled={signOut.isPending}
+          className={className}
+          {...props}
+        >
+          {buttonContent}
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -100,7 +112,9 @@ export const LogoutButton = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={signOut.isPending}>
+            Cancel
+          </AlertDialogCancel>
           <AlertDialogAction 
             onClick={handleConfirmedLogout}
             disabled={signOut.isPending}
