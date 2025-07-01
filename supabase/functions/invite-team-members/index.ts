@@ -13,12 +13,94 @@ interface InviteRequest {
   role: 'admin' | 'editor' | 'viewer';
 }
 
+interface EmailDeliveryLog {
+  invitation_id: string;
+  recipient_email: string;
+  status: 'sent' | 'delivered' | 'bounced' | 'failed';
+  provider_response: any;
+  retry_count: number;
+}
+
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL') ?? '',
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 );
 
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
+
+// Exponential backoff helper
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+const logEmailDelivery = async (log: EmailDeliveryLog) => {
+  try {
+    const { error } = await supabase
+      .from('email_delivery_logs')
+      .insert(log);
+    
+    if (error) {
+      console.error('Failed to log email delivery:', error);
+    }
+  } catch (error) {
+    console.error('Error logging email delivery:', error);
+  }
+};
+
+const sendEmailWithRetry = async (
+  emailData: any, 
+  invitationId: string, 
+  email: string, 
+  maxRetries = 3
+): Promise<{ success: boolean; error?: string }> => {
+  let lastError: any = null;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`Sending email to ${email}, attempt ${attempt + 1}/${maxRetries + 1}`);
+      
+      const { data, error } = await resend.emails.send(emailData);
+      
+      if (error) {
+        throw new Error(error.message || 'Email sending failed');
+      }
+      
+      // Log successful email
+      await logEmailDelivery({
+        invitation_id: invitationId,
+        recipient_email: email,
+        status: 'sent',
+        provider_response: data,
+        retry_count: attempt
+      });
+      
+      return { success: true };
+      
+    } catch (error: any) {
+      lastError = error;
+      console.error(`Email attempt ${attempt + 1} failed for ${email}:`, error.message);
+      
+      // Log failed attempt
+      await logEmailDelivery({
+        invitation_id: invitationId,
+        recipient_email: email,
+        status: 'failed',
+        provider_response: { error: error.message },
+        retry_count: attempt
+      });
+      
+      // If this isn't the last attempt, wait before retrying
+      if (attempt < maxRetries) {
+        const backoffMs = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s
+        console.log(`Retrying in ${backoffMs}ms...`);
+        await sleep(backoffMs);
+      }
+    }
+  }
+  
+  return { 
+    success: false, 
+    error: lastError?.message || 'All retry attempts failed' 
+  };
+};
 
 serve(async (req: Request) => {
   // Handle CORS preflight requests
@@ -191,27 +273,33 @@ serve(async (req: Request) => {
           </div>
         `;
 
-        const { error: emailError } = await resend.emails.send({
+        // Send email with retry mechanism
+        const emailResult = await sendEmailWithRetry({
           from: 'Team Invitations <noreply@resend.dev>',
           to: [email],
           subject: `You're invited to join ${teamData.name}`,
           html: emailHtml,
-        });
+        }, invitation.id, email);
 
-        if (emailError) {
-          console.error('Email sending error:', emailError);
-          // Log but don't fail the invitation creation
+        if (!emailResult.success) {
+          console.error('All email attempts failed:', emailResult.error);
           await supabase.rpc('log_security_event', {
-            event_type: 'invitation_email_failed',
-            event_data: { email, team_id, error: emailError.message }
+            event_type: 'invitation_email_failed_all_retries',
+            event_data: { email, team_id, error: emailResult.error }
+          });
+          
+          results.push({
+            email,
+            status: 'error',
+            message: `Email delivery failed: ${emailResult.error}`
+          });
+        } else {
+          results.push({
+            email,
+            status: 'invited',
+            message: 'Invitation sent successfully'
           });
         }
-
-        results.push({
-          email,
-          status: 'invited',
-          message: 'Invitation sent successfully'
-        });
 
       } catch (error) {
         console.error(`Error inviting ${email}:`, error);
