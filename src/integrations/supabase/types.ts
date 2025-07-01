@@ -537,6 +537,47 @@ export type Database = {
           },
         ]
       }
+      email_delivery_logs: {
+        Row: {
+          created_at: string | null
+          id: string
+          invitation_id: string | null
+          provider_response: Json | null
+          recipient_email: string
+          retry_count: number
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          invitation_id?: string | null
+          provider_response?: Json | null
+          recipient_email: string
+          retry_count?: number
+          status: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          invitation_id?: string | null
+          provider_response?: Json | null
+          recipient_email?: string
+          retry_count?: number
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_delivery_logs_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "team_invitations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       generated_content: {
         Row: {
           content: Json
