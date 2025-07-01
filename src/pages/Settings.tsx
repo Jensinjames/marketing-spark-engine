@@ -46,10 +46,10 @@ const Settings = () => {
         <div className="max-w-4xl mx-auto">
           {/* Page Header */}
           <header className="mb-8">
-            <h1 className="text-4xl font-bold mb-3 text-white">
+            <h1 className="text-4xl font-bold mb-3 text-zinc-800">
               Settings
             </h1>
-            <p className="font-normal text-base text-zinc-200">
+            <p className="text-base font-normal text-zinc-800">
               Manage your account preferences and security settings
             </p>
           </header>

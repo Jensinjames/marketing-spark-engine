@@ -82,7 +82,7 @@ const Sidebar = () => {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-2" role="navigation" aria-label="Main menu">
+          <nav role="navigation" aria-label="Main menu" className="flex-1 space-y-2 py-[21px] my-0 px-0">
             {navigation.map(item => {
             const Icon = item.icon;
             const hasAccess = canAccess(item.requiredPlan);
