@@ -301,6 +301,36 @@ export type Database = {
         }
         Relationships: []
       }
+      billing: {
+        Row: {
+          amount: number | null
+          attrs: Json | null
+          created: string | null
+          currency: string | null
+          customer: string | null
+          id: string | null
+          payment_method: string | null
+        }
+        Insert: {
+          amount?: number | null
+          attrs?: Json | null
+          created?: string | null
+          currency?: string | null
+          customer?: string | null
+          id?: string | null
+          payment_method?: string | null
+        }
+        Update: {
+          amount?: number | null
+          attrs?: Json | null
+          created?: string | null
+          currency?: string | null
+          customer?: string | null
+          id?: string | null
+          payment_method?: string | null
+        }
+        Relationships: []
+      }
       content_analytics: {
         Row: {
           content_id: string

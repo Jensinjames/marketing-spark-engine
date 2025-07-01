@@ -7,7 +7,7 @@ import PlanGate from "@/components/shared/PlanGate";
 import { useTeamMembersWithCredits } from "@/hooks/useTeamMembersWithCredits";
 import { useTeamSelection } from "@/hooks/team/useTeamSelection";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { CreateTeamDialog } from "@/components/teams/CreateTeamDialog";
 import { TeamsHeader } from "@/components/teams/TeamsHeader";
 import { TeamSelector } from "@/components/teams/TeamSelector";
 import { TeamStats } from "@/components/teams/TeamStats";
@@ -67,12 +67,10 @@ const Teams = () => {
                 <CardContent className="pt-6">
                   <div className="text-center">
                     <h3 className="text-lg font-semibold mb-2">No Teams Found</h3>
-                    <p className="mb-4 text-gray-600">
+                    <p className="mb-4 text-muted-foreground">
                       You're not a member of any teams yet. Create a new team or ask to be invited to an existing one.
                     </p>
-                    <Button onClick={() => {}}>
-                      Create Team
-                    </Button>
+                    <CreateTeamDialog onSuccess={() => window.location.reload()} />
                   </div>
                 </CardContent>
               </Card>
