@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+
+import { render, screen } from '@/test/utils/test-utils';
 import StatCard from '@/components/shared/StatCard';
 import { FileText } from 'lucide-react';
 import { describe, it, expect } from 'vitest';
