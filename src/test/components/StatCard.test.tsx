@@ -1,5 +1,6 @@
 
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { screen } from '@testing-library/dom';
 import StatCard from '@/components/shared/StatCard';
 import { FileText } from 'lucide-react';
 import { describe, it, expect } from 'vitest';
