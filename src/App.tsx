@@ -8,7 +8,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { SecurityProvider } from "@/contexts/SecurityContext";
+import { TeamProvider } from "@/contexts/TeamContext";
 import { CriticalErrorBoundary, PageErrorBoundary } from "@/components/shared/GlobalErrorBoundary";
+import OnboardingFlow from "@/components/onboarding/OnboardingFlow";
 import { queryClient } from "@/lib/queryClient";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
@@ -33,10 +35,12 @@ const App: React.FC = () => (
       <ThemeProvider defaultTheme="system" storageKey="amap-ui-theme">
         <TooltipProvider>
           <SecurityProvider>
-            <AuthProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
+            <TeamProvider>
+              <AuthProvider>
+                <Toaster />
+                <Sonner />
+                <OnboardingFlow />
+                <BrowserRouter>
                 <PageErrorBoundary context="router">
                   <Routes>
                     <Route path="/" element={<Index />} />
@@ -58,8 +62,9 @@ const App: React.FC = () => (
                   </Routes>
                 </PageErrorBoundary>
               </BrowserRouter>
-              <ReactQueryDevtools initialIsOpen={false} />
-            </AuthProvider>
+                <ReactQueryDevtools initialIsOpen={false} />
+              </AuthProvider>
+            </TeamProvider>
           </SecurityProvider>
         </TooltipProvider>
       </ThemeProvider>
