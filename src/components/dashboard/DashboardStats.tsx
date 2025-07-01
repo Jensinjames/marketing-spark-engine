@@ -55,40 +55,46 @@ const DashboardStats = React.memo(({
   ], [credits.used, assetsCount]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-      {statsData.map((stat, index) => {
-        const IconComponent = stat.icon;
-        return (
-          <Card 
-            key={index} 
-            className={`surface-elevated hover:shadow-md transition-all duration-200 border-2 ${stat.borderColor}`}
-          >
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-foreground">
-                  {stat.title}
-                </CardTitle>
-                <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                  <IconComponent className={`h-5 w-5 ${stat.color}`} />
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="flex items-end justify-between">
-                <div>
-                  <div className="text-3xl font-bold text-foreground mb-1">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-success font-medium">
-                    {stat.change}
+    <section aria-labelledby="dashboard-stats-title" className="mb-12">
+      <h2 id="dashboard-stats-title" className="sr-only">Dashboard Statistics</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {statsData.map((stat, index) => {
+          const IconComponent = stat.icon;
+          return (
+            <Card 
+              key={index} 
+              className={`surface-elevated hover:shadow-md transition-all duration-200 border-2 ${stat.borderColor} focus-visible`}
+              role="img"
+              aria-label={`${stat.title}: ${stat.value} (${stat.change})`}
+              tabIndex={0}
+            >
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium text-foreground">
+                    {stat.title}
+                  </CardTitle>
+                  <div className={`p-2 rounded-lg ${stat.bgColor}`} aria-hidden="true">
+                    <IconComponent className={`h-5 w-5 ${stat.color}`} />
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        );
-      })}
-    </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="flex items-end justify-between">
+                  <div>
+                    <div className="text-3xl font-bold text-foreground mb-1">
+                      {stat.value}
+                    </div>
+                    <div className="text-sm text-success font-medium">
+                      {stat.change}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+    </section>
   );
 });
 
