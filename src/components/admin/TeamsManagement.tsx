@@ -1,18 +1,19 @@
 
 import { useState, useMemo } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
-import { toast } from 'sonner';
 import { useDebounced } from '@/hooks/useDebounced';
 import { SearchInput } from './SearchInput';
 import { TeamsManagementHeader } from './TeamsManagementHeader';
 import { TeamsTable } from './TeamsTable';
+import { useAdminMutations } from '@/hooks/useAdminMutations';
 
 export const TeamsManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounced(searchTerm, 300);
-  const queryClient = useQueryClient();
+  
+  const { deleteTeam, isLoading: adminLoading } = useAdminMutations();
 
   // Fetch all teams with member counts and owner info - optimized query
   const { data: teams, isLoading } = useQuery({
@@ -35,33 +36,6 @@ export const TeamsManagement = () => {
     staleTime: 10 * 60 * 1000, // 10 minutes for admin data
   });
 
-  const deleteTeamMutation = useMutation({
-    mutationFn: async (teamId: string) => {
-      const { error } = await supabase
-        .from('teams')
-        .delete()
-        .eq('id', teamId);
-
-      if (error) throw error;
-
-      // Log the admin action
-      await supabase.rpc('audit_sensitive_operation', {
-        p_action: 'admin_delete_team',
-        p_table_name: 'teams',
-        p_record_id: teamId,
-        p_new_values: { deleted_at: new Date().toISOString() }
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-teams'] });
-      toast.success('Team deleted successfully');
-    },
-    onError: (error) => {
-      toast.error('Failed to delete team');
-      console.error('Delete team error:', error);
-    },
-  });
-
   // Memoized filtered teams to avoid re-computation on every render
   const filteredTeams = useMemo(() => {
     if (!teams) return [];
@@ -82,7 +56,7 @@ export const TeamsManagement = () => {
   };
 
   const handleDeleteTeam = (teamId: string) => {
-    deleteTeamMutation.mutate(teamId);
+    deleteTeam.mutate(teamId);
   };
 
   if (isLoading) {
@@ -112,7 +86,7 @@ export const TeamsManagement = () => {
           teams={filteredTeams}
           onEditTeam={handleEditTeam}
           onDeleteTeam={handleDeleteTeam}
-          deleteLoading={deleteTeamMutation.isPending}
+          deleteLoading={adminLoading}
         />
       </CardContent>
     </Card>

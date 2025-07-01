@@ -1,5 +1,6 @@
+
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,16 +10,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { CreditCard, Search, Edit, RefreshCw } from 'lucide-react';
-import { toast } from 'sonner';
+import { useAdminMutations } from '@/hooks/useAdminMutations';
 
 export const CreditsManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [editingCredit, setEditingCredit] = useState<any>(null);
   const [newLimit, setNewLimit] = useState('');
-  const queryClient = useQueryClient();
+  
+  const { updateUserCredits, resetUserCredits, isLoading } = useAdminMutations();
 
   // Fetch all user credits with profile info
-  const { data: userCredits, isLoading } = useQuery({
+  const { data: userCredits, isLoading: creditsLoading } = useQuery({
     queryKey: ['admin-credits'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -34,55 +36,6 @@ export const CreditsManagement = () => {
     },
   });
 
-  const updateCreditsMutation = useMutation({
-    mutationFn: async ({ userId, newMonthlyLimit }: { userId: string; newMonthlyLimit: number }) => {
-      const { error } = await supabase
-        .from('user_credits')
-        .update({ monthly_limit: newMonthlyLimit })
-        .eq('user_id', userId);
-
-      if (error) throw error;
-
-      // Log the admin action
-      await supabase.rpc('audit_sensitive_operation', {
-        p_action: 'admin_update_credit_limit',
-        p_table_name: 'user_credits',
-        p_record_id: userId,
-        p_new_values: { monthly_limit: newMonthlyLimit, updated_at: new Date().toISOString() }
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-credits'] });
-      toast.success('Credit limit updated successfully');
-      setEditingCredit(null);
-      setNewLimit('');
-    },
-    onError: (error) => {
-      toast.error('Failed to update credit limit');
-      console.error('Update credits error:', error);
-    },
-  });
-
-  const resetCreditsMutation = useMutation({
-    mutationFn: async (userId: string) => {
-      const { data, error } = await supabase.functions.invoke('reset-user-credits', {
-        body: { userId }
-      });
-
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['admin-credits'] });
-      toast.success(data?.message || 'Credits reset successfully');
-    },
-    onError: (error: any) => {
-      const errorMessage = error?.message || 'Failed to reset credits';
-      toast.error(errorMessage);
-      console.error('Reset credits error:', error);
-    },
-  });
-
   const filteredCredits = userCredits?.filter(credit =>
     credit.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     credit.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -93,23 +46,27 @@ export const CreditsManagement = () => {
     
     const limit = parseInt(newLimit);
     if (isNaN(limit) || limit < 0) {
-      toast.error('Please enter a valid credit limit');
       return;
     }
 
-    updateCreditsMutation.mutate({ 
+    updateUserCredits.mutate({ 
       userId: editingCredit.user_id, 
       newMonthlyLimit: limit 
+    }, {
+      onSuccess: () => {
+        setEditingCredit(null);
+        setNewLimit('');
+      }
     });
   };
 
   const handleResetCredits = (userId: string, userName: string) => {
     if (confirm(`Are you sure you want to reset credits for ${userName}? This will set their used credits to 0 and update their reset date.`)) {
-      resetCreditsMutation.mutate(userId);
+      resetUserCredits.mutate(userId);
     }
   };
 
-  if (isLoading) {
+  if (creditsLoading) {
     return (
       <Card>
         <CardHeader>
@@ -251,9 +208,9 @@ export const CreditsManagement = () => {
                               </Button>
                               <Button
                                 onClick={handleUpdateCredits}
-                                disabled={updateCreditsMutation.isPending}
+                                disabled={isLoading}
                               >
-                                {updateCreditsMutation.isPending ? 'Updating...' : 'Update Limit'}
+                                {isLoading ? 'Updating...' : 'Update Limit'}
                               </Button>
                             </div>
                           </div>
@@ -267,10 +224,10 @@ export const CreditsManagement = () => {
                           credit.user_id, 
                           credit.profiles?.full_name || credit.profiles?.email || 'Unknown User'
                         )}
-                        disabled={resetCreditsMutation.isPending}
+                        disabled={isLoading}
                         title="Reset credits to 0"
                       >
-                        <RefreshCw className={`h-4 w-4 ${resetCreditsMutation.isPending ? 'animate-spin' : ''}`} />
+                        <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
                       </Button>
                     </div>
                   </TableCell>

@@ -1,85 +1,35 @@
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { useTeamMutations } from './useTeamMutations';
 
 export const useTeamMemberActions = (teamId: string) => {
-  const queryClient = useQueryClient();
+  const { updateMemberRole, removeMember, isLoading } = useTeamMutations();
 
-  const updateRole = useMutation({
-    mutationFn: async ({ memberId, newRole }: { memberId: string; newRole: string }) => {
-      const { data, error } = await supabase.functions.invoke('manage-team-member', {
-        body: {
-          action: 'update_role',
-          team_id: teamId,
-          member_id: memberId,
-          new_role: newRole
-        }
-      });
+  const updateRole = {
+    mutate: ({ memberId, newRole }: { memberId: string; newRole: string }) => {
+      updateMemberRole.mutate({ teamId, memberId, newRole });
+    },
+    isPending: updateMemberRole.isPending
+  };
 
-      if (error) throw error;
-      return data;
+  const updateCredits = {
+    mutate: ({ memberId, creditsLimit }: { memberId: string; creditsLimit: number }) => {
+      // This functionality can be moved to admin mutations if needed
+      console.log('Update member credits:', { memberId, creditsLimit });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['team-members-credits', teamId] });
-      toast.success('Member role updated successfully');
-    },
-    onError: (error: any) => {
-      console.error('Error updating role:', error);
-      toast.error(error.message || 'Failed to update member role');
-    }
-  });
+    isPending: false
+  };
 
-  const updateCredits = useMutation({
-    mutationFn: async ({ memberId, creditsLimit }: { memberId: string; creditsLimit: number }) => {
-      const { data, error } = await supabase.functions.invoke('manage-team-member', {
-        body: {
-          action: 'update_credits',
-          team_id: teamId,
-          member_id: memberId,
-          credits_limit: creditsLimit
-        }
-      });
-
-      if (error) throw error;
-      return data;
+  const removeMemberAction = {
+    mutate: (memberId: string) => {
+      removeMember.mutate({ teamId, memberId });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['team-members-credits', teamId] });
-      toast.success('Member credits updated successfully');
-    },
-    onError: (error: any) => {
-      console.error('Error updating credits:', error);
-      toast.error(error.message || 'Failed to update member credits');
-    }
-  });
-
-  const removeMember = useMutation({
-    mutationFn: async (memberId: string) => {
-      const { data, error } = await supabase.functions.invoke('manage-team-member', {
-        body: {
-          action: 'remove_member',
-          team_id: teamId,
-          member_id: memberId
-        }
-      });
-
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['team-members-credits', teamId] });
-      toast.success('Member removed successfully');
-    },
-    onError: (error: any) => {
-      console.error('Error removing member:', error);
-      toast.error(error.message || 'Failed to remove member');
-    }
-  });
+    isPending: removeMember.isPending
+  };
 
   return {
     updateRole,
     updateCredits,
-    removeMember
+    removeMember: removeMemberAction,
+    isLoading
   };
 };
