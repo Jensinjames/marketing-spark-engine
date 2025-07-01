@@ -1136,6 +1136,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      create_team_with_access_control: {
+        Args: { p_team_name: string; p_description?: string }
+        Returns: Json
+      }
       enhanced_password_validation: {
         Args: { password: string }
         Returns: boolean

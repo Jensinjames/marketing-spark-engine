@@ -22,13 +22,13 @@ export const CreateTeamDialog = ({ trigger, onSuccess }: CreateTeamDialogProps) 
   });
   
   const createTeam = useCreateTeam();
-  const { data: userPlan } = useUserPlan();
+  const { canManageTeams, plan: userPlan } = useUserPlan();
 
-  const canCreateTeam = userPlan?.can_manage_teams && 
-    userPlan?.plan_type && 
-    ['growth', 'elite'].includes(userPlan.plan_type);
+  const canCreateTeam = canManageTeams() && 
+    userPlan?.planType && 
+    ['growth', 'elite'].includes(userPlan.planType);
 
-  const maxTeams = userPlan?.plan_type === 'elite' ? 10 : 3;
+  const maxTeams = userPlan?.planType === 'elite' ? 10 : 3;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,12 +116,12 @@ export const CreateTeamDialog = ({ trigger, onSuccess }: CreateTeamDialogProps) 
           </div>
 
           <div className="bg-muted/50 p-3 rounded-lg text-sm space-y-1">
-            <p className="font-medium">Team Limits for {userPlan?.plan_type} Plan:</p>
+            <p className="font-medium">Team Limits for {userPlan?.planType} Plan:</p>
             <p className="text-muted-foreground">
               • Maximum teams: {maxTeams}
             </p>
             <p className="text-muted-foreground">
-              • Team members: {userPlan?.team_seats} per team
+              • Team members: {userPlan?.teamSeats} per team
             </p>
           </div>
 

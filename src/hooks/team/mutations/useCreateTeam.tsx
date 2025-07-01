@@ -11,18 +11,23 @@ export const useCreateTeam = () => {
   return useMutation({
     mutationFn: async (data: { name: string; description?: string }) => {
       return addToQueue('team', async () => {
-        const { data: result, error } = await supabase
-          .from('teams')
-          .insert({
+        const { data: result, error } = await supabase.functions.invoke('create-team', {
+          body: {
             name: data.name,
-            description: data.description,
-            owner_id: (await supabase.auth.getUser()).data.user?.id
-          })
-          .select()
-          .single();
+            description: data.description
+          }
+        });
 
         if (error) throw error;
-        return result;
+        
+        if (!result.success) {
+          const errorMessage = result.upgrade_required 
+            ? `${result.error}. Upgrade your plan to create more teams.`
+            : result.error;
+          throw new Error(errorMessage);
+        }
+        
+        return result.team;
       }, {
         priority: 'normal',
         onSuccess: (result) => {

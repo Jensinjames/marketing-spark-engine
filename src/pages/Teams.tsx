@@ -7,6 +7,7 @@ import PlanGate from "@/components/shared/PlanGate";
 import { useTeamMembersWithCredits } from "@/hooks/useTeamMembersWithCredits";
 import { useTeamSelection } from "@/hooks/team/useTeamSelection";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { CreateTeamDialog } from "@/components/teams/CreateTeamDialog";
 import { TeamsHeader } from "@/components/teams/TeamsHeader";
 import { TeamSelector } from "@/components/teams/TeamSelector";

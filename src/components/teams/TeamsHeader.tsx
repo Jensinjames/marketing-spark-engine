@@ -9,7 +9,7 @@ import { useTeamSelection } from "@/hooks/team/useTeamSelection";
 
 export const TeamsHeader = () => {
   const { user } = useAuth();
-  const { selectedTeamId, userTeams, refetch } = useTeamSelection();
+  const { selectedTeamId, userTeams } = useTeamSelection();
   
   // Find current user's role in the selected team
   const currentTeam = userTeams?.find(team => team.id === selectedTeamId);
@@ -34,7 +34,7 @@ export const TeamsHeader = () => {
               Create Team
             </Button>
           }
-          onSuccess={() => refetch()}
+          onSuccess={() => window.location.reload()}
         />
         
         {canInviteMembers && (
