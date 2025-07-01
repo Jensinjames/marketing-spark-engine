@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FormField } from "@/components/auth/FormField";
+import FormField from "@/components/auth/FormField";
 import { PasswordField } from "@/components/auth/PasswordField";
 import { useAuthMutations } from "@/hooks/useAuthMutations";
 import { Loader2 } from "lucide-react";
@@ -39,6 +39,7 @@ const Signup = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <FormField
+              id="fullName"
               type="text"
               placeholder="Full Name"
               value={fullName}
@@ -48,6 +49,7 @@ const Signup = () => {
             />
             
             <FormField
+              id="email"
               type="email"
               placeholder="Email"
               value={email}
