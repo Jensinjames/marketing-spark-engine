@@ -37,6 +37,11 @@ const AdminTableRow = React.memo(({
     onDelete?.(id);
   }, [id, onDelete]);
 
+  const formattedDate = React.useMemo(() => 
+    new Date(createdAt).toLocaleDateString(), 
+    [createdAt]
+  );
+
   return (
     <TableRow>
       <TableCell className="font-medium">{name}</TableCell>
@@ -55,9 +60,7 @@ const AdminTableRow = React.memo(({
           </Badge>
         </TableCell>
       )}
-      <TableCell>
-        {new Date(createdAt).toLocaleDateString()}
-      </TableCell>
+      <TableCell>{formattedDate}</TableCell>
       <TableCell>
         <div className="flex items-center space-x-2">
           {onEdit && (

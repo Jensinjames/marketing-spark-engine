@@ -1,6 +1,6 @@
 
 import { useAuth } from "@/hooks/useAuth";
-import { useUserPlan } from "@/hooks/useUserPlanQuery";
+import { useUserPlan } from "@/hooks/useUserPlan";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Lock, Zap, Loader2, RefreshCw, AlertCircle } from "lucide-react";

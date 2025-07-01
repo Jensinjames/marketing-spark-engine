@@ -7,6 +7,7 @@ import { TeamAdminData } from "@/hooks/useTeamMembersWithCredits";
 import { TeamMembersList } from "./TeamMembersList";
 import { TeamAnalytics } from "./TeamAnalytics";
 import { BulkActions } from "./BulkActions";
+import { InviteMembersDialog } from "@/features/teams/components/InviteMembersDialog";
 
 interface TeamsTabsProps {
   teamData: TeamAdminData;
@@ -35,6 +36,10 @@ export const TeamsTabs = ({ teamData, selectedTeamId, currentUserRole }: TeamsTa
       </TabsList>
 
       <TabsContent value="members" className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">Team Members</h3>
+          <InviteMembersDialog teamId={selectedTeamId} currentUserRole={currentUserRole} />
+        </div>
         <TeamMembersList 
           members={members}
           teamId={selectedTeamId}

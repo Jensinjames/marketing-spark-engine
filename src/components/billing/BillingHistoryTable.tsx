@@ -29,35 +29,35 @@ const BillingHistoryTable = () => {
   ];
 
   return (
-    <Card>
+    <Card className="surface-elevated">
       <CardHeader>
-        <CardTitle>Billing History</CardTitle>
+        <CardTitle className="text-primary">Billing History</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b">
-                <th className="text-left py-3 px-4 font-medium text-gray-900">Date</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-900">Description</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-900">Amount</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-900">Status</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-900">Invoice</th>
+              <tr className="border-b border-border">
+                <th className="text-left py-3 px-4 font-medium text-primary">Date</th>
+                <th className="text-left py-3 px-4 font-medium text-primary">Description</th>
+                <th className="text-left py-3 px-4 font-medium text-primary">Amount</th>
+                <th className="text-left py-3 px-4 font-medium text-primary">Status</th>
+                <th className="text-left py-3 px-4 font-medium text-primary">Invoice</th>
               </tr>
             </thead>
             <tbody>
-              {transactions.map((transaction) => (
-                <tr key={transaction.id} className="border-b">
-                  <td className="py-3 px-4 text-gray-900">{transaction.date}</td>
-                  <td className="py-3 px-4 text-gray-600">{transaction.description}</td>
-                  <td className="py-3 px-4 font-medium text-gray-900">{transaction.amount}</td>
+              {transactions.map(transaction => (
+                <tr key={transaction.id} className="border-b border-border hover:bg-surface-elevated-2 transition-colors">
+                  <td className="py-3 px-4 text-primary">{transaction.date}</td>
+                  <td className="py-3 px-4 text-secondary">{transaction.description}</td>
+                  <td className="py-3 px-4 font-medium text-primary">{transaction.amount}</td>
                   <td className="py-3 px-4">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-light text-success border border-success/30">
                       {transaction.status}
                     </span>
                   </td>
                   <td className="py-3 px-4">
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" className="text-tertiary hover:text-primary">
                       <Download className="h-4 w-4" />
                     </Button>
                   </td>

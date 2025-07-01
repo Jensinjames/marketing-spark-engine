@@ -15,5 +15,19 @@ export const useAuthMutations = () => {
     signIn: signInMutation,
     signOut: signOutMutation,
     resendConfirmation: resendConfirmationMutation,
+    
+    // Consolidated state for better UX
+    isLoading: signUpMutation.isPending || 
+               signInMutation.isPending || 
+               signOutMutation.isPending || 
+               resendConfirmationMutation.isPending,
+    
+    // Reset all mutations
+    reset: () => {
+      signUpMutation.reset();
+      signInMutation.reset();
+      signOutMutation.reset();
+      resendConfirmationMutation.reset();
+    }
   };
 };

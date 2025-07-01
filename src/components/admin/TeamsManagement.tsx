@@ -1,32 +1,30 @@
 
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Users, Search, Plus, Settings, Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
-import AdminTableRow from './AdminTableRow';
+import { Card, CardContent } from '@/components/ui/card';
+import { useDebounced } from '@/hooks/useDebounced';
+import { SearchInput } from './SearchInput';
+import { TeamsManagementHeader } from './TeamsManagementHeader';
+import { TeamsTable } from './TeamsTable';
+import { useAdminMutations } from '@/hooks/useAdminMutations';
 
 export const TeamsManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const queryClient = useQueryClient();
+  const debouncedSearchTerm = useDebounced(searchTerm, 300);
+  
+  const { deleteTeam, isLoading: adminLoading } = useAdminMutations();
 
-  // Fetch all teams with member counts and owner info
+  // Fetch all teams with member counts and owner info - optimized query
   const { data: teams, isLoading } = useQuery({
     queryKey: ['admin-teams'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('teams')
         .select(`
-          *,
+          id,
+          name,
+          created_at,
           profiles!fk_teams_profiles(full_name, email),
           team_members(count)
         `)
@@ -35,40 +33,22 @@ export const TeamsManagement = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes for admin data
   });
 
-  const deleteTeamMutation = useMutation({
-    mutationFn: async (teamId: string) => {
-      const { error } = await supabase
-        .from('teams')
-        .delete()
-        .eq('id', teamId);
-
-      if (error) throw error;
-
-      // Log the admin action
-      await supabase.rpc('audit_sensitive_operation', {
-        p_action: 'admin_delete_team',
-        p_table_name: 'teams',
-        p_record_id: teamId,
-        p_new_values: { deleted_at: new Date().toISOString() }
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-teams'] });
-      toast.success('Team deleted successfully');
-    },
-    onError: (error) => {
-      toast.error('Failed to delete team');
-      console.error('Delete team error:', error);
-    },
-  });
-
-  const filteredTeams = teams?.filter(team =>
-    team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    team.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Memoized filtered teams to avoid re-computation on every render
+  const filteredTeams = useMemo(() => {
+    if (!teams) return [];
+    
+    if (!debouncedSearchTerm) return teams;
+    
+    const searchLower = debouncedSearchTerm.toLowerCase();
+    return teams.filter(team =>
+      team.name.toLowerCase().includes(searchLower) ||
+      team.profiles?.email?.toLowerCase().includes(searchLower) ||
+      team.profiles?.full_name?.toLowerCase().includes(searchLower)
+    );
+  }, [teams, debouncedSearchTerm]);
 
   const handleEditTeam = (teamId: string) => {
     // Navigate to team details - we'll implement this later
@@ -76,15 +56,13 @@ export const TeamsManagement = () => {
   };
 
   const handleDeleteTeam = (teamId: string) => {
-    deleteTeamMutation.mutate(teamId);
+    deleteTeam.mutate(teamId);
   };
 
   if (isLoading) {
     return (
       <Card>
-        <CardHeader>
-          <CardTitle>Teams Management</CardTitle>
-        </CardHeader>
+        <TeamsManagementHeader />
         <CardContent>
           <div className="flex items-center justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
@@ -96,70 +74,20 @@ export const TeamsManagement = () => {
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center space-x-2">
-              <Users className="h-5 w-5" />
-              <span>Teams Management</span>
-            </CardTitle>
-            <CardDescription>
-              Manage all teams and their members across the platform
-            </CardDescription>
-          </div>
-        </div>
-      </CardHeader>
+      <TeamsManagementHeader />
       <CardContent className="space-y-4">
-        <div className="flex items-center space-x-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search teams or owners..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </div>
+        <SearchInput
+          value={searchTerm}
+          onChange={setSearchTerm}
+          placeholder="Search teams or owners..."
+        />
 
-        <div className="border rounded-lg">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Team Name</TableHead>
-                <TableHead>Owner</TableHead>
-                <TableHead>Members</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredTeams?.map((team) => (
-                <AdminTableRow
-                  key={team.id}
-                  id={team.id}
-                  name={team.name}
-                  owner={team.profiles}
-                  memberCount={Array.isArray(team.team_members) ? team.team_members.length : 0}
-                  createdAt={team.created_at}
-                  onEdit={handleEditTeam}
-                  onDelete={handleDeleteTeam}
-                  deleteLoading={deleteTeamMutation.isPending}
-                />
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-
-        {filteredTeams?.length === 0 && (
-          <div className="text-center py-8">
-            <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No teams found</h3>
-            <p className="text-gray-500">
-              {searchTerm ? 'Try adjusting your search terms.' : 'No teams have been created yet.'}
-            </p>
-          </div>
-        )}
+        <TeamsTable
+          teams={filteredTeams}
+          onEditTeam={handleEditTeam}
+          onDeleteTeam={handleDeleteTeam}
+          deleteLoading={adminLoading}
+        />
       </CardContent>
     </Card>
   );

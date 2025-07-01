@@ -1,37 +1,36 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { useAuth } from "@/hooks/useAuth";
 import AuthGuard from "@/components/AuthGuard";
 import Layout from "@/components/layout/Layout";
 import PlanGate from "@/components/shared/PlanGate";
 import { useTeamMembersWithCredits } from "@/hooks/useTeamMembersWithCredits";
-import { useUserTeams } from "@/hooks/useUserTeams";
+import { useTeamSelection } from "@/hooks/team/useTeamSelection";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { CreateTeamDialog } from "@/components/teams/CreateTeamDialog";
 import { TeamsHeader } from "@/components/teams/TeamsHeader";
 import { TeamSelector } from "@/components/teams/TeamSelector";
 import { TeamStats } from "@/components/teams/TeamStats";
 import { TeamsTabs } from "@/components/teams/TeamsTabs";
+import { TeamPermissions } from "@/utils/teamPermissions";
 
 const Teams = () => {
   const { user } = useAuth();
-  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
-  
-  const { data: userTeams, isLoading: teamsLoading } = useUserTeams();
-  
-  const { 
-    data: teamData, 
-    isLoading, 
-    error, 
-    refetch 
-  } = useTeamMembersWithCredits(selectedTeamId);
+  const {
+    selectedTeamId,
+    userTeams,
+    teamsLoading,
+    handleTeamChange,
+    hasTeams
+  } = useTeamSelection();
 
-  // Auto-select the first team if none is selected
-  React.useEffect(() => {
-    if (userTeams && userTeams.length > 0 && !selectedTeamId) {
-      setSelectedTeamId(userTeams[0].id);
-    }
-  }, [userTeams, selectedTeamId]);
+  const {
+    data: teamData,
+    isLoading,
+    error,
+    refetch
+  } = useTeamMembersWithCredits(selectedTeamId);
 
   // Get current user's role in the team
   const currentUserRole = teamData?.members.find(m => m.user_id === user?.id)?.role || 'viewer';
@@ -59,7 +58,7 @@ const Teams = () => {
     );
   }
 
-  if (!userTeams || userTeams.length === 0) {
+  if (!hasTeams) {
     return (
       <AuthGuard requireAuth={true}>
         <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
@@ -69,12 +68,10 @@ const Teams = () => {
                 <CardContent className="pt-6">
                   <div className="text-center">
                     <h3 className="text-lg font-semibold mb-2">No Teams Found</h3>
-                    <p className="text-gray-600 mb-4">
+                    <p className="mb-4 text-muted-foreground">
                       You're not a member of any teams yet. Create a new team or ask to be invited to an existing one.
                     </p>
-                    <Button onClick={() => {}}>
-                      Create Team
-                    </Button>
+                    <CreateTeamDialog onSuccess={() => window.location.reload()} />
                   </div>
                 </CardContent>
               </Card>
@@ -134,8 +131,6 @@ const Teams = () => {
     );
   }
 
-  const { statistics } = teamData;
-
   return (
     <AuthGuard requireAuth={true}>
       <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
@@ -143,14 +138,14 @@ const Teams = () => {
           <div className="max-w-7xl mx-auto space-y-8">
             <TeamsHeader />
             <TeamSelector 
-              userTeams={userTeams}
-              selectedTeamId={selectedTeamId}
-              onTeamChange={setSelectedTeamId}
+              userTeams={userTeams} 
+              selectedTeamId={selectedTeamId} 
+              onTeamChange={handleTeamChange} 
             />
-            <TeamStats statistics={statistics} />
+            <TeamStats statistics={teamData.statistics} />
             <TeamsTabs 
-              teamData={teamData}
-              selectedTeamId={selectedTeamId!}
+              teamData={teamData} 
+              selectedTeamId={selectedTeamId!} 
               currentUserRole={currentUserRole}
             />
           </div>

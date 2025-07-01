@@ -1,8 +1,6 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, CheckCircle, Clock } from "lucide-react";
-
 interface Integration {
   id: string;
   name: string;
@@ -12,13 +10,14 @@ interface Integration {
   status: "connected" | "available" | "coming-soon";
   color: string;
 }
-
 interface IntegrationCardProps {
   integration: Integration;
   onConnect?: (id: string) => void;
 }
-
-const IntegrationCard = ({ integration, onConnect }: IntegrationCardProps) => {
+const IntegrationCard = ({
+  integration,
+  onConnect
+}: IntegrationCardProps) => {
   const getButtonText = (status: string) => {
     switch (status) {
       case "connected":
@@ -31,7 +30,6 @@ const IntegrationCard = ({ integration, onConnect }: IntegrationCardProps) => {
         return "Connect";
     }
   };
-
   const getButtonVariant = (status: string) => {
     switch (status) {
       case "connected":
@@ -44,7 +42,6 @@ const IntegrationCard = ({ integration, onConnect }: IntegrationCardProps) => {
         return "default";
     }
   };
-
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "connected":
@@ -57,34 +54,21 @@ const IntegrationCard = ({ integration, onConnect }: IntegrationCardProps) => {
         return null;
     }
   };
-
   const handleConnect = () => {
     if (integration.status === "available" && onConnect) {
       onConnect(integration.id);
     }
   };
-
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       handleConnect();
     }
   };
-
-  return (
-    <Card 
-      className="p-6 hover:shadow-lg transition-shadow border border-gray-200 focus-within:ring-2 focus-within:ring-purple-500 focus-within:ring-offset-2"
-      role="article"
-      aria-labelledby={`integration-${integration.id}-name`}
-      aria-describedby={`integration-${integration.id}-description`}
-    >
+  return <Card className="p-6 hover:shadow-lg transition-shadow border border-gray-200 focus-within:ring-2 focus-within:ring-purple-500 focus-within:ring-offset-2" role="article" aria-labelledby={`integration-${integration.id}-name`} aria-describedby={`integration-${integration.id}-description`}>
       <CardContent className="p-0">
         <div className="flex items-start justify-between mb-4">
-          <div 
-            className={`w-12 h-12 ${integration.color} rounded-lg flex items-center justify-center`}
-            role="img"
-            aria-label={`${integration.name} logo`}
-          >
+          <div className={`w-12 h-12 ${integration.color} rounded-lg flex items-center justify-center`} role="img" aria-label={`${integration.name} logo`}>
             <span className="text-xl" aria-hidden="true">{integration.icon}</span>
           </div>
           <div className="flex items-center space-x-1">
@@ -95,34 +79,17 @@ const IntegrationCard = ({ integration, onConnect }: IntegrationCardProps) => {
           </div>
         </div>
         
-        <h3 
-          id={`integration-${integration.id}-name`}
-          className="font-semibold text-gray-900 mb-1"
-        >
+        <h3 id={`integration-${integration.id}-name`} className="font-semibold mb-1 text-zinc-900">
           {integration.name}
         </h3>
-        <p className="text-xs text-gray-500 mb-3" aria-label={`Category: ${integration.category}`}>
+        <p aria-label={`Category: ${integration.category}`} className="text-xs mb-3 text-gray-800">
           {integration.category}
         </p>
-        <p 
-          id={`integration-${integration.id}-description`}
-          className="text-sm text-gray-600 mb-6"
-        >
+        <p id={`integration-${integration.id}-description`} className="text-sm mb-6 text-zinc-800">
           {integration.description}
         </p>
         
-        <Button 
-          variant={getButtonVariant(integration.status)}
-          className={`w-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${
-            integration.status === "available" 
-              ? "bg-purple-600 hover:bg-purple-700 text-white" 
-              : ""
-          }`}
-          disabled={integration.status === "coming-soon"}
-          onClick={handleConnect}
-          onKeyDown={handleKeyDown}
-          aria-describedby={`integration-${integration.id}-status`}
-        >
+        <Button variant={getButtonVariant(integration.status)} className={`w-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${integration.status === "available" ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}`} disabled={integration.status === "coming-soon"} onClick={handleConnect} onKeyDown={handleKeyDown} aria-describedby={`integration-${integration.id}-status`}>
           {getButtonText(integration.status)}
         </Button>
         <div id={`integration-${integration.id}-status`} className="sr-only">
@@ -131,8 +98,6 @@ const IntegrationCard = ({ integration, onConnect }: IntegrationCardProps) => {
           {integration.status === "coming-soon" && "This integration is not yet available"}
         </div>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };
-
 export default IntegrationCard;

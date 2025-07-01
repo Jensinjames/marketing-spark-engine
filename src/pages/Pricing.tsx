@@ -43,7 +43,7 @@ const Pricing = () => {
     },
     {
       name: "Growth",
-      price: "$79",
+      price: "$99",
       period: "per month",
       description: "For growing teams",
       credits: "2,000 credits/month",

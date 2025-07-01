@@ -301,6 +301,36 @@ export type Database = {
         }
         Relationships: []
       }
+      billing: {
+        Row: {
+          amount: number | null
+          attrs: Json | null
+          created: string | null
+          currency: string | null
+          customer: string | null
+          id: string | null
+          payment_method: string | null
+        }
+        Insert: {
+          amount?: number | null
+          attrs?: Json | null
+          created?: string | null
+          currency?: string | null
+          customer?: string | null
+          id?: string | null
+          payment_method?: string | null
+        }
+        Update: {
+          amount?: number | null
+          attrs?: Json | null
+          created?: string | null
+          currency?: string | null
+          customer?: string | null
+          id?: string | null
+          payment_method?: string | null
+        }
+        Relationships: []
+      }
       content_analytics: {
         Row: {
           content_id: string
@@ -461,6 +491,7 @@ export type Database = {
           description: string | null
           id: string
           is_public: boolean | null
+          min_plan_type: Database["public"]["Enums"]["plan_type"]
           name: string
           tags: string[] | null
           template_data: Json
@@ -474,6 +505,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_public?: boolean | null
+          min_plan_type?: Database["public"]["Enums"]["plan_type"]
           name: string
           tags?: string[] | null
           template_data: Json
@@ -487,6 +519,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_public?: boolean | null
+          min_plan_type?: Database["public"]["Enums"]["plan_type"]
           name?: string
           tags?: string[] | null
           template_data?: Json
@@ -533,6 +566,77 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      email_delivery_logs: {
+        Row: {
+          created_at: string | null
+          id: string
+          invitation_id: string | null
+          provider_response: Json | null
+          recipient_email: string
+          retry_count: number
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          invitation_id?: string | null
+          provider_response?: Json | null
+          recipient_email: string
+          retry_count?: number
+          status: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          invitation_id?: string | null
+          provider_response?: Json | null
+          recipient_email?: string
+          retry_count?: number
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_delivery_logs_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "team_invitations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feature_usage_tracking: {
+        Row: {
+          feature_name: string
+          id: string
+          last_used_at: string | null
+          period_start: string | null
+          updated_at: string | null
+          usage_count: number | null
+          user_id: string
+        }
+        Insert: {
+          feature_name: string
+          id?: string
+          last_used_at?: string | null
+          period_start?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+          user_id: string
+        }
+        Update: {
+          feature_name?: string
+          id?: string
+          last_used_at?: string | null
+          period_start?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+          user_id?: string
+        }
+        Relationships: []
       }
       generated_content: {
         Row: {
@@ -1013,13 +1117,45 @@ export type Database = {
         Args: { feature_name: string; check_user_id?: string }
         Returns: boolean
       }
+      can_access_template: {
+        Args: {
+          template_plan_type: Database["public"]["Enums"]["plan_type"]
+          user_id?: string
+        }
+        Returns: boolean
+      }
+      check_rate_limit: {
+        Args: {
+          identifier: string
+          max_attempts?: number
+          time_window_minutes?: number
+        }
+        Returns: boolean
+      }
       cleanup_expired_invitations: {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      create_team_with_access_control: {
+        Args: { p_team_name: string; p_description?: string }
+        Returns: Json
+      }
+      enhanced_password_validation: {
+        Args: { password: string }
+        Returns: boolean
+      }
       generate_invitation_token: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      get_feature_usage_with_limits: {
+        Args: { p_user_id: string; p_feature_name: string }
+        Returns: {
+          usage_count: number
+          feature_limit: number
+          remaining: number
+          period_start: string
+        }[]
       }
       get_team_member_count: {
         Args: { team_uuid: string }
@@ -1055,11 +1191,19 @@ export type Database = {
         Args: { user_id?: string }
         Returns: boolean
       }
+      is_admin_user: {
+        Args: { user_id?: string }
+        Returns: boolean
+      }
       is_owner: {
         Args: { team_uuid: string; uid?: string }
         Returns: boolean
       }
       is_super_admin: {
+        Args: { user_id?: string }
+        Returns: boolean
+      }
+      is_super_admin_user: {
         Args: { user_id?: string }
         Returns: boolean
       }
@@ -1074,6 +1218,10 @@ export type Database = {
       is_team_owner_direct: {
         Args: { team_uuid: string; user_uuid?: string }
         Returns: boolean
+      }
+      log_security_event: {
+        Args: { event_type: string; event_data?: Json; user_id_param?: string }
+        Returns: undefined
       }
       log_team_activity: {
         Args: { p_team_id: string; p_action: string; p_details?: Json }
@@ -1092,6 +1240,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      reset_monthly_feature_usage: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       test_team_members_rls_fix: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -1103,6 +1255,10 @@ export type Database = {
       test_team_policies: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      validate_admin_session: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
     }
     Enums: {
