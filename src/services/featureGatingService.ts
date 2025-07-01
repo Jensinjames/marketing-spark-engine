@@ -32,9 +32,9 @@ export class FeatureGatingService {
       throw new Error('User ID and feature name are required');
     }
 
-    // 1. Check if feature is enabled for user's plan
+    // 1. Check if feature is enabled using new hierarchy-aware function
     const { data: hasAccess, error: accessError } = await supabase.rpc(
-      'can_access_feature',
+      'can_access_with_contract',
       {
         feature_name: featureName,
         check_user_id: userId,
@@ -47,6 +47,18 @@ export class FeatureGatingService {
     }
 
     if (!hasAccess) {
+      // Log the access denial for audit purposes
+      try {
+        await supabase.rpc('log_feature_access', {
+          p_feature_name: featureName,
+          p_access_granted: false,
+          p_user_id: userId,
+          p_context: { increment_by: incrementBy, dry_run: dryRun }
+        });
+      } catch (err) {
+        console.warn('Failed to log access denial:', err);
+      }
+
       throw new QuotaError(
         `Feature '${featureName}' is not available in your current plan`,
         'PLAN_LIMIT'

@@ -2,6 +2,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import AuthGuard from "@/components/AuthGuard";
 import Layout from "@/components/layout/Layout";
+import FeatureGate from "@/components/shared/FeatureGate";
 import AnalyticsHeader from "@/components/analytics/AnalyticsHeader";
 import MetricsRow from "@/components/analytics/MetricsRow";
 import PerformanceChart from "@/components/analytics/PerformanceChart";
@@ -11,23 +12,27 @@ import AdvancedAnalyticsBanner from "@/components/analytics/AdvancedAnalyticsBan
 const Analytics = () => {
   return (
     <AuthGuard requireAuth={true}>
-      <Layout>
-        <div className="space-y-8">
-          <AnalyticsHeader />
-          <MetricsRow />
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <PerformanceChart />
+      <FeatureGate featureName="page_access_analytics" mode="page">
+        <Layout>
+          <div className="space-y-8">
+            <AnalyticsHeader />
+            <MetricsRow />
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2">
+                <PerformanceChart />
+              </div>
+              <div className="lg:col-span-1">
+                <ContentTypeBreakdown />
+              </div>
             </div>
-            <div className="lg:col-span-1">
-              <ContentTypeBreakdown />
-            </div>
+            
+            <FeatureGate featureName="analytics_advanced" mode="component" graceful={true}>
+              <AdvancedAnalyticsBanner />
+            </FeatureGate>
           </div>
-          
-          <AdvancedAnalyticsBanner />
-        </div>
-      </Layout>
+        </Layout>
+      </FeatureGate>
     </AuthGuard>
   );
 };

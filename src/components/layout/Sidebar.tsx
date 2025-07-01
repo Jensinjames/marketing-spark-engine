@@ -1,75 +1,68 @@
 
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, BarChart3, CreditCard, Zap, Settings, Menu, X, FileText, Users, Puzzle } from "lucide-react";
-import { useUserPlan } from "@/hooks/useUserPlan";
+import { SidebarItem } from "./SidebarItem";
 import LogoutButton from "@/components/auth/LogoutButton";
 import { cn } from "@/lib/utils";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const { plan } = useUserPlan();
 
   const navigation = [
     {
       name: 'Dashboard',
       href: '/dashboard',
       icon: LayoutDashboard,
-      requiredPlan: []
+      featureName: 'page_access_dashboard'
     },
     {
       name: 'Generate',
       href: '/generate',
       icon: Zap,
-      requiredPlan: []
+      featureName: 'page_access_generate'
     },
     {
       name: 'Content',
       href: '/content',
       icon: FileText,
-      requiredPlan: []
+      featureName: 'page_access_content'
     },
     {
       name: 'Teams',
       href: '/teams',
       icon: Users,
-      requiredPlan: ['growth', 'elite']
+      featureName: 'page_access_teams'
     },
     {
       name: 'Analytics',
       href: '/analytics',
       icon: BarChart3,
-      requiredPlan: []
+      featureName: 'page_access_analytics'
     },
     {
       name: 'Integrations',
       href: '/integrations',
       icon: Puzzle,
-      requiredPlan: ['growth', 'elite']
+      featureName: 'integrations'
     },
     {
       name: 'Settings',
       href: '/settings',
       icon: Settings,
-      requiredPlan: []
+      featureName: 'page_access_settings'
     },
     {
       name: 'Billing',
       href: '/billing',
       icon: CreditCard,
-      requiredPlan: []
+      featureName: 'page_access_billing'
     }
   ];
 
   const isActive = (href: string) => location.pathname === href;
-
-  const canAccess = (requiredPlan: string[]) => {
-    if (requiredPlan.length === 0) return true;
-    if (!plan) return false;
-    return requiredPlan.includes(plan.planType);
-  };
 
   console.log('[Sidebar] Rendering sidebar, current location:', location.pathname);
 
@@ -118,39 +111,17 @@ const Sidebar = () => {
 
           {/* Navigation */}
           <nav role="navigation" aria-label="Main menu" className="flex-1 space-y-2 py-[21px] my-0 px-0">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              const hasAccess = canAccess(item.requiredPlan);
-
-              return (
-                <Link
-                  key={item.name}
-                  to={hasAccess ? item.href : "#"}
-                  onClick={() => hasAccess && setIsOpen(false)}
-                  className={cn(
-                    "flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background group",
-                    isActive(item.href)
-                      ? "bg-primary/10 text-primary border-r-2 border-primary shadow-sm"
-                      : hasAccess
-                      ? "text-foreground hover:bg-accent hover:text-accent-foreground hover:shadow-sm"
-                      : "text-muted-foreground cursor-not-allowed opacity-50"
-                  )}
-                  aria-current={isActive(item.href) ? 'page' : undefined}
-                  aria-describedby={!hasAccess && item.requiredPlan.length > 0 ? `${item.name}-upgrade-needed` : undefined}
-                >
-                  <Icon className="h-5 w-5 mr-3 transition-colors" aria-hidden="true" />
-                  {item.name}
-                  {!hasAccess && item.requiredPlan.length > 0 && (
-                    <>
-                      <div className="ml-auto w-2 h-2 bg-orange-500 rounded-full shadow-sm animate-pulse" aria-hidden="true" />
-                      <span id={`${item.name}-upgrade-needed`} className="sr-only">
-                        Requires {item.requiredPlan.join(' or ')} plan
-                      </span>
-                    </>
-                  )}
-                </Link>
-              );
-            })}
+            {navigation.map((item) => (
+              <SidebarItem
+                key={item.name}
+                name={item.name}
+                href={item.href}
+                icon={item.icon}
+                featureName={item.featureName}
+                isActive={isActive(item.href)}
+                onNavigate={() => setIsOpen(false)}
+              />
+            ))}
           </nav>
 
           {/* User section with LogoutButton */}

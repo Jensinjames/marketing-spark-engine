@@ -608,6 +608,39 @@ export type Database = {
           },
         ]
       }
+      feature_hierarchy: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          display_name: string
+          feature_name: string
+          id: string
+          is_active: boolean | null
+          min_plan_level: number
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          display_name: string
+          feature_name: string
+          id?: string
+          is_active?: boolean | null
+          min_plan_level?: number
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          display_name?: string
+          feature_name?: string
+          id?: string
+          is_active?: boolean | null
+          min_plan_level?: number
+        }
+        Relationships: []
+      }
       feature_usage_tracking: {
         Row: {
           feature_name: string
@@ -1162,6 +1195,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      can_access_with_contract: {
+        Args: { feature_name: string; check_user_id?: string }
+        Returns: boolean
+      }
       check_rate_limit: {
         Args: {
           identifier: string
@@ -1256,6 +1293,15 @@ export type Database = {
       is_team_owner_direct: {
         Args: { team_uuid: string; user_uuid?: string }
         Returns: boolean
+      }
+      log_feature_access: {
+        Args: {
+          p_feature_name: string
+          p_access_granted: boolean
+          p_user_id?: string
+          p_context?: Json
+        }
+        Returns: undefined
       }
       log_security_event: {
         Args: { event_type: string; event_data?: Json; user_id_param?: string }

@@ -3,7 +3,7 @@ import React from "react";
 import { useAuth } from "@/hooks/useAuth";
 import AuthGuard from "@/components/AuthGuard";
 import Layout from "@/components/layout/Layout";
-import PlanGate from "@/components/shared/PlanGate";
+import FeatureGate from "@/components/shared/FeatureGate";
 import { useTeamMembersWithCredits } from "@/hooks/useTeamMembersWithCredits";
 import { useTeamSelection } from "@/hooks/team/useTeamSelection";
 import { Card, CardContent } from "@/components/ui/card";
@@ -35,35 +35,23 @@ const Teams = () => {
   // Get current user's role in the team
   const currentUserRole = teamData?.members.find(m => m.user_id === user?.id)?.role || 'viewer';
 
-  if (teamsLoading || isLoading) {
-    return (
-      <AuthGuard requireAuth={true}>
-        <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
-          <Layout>
-            <div className="max-w-7xl mx-auto space-y-8">
+  return (
+    <AuthGuard requireAuth={true}>
+      <FeatureGate featureName="page_access_teams" mode="page">
+        <Layout>
+          <div className="max-w-7xl mx-auto space-y-8">
+            {teamsLoading || isLoading ? (
               <div className="animate-pulse">
-                <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded w-2/3 mb-8"></div>
+                <div className="h-8 bg-muted rounded w-1/3 mb-4"></div>
+                <div className="h-4 bg-muted rounded w-2/3 mb-8"></div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                   {[1, 2, 3].map(i => (
-                    <div key={i} className="h-24 bg-gray-200 rounded"></div>
+                    <div key={i} className="h-24 bg-muted rounded"></div>
                   ))}
                 </div>
-                <div className="h-96 bg-gray-200 rounded"></div>
+                <div className="h-96 bg-muted rounded"></div>
               </div>
-            </div>
-          </Layout>
-        </PlanGate>
-      </AuthGuard>
-    );
-  }
-
-  if (!hasTeams) {
-    return (
-      <AuthGuard requireAuth={true}>
-        <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
-          <Layout>
-            <div className="max-w-7xl mx-auto space-y-8">
+            ) : !hasTeams ? (
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-center">
@@ -71,28 +59,22 @@ const Teams = () => {
                     <p className="mb-4 text-muted-foreground">
                       You're not a member of any teams yet. Create a new team or ask to be invited to an existing one.
                     </p>
-                    <CreateTeamDialog onSuccess={() => window.location.reload()} />
+                    <FeatureGate featureName="team_create_basic" mode="component" graceful={true} fallback={
+                      <p className="text-sm text-muted-foreground">
+                        Basic team creation available to all users.
+                      </p>
+                    }>
+                      <CreateTeamDialog onSuccess={() => window.location.reload()} />
+                    </FeatureGate>
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          </Layout>
-        </PlanGate>
-      </AuthGuard>
-    );
-  }
-
-  if (error) {
-    return (
-      <AuthGuard requireAuth={true}>
-        <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
-          <Layout>
-            <div className="max-w-7xl mx-auto space-y-8">
-              <Card className="border-red-200 bg-red-50">
+            ) : error ? (
+              <Card className="border-destructive/20 bg-destructive/5">
                 <CardContent className="pt-6">
                   <div className="text-center">
-                    <h3 className="text-lg font-semibold text-red-800 mb-2">Access Denied</h3>
-                    <p className="text-red-600 mb-4">
+                    <h3 className="text-lg font-semibold text-destructive mb-2">Access Denied</h3>
+                    <p className="text-destructive/80 mb-4">
                       {error.message || 'You do not have permission to access this team\'s data.'}
                     </p>
                     <Button variant="outline" onClick={() => refetch()}>
@@ -101,56 +83,36 @@ const Teams = () => {
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          </Layout>
-        </PlanGate>
-      </AuthGuard>
-    );
-  }
-
-  if (!teamData) {
-    return (
-      <AuthGuard requireAuth={true}>
-        <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
-          <Layout>
-            <div className="max-w-7xl mx-auto space-y-8">
+            ) : !teamData ? (
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-center">
                     <h3 className="text-lg font-semibold mb-2">No Team Selected</h3>
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-muted-foreground mb-4">
                       Please select a team to manage.
                     </p>
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          </Layout>
-        </PlanGate>
-      </AuthGuard>
-    );
-  }
-
-  return (
-    <AuthGuard requireAuth={true}>
-      <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
-        <Layout>
-          <div className="max-w-7xl mx-auto space-y-8">
-            <TeamsHeader />
-            <TeamSelector 
-              userTeams={userTeams} 
-              selectedTeamId={selectedTeamId} 
-              onTeamChange={handleTeamChange} 
-            />
-            <TeamStats statistics={teamData.statistics} />
-            <TeamsTabs 
-              teamData={teamData} 
-              selectedTeamId={selectedTeamId!} 
-              currentUserRole={currentUserRole}
-            />
+            ) : (
+              <>
+                <TeamsHeader />
+                <TeamSelector 
+                  userTeams={userTeams} 
+                  selectedTeamId={selectedTeamId} 
+                  onTeamChange={handleTeamChange} 
+                />
+                <TeamStats statistics={teamData.statistics} />
+                <TeamsTabs 
+                  teamData={teamData} 
+                  selectedTeamId={selectedTeamId!} 
+                  currentUserRole={currentUserRole}
+                />
+              </>
+            )}
           </div>
         </Layout>
-      </PlanGate>
+      </FeatureGate>
     </AuthGuard>
   );
 };
