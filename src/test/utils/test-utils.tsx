@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { render, RenderOptions } from '@testing-library/react';
+import { render, RenderOptions, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { ErrorBoundaryProvider } from '@/components/shared/ErrorBoundaryProvider';
@@ -30,5 +30,7 @@ const customRender = (
   options?: Omit<RenderOptions, 'wrapper'>,
 ) => render(ui, { wrapper: AllTheProviders, ...options });
 
+// Export everything from @testing-library/react
 export * from '@testing-library/react';
-export { customRender as render };
+// Explicitly export screen and our custom render
+export { screen, customRender as render };
