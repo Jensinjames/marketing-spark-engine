@@ -172,89 +172,89 @@
   }
 
   .dark {
-    /* Enhanced Dark Mode Color Overrides - Comprehensive Card Inversion */
+    /* Improved Dark Mode - Better Contrast & Visual Hierarchy */
     
-    /* Primary Background Colors - Deep, neutral dark with proper hierarchy */
-    --background: 220 84% 3%;                    /* Main background - deeper, more neutral */
-    --foreground: 210 40% 98%;                   /* Primary text - high contrast (17.8:1 ratio) */
+    /* Primary Background Colors - Optimized hierarchy with better contrast */
+    --background: 222 84% 4%;                    /* Deep main background */
+    --foreground: 210 40% 98%;                   /* High contrast primary text */
     
-    /* Card Surface Hierarchy - 30% lighter than main background for proper inversion */
-    --surface: 222 71% 8%;                       /* Basic surface level */
-    --surface-elevated: 224 64% 12%;             /* Interactive/hoverable cards */
-    --surface-elevated-2: 226 56% 16%;           /* Modals, popovers, highest elevation */
+    /* Surface Hierarchy - Progressive lightening for depth perception */
+    --surface: 220 71% 9%;                       /* Cards and basic surfaces */
+    --surface-elevated: 218 65% 13%;             /* Interactive elements */
+    --surface-elevated-2: 216 58% 17%;           /* Highest elevation surfaces */
 
-    /* Card Colors - Inverted for better contrast */
-    --card: 222 71% 8%;                          /* Card background - significantly lighter than main */
-    --card-foreground: 210 40% 95%;              /* Card text - high contrast on cards */
+    /* Card System - Optimized for readability */
+    --card: 220 71% 9%;                          /* Card background with good contrast */
+    --card-foreground: 210 40% 96%;              /* High contrast card text */
 
-    --popover: 226 56% 16%;                      /* Popover background - elevated surface */
+    --popover: 216 58% 17%;                      /* Elevated popover background */
     --popover-foreground: 210 40% 98%;           /* Popover text */
 
-    /* Enhanced Interactive Colors for Dark Mode */
-    --primary: 262 80% 60%;                      /* Brand purple - lightened for dark mode */
+    /* Enhanced Interactive Colors */
+    --primary: 262 80% 65%;                      /* Brighter brand color for dark mode */
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 262 80% 68%;                /* Lighter on hover */
-    --primary-active: 262 80% 55%;               /* Darker on press */
+    --primary-hover: 262 80% 70%;                
+    --primary-active: 262 80% 60%;               
 
-    --secondary: 217 32% 20%;                    /* Elevated surface color */
-    --secondary-foreground: 215 25% 88%;         /* Comfortable reading text */
-    --secondary-hover: 217 32% 24%;              /* Lighter surface on hover */
-    --secondary-active: 217 32% 28%;             /* Even lighter on active */
+    --secondary: 217 32% 22%;                    /* Improved secondary background */
+    --secondary-foreground: 215 25% 92%;         /* Better secondary text contrast */
+    --secondary-hover: 217 32% 26%;              
+    --secondary-active: 217 32% 30%;             
 
-    /* Status Colors - Enhanced for dark mode with better accessibility */
-    --success: 142 76% 48%;                      /* Success green - lighter for dark */
+    /* Status Colors - Enhanced visibility and accessibility */
+    --success: 142 76% 55%;                      /* Brighter success for dark mode */
     --success-foreground: 0 0% 100%;
-    --success-hover: 142 76% 52%;
-    --success-light: 142 76% 12%;                /* Success background on cards */
+    --success-hover: 142 76% 60%;
+    --success-light: 142 76% 15%;                /* Subtle success backgrounds */
 
-    --warning: 38 92% 65%;                       /* Warning orange - accessible in dark */
-    --warning-foreground: 0 0% 0%;               /* Dark text on warning background */
-    --warning-hover: 38 92% 70%;
-    --warning-light: 38 92% 12%;
+    --warning: 38 92% 70%;                       /* Enhanced warning visibility */
+    --warning-foreground: 0 0% 0%;               
+    --warning-hover: 38 92% 75%;
+    --warning-light: 38 92% 15%;
 
-    --error: 0 72% 65%;                          /* Error red - lightened for dark */
+    --error: 0 72% 70%;                          /* Improved error visibility */
     --error-foreground: 0 0% 100%;
-    --error-hover: 0 72% 70%;
-    --error-light: 0 72% 12%;
+    --error-hover: 0 72% 75%;
+    --error-light: 0 72% 15%;
 
-    --info: 217 91% 75%;                         /* Info blue - accessible and lighter */
+    --info: 217 91% 80%;                         /* Enhanced info color */
     --info-foreground: 0 0% 100%;
-    --info-hover: 217 91% 80%;
-    --info-light: 217 91% 12%;
+    --info-hover: 217 91% 85%;
+    --info-light: 217 91% 15%;
 
-    /* Text Hierarchy - WCAG AA Compliant */
-    --muted: 217 32% 20%;                        /* Muted background */
-    --muted-foreground: 215 20% 65%;             /* Secondary information (4.8:1 ratio) */
-    --muted-hover: 217 32% 24%;
+    /* Text Hierarchy - WCAA AAA Compliant where possible */
+    --muted: 217 32% 22%;                        /* Muted backgrounds */
+    --muted-foreground: 215 20% 70%;             /* Improved muted text contrast */
+    --muted-hover: 217 32% 26%;
 
-    --accent: 217 32% 20%;                       /* Accent background */
-    --accent-foreground: 215 25% 88%;            /* Accent text */
+    --accent: 217 32% 22%;                       /* Accent backgrounds */
+    --accent-foreground: 215 25% 92%;            
 
-    --destructive: 0 72% 65%;
+    --destructive: 0 72% 70%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Enhanced Border and Input Colors */
-    --border: 217 32% 25%;                       /* Visible but subtle borders */
-    --input: 217 32% 18%;                        /* Input backgrounds */
-    --ring: 262 80% 60%;                         /* Focus ring color */
+    /* Enhanced Borders and Inputs */
+    --border: 217 32% 28%;                       /* More visible borders */
+    --input: 217 32% 20%;                        /* Input backgrounds */
+    --ring: 262 80% 65%;                         /* Focus rings */
 
-    /* Dark Mode Sidebar - Enhanced Contrast */
-    --sidebar-background: 220 84% 4%;            /* Slightly lighter than main background */
-    --sidebar-foreground: 210 40% 95%;           /* High contrast sidebar text */
-    --sidebar-primary: 262 80% 60%;              /* Brand color for primary sidebar elements */
+    /* Dark Mode Sidebar - Enhanced for better navigation */
+    --sidebar-background: 220 84% 5%;            /* Slightly different from main bg */
+    --sidebar-foreground: 210 40% 96%;           
+    --sidebar-primary: 262 80% 65%;              /* Brand color consistency */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 217 32% 18%;               /* Sidebar accent background */
-    --sidebar-accent-foreground: 215 25% 88%;
-    --sidebar-border: 217 32% 20%;               /* Sidebar border */
-    --sidebar-ring: 262 80% 60%;
+    --sidebar-accent: 217 32% 20%;               /* Sidebar interactions */
+    --sidebar-accent-foreground: 215 25% 92%;
+    --sidebar-border: 217 32% 25%;               
+    --sidebar-ring: 262 80% 65%;
 
-    /* Enhanced Dark Mode Shadows - Deeper shadows for better depth */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.5);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
-    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.6);
+    /* Enhanced Dark Mode Shadows - Better depth perception */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.7);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.8), 0 1px 2px -1px rgb(0 0 0 / 0.8);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.8), 0 2px 4px -2px rgb(0 0 0 / 0.8);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.8), 0 4px 6px -4px rgb(0 0 0 / 0.8);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.8), 0 8px 10px -6px rgb(0 0 0 / 0.8);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.9);
   }
 }
 
@@ -407,7 +407,7 @@
   }
 }
 
-/* Enhanced Component Utilities */
+/* Enhanced Component Utilities - Improved Dark Mode Support */
 @layer components {
   /* Layout Primitives */
   .stack {
@@ -463,20 +463,20 @@
     @apply max-w-7xl mx-auto px-8;
   }
 
-  /* Enhanced Surface Styles with Dark Mode Card Inversion */
+  /* Enhanced Surface Styles - Optimized for Dark Mode */
   .surface {
     @apply bg-surface border border-border rounded-lg;
   }
 
   .surface-elevated {
-    @apply bg-surface-elevated border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200;
+    @apply bg-surface-elevated border border-border rounded-lg shadow-sm hover:shadow-md transition-all duration-200;
   }
 
   .surface-elevated-2 {
-    @apply bg-surface-elevated-2 border border-border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200;
+    @apply bg-surface-elevated-2 border border-border rounded-lg shadow-md hover:shadow-lg transition-all duration-200;
   }
 
-  /* Card Variants - Enhanced for Dark Mode */
+  /* Card Variants - Enhanced Visual Hierarchy for Dark Mode */
   .card-flat {
     @apply bg-card text-card-foreground border border-border rounded-lg;
   }
@@ -486,36 +486,36 @@
   }
 
   .card-interactive {
-    @apply bg-surface-elevated text-card-foreground border border-border rounded-lg shadow-sm hover:shadow-md hover:bg-surface-elevated-2 transition-all duration-200 cursor-pointer;
+    @apply bg-surface-elevated text-card-foreground border border-border rounded-lg shadow-sm hover:shadow-md hover:bg-surface-elevated-2 hover:border-border/60 transition-all duration-200 cursor-pointer;
   }
 
   .card-outlined {
-    @apply bg-transparent text-card-foreground border-2 border-border rounded-lg hover:border-ring/50 transition-colors duration-200;
+    @apply bg-transparent text-card-foreground border-2 border-border rounded-lg hover:border-ring/50 hover:bg-surface/50 transition-all duration-200;
   }
 
-  /* Interactive States - Enhanced */
+  /* Interactive States - Enhanced Feedback */
   .interactive {
     @apply transition-all duration-200 ease-in-out;
   }
 
   .interactive:hover {
-    @apply bg-surface-elevated transform translate-y-[-1px] shadow-md;
+    @apply bg-surface-elevated transform translate-y-[-1px] shadow-md border-border/60;
   }
 
   .interactive:active {
     @apply bg-surface-elevated-2 transform translate-y-[0px] shadow-sm;
   }
 
-  /* Link Styles - Enhanced for Dark Mode */
+  /* Link Styles - Improved Dark Mode Contrast */
   .link-default {
-    @apply text-info hover:text-info-hover transition-colors duration-200 underline-offset-4 hover:underline;
+    @apply text-primary hover:text-primary-hover transition-colors duration-200 underline-offset-4 hover:underline;
   }
 
   .link-muted {
     @apply text-muted-foreground hover:text-foreground transition-colors duration-200;
   }
 
-  /* Gradient Backgrounds */
+  /* Enhanced Gradient Backgrounds */
   .gradient-primary {
     background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--brand-secondary)) 100%);
   }
@@ -524,41 +524,78 @@
     background: linear-gradient(135deg, hsl(var(--brand-accent)) 0%, hsl(var(--primary)) 100%);
   }
 
-  /* Status Indicators - Enhanced */
+  /* Status Indicators - Enhanced Visibility */
   .status-dot {
-    @apply w-2 h-2 rounded-full;
+    @apply w-2 h-2 rounded-full shadow-sm;
   }
 
   .status-dot-success {
-    @apply status-dot bg-success shadow-sm;
+    @apply status-dot bg-success;
   }
 
   .status-dot-warning {
-    @apply status-dot bg-warning shadow-sm;
+    @apply status-dot bg-warning;
   }
 
   .status-dot-error {
-    @apply status-dot bg-error shadow-sm;
+    @apply status-dot bg-error;
   }
 
   .status-dot-info {
-    @apply status-dot bg-info shadow-sm;
+    @apply status-dot bg-info;
   }
 
-  /* Status Cards - New variants for better categorization */
+  /* Status Cards - Enhanced Dark Mode Support */
   .card-success {
-    @apply bg-success-light border-success/30 text-success;
+    @apply bg-success-light border-success/30 text-success rounded-lg p-3;
   }
 
   .card-warning {
-    @apply bg-warning-light border-warning/30 text-warning;
+    @apply bg-warning-light border-warning/30 text-warning rounded-lg p-3;
   }
 
   .card-error {
-    @apply bg-error-light border-error/30 text-error;
+    @apply bg-error-light border-error/30 text-error rounded-lg p-3;
   }
 
   .card-info {
-    @apply bg-info-light border-info/30 text-info;
+    @apply bg-info-light border-info/30 text-info rounded-lg p-3;
+  }
+
+  /* Table Enhancements for Dark Mode */
+  .table-row-hover {
+    @apply hover:bg-surface-elevated transition-colors duration-150;
+  }
+
+  .table-header {
+    @apply bg-surface-elevated border-b border-border font-medium text-foreground;
+  }
+
+  /* Form Element Enhancements */
+  .form-input-dark {
+    @apply bg-surface-elevated border-border text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-ring/20;
+  }
+
+  /* Button Enhancements */
+  .button-ghost-dark {
+    @apply hover:bg-surface-elevated hover:text-foreground;
+  }
+
+  /* Progress Bar Dark Mode */
+  .progress-bar-dark {
+    @apply bg-surface-elevated;
+  }
+
+  .progress-fill-dark {
+    @apply bg-primary;
+  }
+
+  /* Sidebar Enhancements */
+  .sidebar-item-active {
+    @apply bg-primary/10 text-primary border-r-2 border-primary;
+  }
+
+  .sidebar-item-hover {
+    @apply hover:bg-surface-elevated hover:text-foreground;
   }
 }
