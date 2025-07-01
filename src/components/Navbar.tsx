@@ -1,15 +1,11 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Menu, X, Zap } from "lucide-react";
-
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <nav className="bg-background/80 backdrop-blur-md border-b border-border sticky top-0 z-50">
+  return <nav className="bg-background/80 backdrop-blur-md border-b border-border sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
@@ -17,9 +13,7 @@ const Navbar = () => {
               <div className="p-2 gradient-primary rounded-lg shadow-sm">
                 <Zap className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold gradient-primary bg-clip-text text-transparent font-display">
-                AMAP
-              </span>
+              <span className="gradient-primary bg-clip-text text-transparent font-display text-xl font-semibold">Launch Click</span>
             </Link>
           </div>
 
@@ -55,18 +49,14 @@ const Navbar = () => {
 
           <div className="md:hidden flex items-center space-x-2">
             <ThemeToggle />
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-foreground/70 hover:text-primary hover:bg-accent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
-            >
+            <button onClick={() => setIsOpen(!isOpen)} className="inline-flex items-center justify-center p-2 rounded-md text-foreground/70 hover:text-primary hover:bg-accent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary">
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
       </div>
 
-      {isOpen && (
-        <div className="md:hidden">
+      {isOpen && <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-background/90 backdrop-blur-md border-b border-border">
             <Link to="/#features" className="text-foreground/70 hover:text-primary block px-3 py-2 text-base font-medium">
               Features
@@ -90,10 +80,7 @@ const Navbar = () => {
               </Link>
             </div>
           </div>
-        </div>
-      )}
-    </nav>
-  );
+        </div>}
+    </nav>;
 };
-
 export default Navbar;
