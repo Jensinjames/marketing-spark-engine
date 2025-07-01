@@ -1,47 +1,48 @@
 
-import { useTeamMutations } from './useTeamMutations';
+import { useUpdateMemberRole } from './team/mutations/useUpdateMemberRole';
+import { useRemoveMember } from './team/mutations/useRemoveMember';
 
 export const useTeamMemberActions = (teamId: string) => {
-  const { updateMemberRole, removeMember, isLoading } = useTeamMutations();
+  const updateRoleMutation = useUpdateMemberRole();
+  const removeMemberMutation = useRemoveMember();
 
-  // Return the actual mutation objects so components can use mutateAsync
   const updateRole = {
     mutate: ({ memberId, newRole }: { memberId: string; newRole: string }) => {
-      updateMemberRole.mutate({ teamId, memberId, newRole });
+      updateRoleMutation.mutate({ teamId, memberId, newRole });
     },
     mutateAsync: async ({ memberId, newRole }: { memberId: string; newRole: string }) => {
-      return updateMemberRole.mutateAsync({ teamId, memberId, newRole });
+      return updateRoleMutation.mutateAsync({ teamId, memberId, newRole });
     },
-    isPending: updateMemberRole.isPending
+    isPending: updateRoleMutation.isPending
   };
 
   const updateCredits = {
     mutate: ({ memberId, creditsLimit }: { memberId: string; creditsLimit: number }) => {
-      // This functionality can be moved to admin mutations if needed
+      // TODO: Implement credits update functionality
       console.log('Update member credits:', { memberId, creditsLimit });
     },
     mutateAsync: async ({ memberId, creditsLimit }: { memberId: string; creditsLimit: number }) => {
-      // This functionality can be moved to admin mutations if needed
+      // TODO: Implement credits update functionality
       console.log('Update member credits:', { memberId, creditsLimit });
       return Promise.resolve();
     },
     isPending: false
   };
 
-  const removeMemberAction = {
+  const removeMember = {
     mutate: (memberId: string) => {
-      removeMember.mutate({ teamId, memberId });
+      removeMemberMutation.mutate({ teamId, memberId });
     },
     mutateAsync: async (memberId: string) => {
-      return removeMember.mutateAsync({ teamId, memberId });
+      return removeMemberMutation.mutateAsync({ teamId, memberId });
     },
-    isPending: removeMember.isPending
+    isPending: removeMemberMutation.isPending
   };
 
   return {
     updateRole,
     updateCredits,
-    removeMember: removeMemberAction,
-    isLoading
+    removeMember,
+    isLoading: updateRoleMutation.isPending || removeMemberMutation.isPending
   };
 };

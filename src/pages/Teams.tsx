@@ -1,25 +1,29 @@
-import React, { useState } from "react";
+
+import React from "react";
 import { useAuth } from "@/hooks/useAuth";
 import AuthGuard from "@/components/AuthGuard";
 import Layout from "@/components/layout/Layout";
 import PlanGate from "@/components/shared/PlanGate";
 import { useTeamMembersWithCredits } from "@/hooks/useTeamMembersWithCredits";
-import { useUserTeams } from "@/hooks/useUserTeams";
+import { useTeamSelection } from "@/hooks/team/useTeamSelection";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TeamsHeader } from "@/components/teams/TeamsHeader";
 import { TeamSelector } from "@/components/teams/TeamSelector";
 import { TeamStats } from "@/components/teams/TeamStats";
 import { TeamsTabs } from "@/components/teams/TeamsTabs";
+import { TeamPermissions } from "@/utils/teamPermissions";
+
 const Teams = () => {
+  const { user } = useAuth();
   const {
-    user
-  } = useAuth();
-  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
-  const {
-    data: userTeams,
-    isLoading: teamsLoading
-  } = useUserTeams();
+    selectedTeamId,
+    userTeams,
+    teamsLoading,
+    handleTeamChange,
+    hasTeams
+  } = useTeamSelection();
+
   const {
     data: teamData,
     isLoading,
@@ -27,17 +31,12 @@ const Teams = () => {
     refetch
   } = useTeamMembersWithCredits(selectedTeamId);
 
-  // Auto-select the first team if none is selected
-  React.useEffect(() => {
-    if (userTeams && userTeams.length > 0 && !selectedTeamId) {
-      setSelectedTeamId(userTeams[0].id);
-    }
-  }, [userTeams, selectedTeamId]);
-
   // Get current user's role in the team
   const currentUserRole = teamData?.members.find(m => m.user_id === user?.id)?.role || 'viewer';
+
   if (teamsLoading || isLoading) {
-    return <AuthGuard requireAuth={true}>
+    return (
+      <AuthGuard requireAuth={true}>
         <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
           <Layout>
             <div className="max-w-7xl mx-auto space-y-8">
@@ -45,17 +44,22 @@ const Teams = () => {
                 <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
                 <div className="h-4 bg-gray-200 rounded w-2/3 mb-8"></div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                  {[1, 2, 3].map(i => <div key={i} className="h-24 bg-gray-200 rounded"></div>)}
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="h-24 bg-gray-200 rounded"></div>
+                  ))}
                 </div>
                 <div className="h-96 bg-gray-200 rounded"></div>
               </div>
             </div>
           </Layout>
         </PlanGate>
-      </AuthGuard>;
+      </AuthGuard>
+    );
   }
-  if (!userTeams || userTeams.length === 0) {
-    return <AuthGuard requireAuth={true}>
+
+  if (!hasTeams) {
+    return (
+      <AuthGuard requireAuth={true}>
         <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
           <Layout>
             <div className="max-w-7xl mx-auto space-y-8">
@@ -63,7 +67,7 @@ const Teams = () => {
                 <CardContent className="pt-6">
                   <div className="text-center">
                     <h3 className="text-lg font-semibold mb-2">No Teams Found</h3>
-                    <p className="mb-4 text-zinc-200">
+                    <p className="mb-4 text-gray-600">
                       You're not a member of any teams yet. Create a new team or ask to be invited to an existing one.
                     </p>
                     <Button onClick={() => {}}>
@@ -75,10 +79,13 @@ const Teams = () => {
             </div>
           </Layout>
         </PlanGate>
-      </AuthGuard>;
+      </AuthGuard>
+    );
   }
+
   if (error) {
-    return <AuthGuard requireAuth={true}>
+    return (
+      <AuthGuard requireAuth={true}>
         <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
           <Layout>
             <div className="max-w-7xl mx-auto space-y-8">
@@ -98,10 +105,13 @@ const Teams = () => {
             </div>
           </Layout>
         </PlanGate>
-      </AuthGuard>;
+      </AuthGuard>
+    );
   }
+
   if (!teamData) {
-    return <AuthGuard requireAuth={true}>
+    return (
+      <AuthGuard requireAuth={true}>
         <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
           <Layout>
             <div className="max-w-7xl mx-auto space-y-8">
@@ -118,22 +128,32 @@ const Teams = () => {
             </div>
           </Layout>
         </PlanGate>
-      </AuthGuard>;
+      </AuthGuard>
+    );
   }
-  const {
-    statistics
-  } = teamData;
-  return <AuthGuard requireAuth={true}>
+
+  return (
+    <AuthGuard requireAuth={true}>
       <PlanGate requiredPlans={["growth", "elite"]} feature="team management">
         <Layout>
           <div className="max-w-7xl mx-auto space-y-8">
             <TeamsHeader />
-            <TeamSelector userTeams={userTeams} selectedTeamId={selectedTeamId} onTeamChange={setSelectedTeamId} />
-            <TeamStats statistics={statistics} />
-            <TeamsTabs teamData={teamData} selectedTeamId={selectedTeamId!} currentUserRole={currentUserRole} />
+            <TeamSelector 
+              userTeams={userTeams} 
+              selectedTeamId={selectedTeamId} 
+              onTeamChange={handleTeamChange} 
+            />
+            <TeamStats statistics={teamData.statistics} />
+            <TeamsTabs 
+              teamData={teamData} 
+              selectedTeamId={selectedTeamId!} 
+              currentUserRole={currentUserRole}
+            />
           </div>
         </Layout>
       </PlanGate>
-    </AuthGuard>;
+    </AuthGuard>
+  );
 };
+
 export default Teams;

@@ -1,20 +1,20 @@
 
-import { useCreateTeamMutation } from './team/useCreateTeamMutation';
-import { useUpdateTeamMutation } from './team/useUpdateTeamMutation';
-import { useDeleteTeamMutation } from './team/useDeleteTeamMutation';
-import { useInviteMembersMutation } from './team/useInviteMembersMutation';
-import { useUpdateMemberRoleMutation } from './team/useUpdateMemberRoleMutation';
-import { useRemoveMemberMutation } from './team/useRemoveMemberMutation';
-import { useTransferOwnershipMutation } from './team/useTransferOwnershipMutation';
+import { useCreateTeam } from './team/mutations/useCreateTeam';
+import { useUpdateTeam } from './team/mutations/useUpdateTeam';
+import { useDeleteTeam } from './team/mutations/useDeleteTeam';
+import { useInviteMembers } from './team/mutations/useInviteMembers';
+import { useUpdateMemberRole } from './team/mutations/useUpdateMemberRole';
+import { useRemoveMember } from './team/mutations/useRemoveMember';
+import { useTransferOwnership } from './team/mutations/useTransferOwnership';
 
 export const useTeamMutations = () => {
-  const createTeam = useCreateTeamMutation();
-  const updateTeam = useUpdateTeamMutation();
-  const deleteTeam = useDeleteTeamMutation();
-  const inviteMembers = useInviteMembersMutation();
-  const updateMemberRole = useUpdateMemberRoleMutation();
-  const removeMember = useRemoveMemberMutation();
-  const transferOwnership = useTransferOwnershipMutation();
+  const createTeam = useCreateTeam();
+  const updateTeam = useUpdateTeam();
+  const deleteTeam = useDeleteTeam();
+  const inviteMembers = useInviteMembers();
+  const updateMemberRole = useUpdateMemberRole();
+  const removeMember = useRemoveMember();
+  const transferOwnership = useTransferOwnership();
 
   return {
     createTeam,
