@@ -47,9 +47,9 @@ const StatCard = React.memo(({
       </Card>;
   }
   return <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200">
-      <CardContent className="p-6 py-[11px]">
+      <CardContent className="p-6 py-[12px] my-px mx-0 px-[3px] rounded">
         <div className="flex items-center justify-between mb-4">
-          <p className="text-sm font-medium text-gray-600">{title}</p>
+          <p className="text-sm font-medium text-zinc-100">{title}</p>
           {Icon && <div className="p-2 bg-purple-50 rounded-lg">
               <Icon className="h-5 w-5 text-purple-600" />
             </div>}
