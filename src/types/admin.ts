@@ -1,4 +1,6 @@
 
+import { TeamMember } from './team';
+
 // Admin-specific type definitions
 export interface AdminUser {
   id: string;
