@@ -6,87 +6,88 @@
 /* Import Google Fonts for better typography */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
 
-/* Comprehensive Design System - All colors, gradients, fonts, etc should be defined here */
+/* Refined Design System - Balanced Colors & Harmonious Contrast */
 
 @layer base {
   :root {
-    /* Core Brand Colors */
-    --brand-primary: 262 80% 50%;
-    --brand-secondary: 221 83% 53%;
-    --brand-accent: 280 100% 70%;
+    /* Core Brand Colors - Refined */
+    --brand-primary: 258 84% 60%;
+    --brand-secondary: 217 91% 60%;
+    --brand-accent: 275 85% 65%;
     
-    /* Semantic Colors - Light Mode */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --surface: 0 0% 98%;
-    --surface-elevated: 0 0% 96%;
-    --surface-elevated-2: 0 0% 94%;
+    /* Light Mode - Warmer, More Inviting */
+    --background: 0 0% 99%;
+    --foreground: 220 15% 15%;
+    --surface: 0 0% 97%;
+    --surface-elevated: 0 0% 95%;
+    --surface-elevated-2: 0 0% 93%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 0 0% 98%;
+    --card-foreground: 220 15% 15%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 220 15% 15%;
 
-    --primary: 262 80% 50%;
+    --primary: 258 84% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 262 80% 45%;
-    --primary-active: 262 80% 40%;
+    --primary-hover: 258 84% 55%;
+    --primary-active: 258 84% 50%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --secondary-hover: 210 40% 92%;
-    --secondary-active: 210 40% 88%;
+    --secondary: 215 25% 94%;
+    --secondary-foreground: 220 15% 25%;
+    --secondary-hover: 215 25% 90%;
+    --secondary-active: 215 25% 86%;
 
-    --success: 142 76% 36%;
+    --success: 142 69% 45%;
     --success-foreground: 0 0% 100%;
-    --success-hover: 142 76% 32%;
-    --success-light: 142 76% 96%;
+    --success-hover: 142 69% 42%;
+    --success-light: 142 69% 97%;
 
-    --warning: 38 92% 50%;
+    --warning: 38 86% 55%;
     --warning-foreground: 0 0% 100%;
-    --warning-hover: 38 92% 45%;
-    --warning-light: 38 92% 95%;
+    --warning-hover: 38 86% 50%;
+    --warning-light: 38 86% 96%;
 
-    --error: 0 72% 51%;
+    --error: 0 65% 55%;
     --error-foreground: 0 0% 100%;
-    --error-hover: 0 72% 46%;
-    --error-light: 0 72% 96%;
+    --error-hover: 0 65% 50%;
+    --error-light: 0 65% 97%;
 
-    --info: 217 91% 60%;
+    --info: 217 85% 65%;
     --info-foreground: 0 0% 100%;
-    --info-hover: 217 91% 55%;
-    --info-light: 217 91% 96%;
+    --info-hover: 217 85% 60%;
+    --info-light: 217 85% 96%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --muted-hover: 210 40% 92%;
+    --muted: 215 25% 92%;
+    --muted-foreground: 220 15% 55%;
+    --muted-hover: 215 25% 88%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 215 25% 92%;
+    --accent-foreground: 220 15% 25%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 65% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 262 80% 50%;
+    --border: 220 15% 88%;
+    --input: 220 15% 90%;
+    --ring: 258 84% 60%;
 
+    /* Enhanced radius system */
     --radius: 0.5rem;
     --radius-sm: 0.25rem;
     --radius-md: 0.5rem;
     --radius-lg: 0.75rem;
     --radius-xl: 1rem;
 
-    /* Sidebar Colors */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
+    /* Sidebar Colors - Light Mode */
+    --sidebar-background: 0 0% 97%;
+    --sidebar-foreground: 220 15% 25%;
+    --sidebar-primary: 220 15% 15%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 215 25% 92%;
+    --sidebar-accent-foreground: 220 15% 15%;
+    --sidebar-border: 220 15% 85%;
+    --sidebar-ring: 258 84% 60%;
 
     /* Typography Scale */
     --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -162,99 +163,99 @@
     --easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --easing-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    /* Refined Shadows - Light Mode */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.08);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.15);
   }
 
   .dark {
-    /* Improved Dark Mode - Better Contrast & Visual Hierarchy */
+    /* Dark Mode - Warmer, More Comfortable */
     
-    /* Primary Background Colors - Optimized hierarchy with better contrast */
-    --background: 222 84% 4%;                    /* Deep main background */
-    --foreground: 210 40% 98%;                   /* High contrast primary text */
+    /* Refined Dark Backgrounds - Warmer Tones */
+    --background: 222 47% 11%;
+    --foreground: 215 25% 92%;
     
-    /* Surface Hierarchy - Progressive lightening for depth perception */
-    --surface: 220 71% 9%;                       /* Cards and basic surfaces */
-    --surface-elevated: 218 65% 13%;             /* Interactive elements */
-    --surface-elevated-2: 216 58% 17%;           /* Highest elevation surfaces */
+    /* Surface Hierarchy - Warmer Grays */
+    --surface: 220 39% 14%;
+    --surface-elevated: 218 35% 17%;
+    --surface-elevated-2: 216 31% 20%;
 
-    /* Card System - Optimized for readability */
-    --card: 220 71% 9%;                          /* Card background with good contrast */
-    --card-foreground: 210 40% 96%;              /* High contrast card text */
+    /* Card System - Balanced Contrast */
+    --card: 220 39% 14%;
+    --card-foreground: 215 25% 92%;
 
-    --popover: 216 58% 17%;                      /* Elevated popover background */
-    --popover-foreground: 210 40% 98%;           /* Popover text */
+    --popover: 218 35% 17%;
+    --popover-foreground: 215 25% 92%;
 
-    /* Enhanced Interactive Colors */
-    --primary: 262 80% 65%;                      /* Brighter brand color for dark mode */
+    /* Interactive Colors - Softer Approach */
+    --primary: 258 84% 70%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 262 80% 70%;                
-    --primary-active: 262 80% 60%;               
+    --primary-hover: 258 84% 75%;
+    --primary-active: 258 84% 65%;
 
-    --secondary: 217 32% 22%;                    /* Improved secondary background */
-    --secondary-foreground: 215 25% 92%;         /* Better secondary text contrast */
-    --secondary-hover: 217 32% 26%;              
-    --secondary-active: 217 32% 30%;             
+    --secondary: 215 25% 22%;
+    --secondary-foreground: 215 25% 85%;
+    --secondary-hover: 215 25% 26%;
+    --secondary-active: 215 25% 30%;
 
-    /* Status Colors - Enhanced visibility and accessibility */
-    --success: 142 76% 55%;                      /* Brighter success for dark mode */
+    /* Status Colors - Balanced Visibility */
+    --success: 142 69% 58%;
     --success-foreground: 0 0% 100%;
-    --success-hover: 142 76% 60%;
-    --success-light: 142 76% 15%;                /* Subtle success backgrounds */
+    --success-hover: 142 69% 63%;
+    --success-light: 142 69% 12%;
 
-    --warning: 38 92% 70%;                       /* Enhanced warning visibility */
-    --warning-foreground: 0 0% 0%;               
-    --warning-hover: 38 92% 75%;
-    --warning-light: 38 92% 15%;
+    --warning: 38 86% 68%;
+    --warning-foreground: 0 0% 0%;
+    --warning-hover: 38 86% 73%;
+    --warning-light: 38 86% 12%;
 
-    --error: 0 72% 70%;                          /* Improved error visibility */
+    --error: 0 65% 68%;
     --error-foreground: 0 0% 100%;
-    --error-hover: 0 72% 75%;
-    --error-light: 0 72% 15%;
+    --error-hover: 0 65% 73%;
+    --error-light: 0 65% 12%;
 
-    --info: 217 91% 80%;                         /* Enhanced info color */
+    --info: 217 85% 75%;
     --info-foreground: 0 0% 100%;
-    --info-hover: 217 91% 85%;
-    --info-light: 217 91% 15%;
+    --info-hover: 217 85% 80%;
+    --info-light: 217 85% 12%;
 
-    /* Text Hierarchy - WCAA AAA Compliant where possible */
-    --muted: 217 32% 22%;                        /* Muted backgrounds */
-    --muted-foreground: 215 20% 70%;             /* Improved muted text contrast */
-    --muted-hover: 217 32% 26%;
+    /* Text Hierarchy - Better Readability */
+    --muted: 215 25% 22%;
+    --muted-foreground: 215 25% 65%;
+    --muted-hover: 215 25% 26%;
 
-    --accent: 217 32% 22%;                       /* Accent backgrounds */
-    --accent-foreground: 215 25% 92%;            
+    --accent: 215 25% 22%;
+    --accent-foreground: 215 25% 85%;
 
-    --destructive: 0 72% 70%;
+    --destructive: 0 65% 68%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Enhanced Borders and Inputs */
-    --border: 217 32% 28%;                       /* More visible borders */
-    --input: 217 32% 20%;                        /* Input backgrounds */
-    --ring: 262 80% 65%;                         /* Focus rings */
+    /* Borders and Inputs - Subtle but Visible */
+    --border: 215 25% 28%;
+    --input: 215 25% 18%;
+    --ring: 258 84% 70%;
 
-    /* Dark Mode Sidebar - Enhanced for better navigation */
-    --sidebar-background: 220 84% 5%;            /* Slightly different from main bg */
-    --sidebar-foreground: 210 40% 96%;           
-    --sidebar-primary: 262 80% 65%;              /* Brand color consistency */
+    /* Dark Mode Sidebar - Cohesive with Main Theme */
+    --sidebar-background: 222 47% 9%;
+    --sidebar-foreground: 215 25% 92%;
+    --sidebar-primary: 258 84% 70%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 217 32% 20%;               /* Sidebar interactions */
-    --sidebar-accent-foreground: 215 25% 92%;
-    --sidebar-border: 217 32% 25%;               
-    --sidebar-ring: 262 80% 65%;
+    --sidebar-accent: 215 25% 20%;
+    --sidebar-accent-foreground: 215 25% 85%;
+    --sidebar-border: 215 25% 25%;
+    --sidebar-ring: 258 84% 70%;
 
-    /* Enhanced Dark Mode Shadows - Better depth perception */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.7);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.8), 0 1px 2px -1px rgb(0 0 0 / 0.8);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.8), 0 2px 4px -2px rgb(0 0 0 / 0.8);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.8), 0 4px 6px -4px rgb(0 0 0 / 0.8);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.8), 0 8px 10px -6px rgb(0 0 0 / 0.8);
-    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.9);
+    /* Refined Dark Mode Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.5);
   }
 }
 
@@ -407,7 +408,7 @@
   }
 }
 
-/* Enhanced Component Utilities - Improved Dark Mode Support */
+/* Enhanced Component Utilities - Refined Theme Support */
 @layer components {
   /* Layout Primitives */
   .stack {
@@ -463,7 +464,7 @@
     @apply max-w-7xl mx-auto px-8;
   }
 
-  /* Enhanced Surface Styles - Optimized for Dark Mode */
+  /* Refined Surface Styles */
   .surface {
     @apply bg-surface border border-border rounded-lg;
   }
@@ -476,7 +477,7 @@
     @apply bg-surface-elevated-2 border border-border rounded-lg shadow-md hover:shadow-lg transition-all duration-200;
   }
 
-  /* Card Variants - Enhanced Visual Hierarchy for Dark Mode */
+  /* Card Variants - Refined Visual Hierarchy */
   .card-flat {
     @apply bg-card text-card-foreground border border-border rounded-lg;
   }
@@ -493,7 +494,7 @@
     @apply bg-transparent text-card-foreground border-2 border-border rounded-lg hover:border-ring/50 hover:bg-surface/50 transition-all duration-200;
   }
 
-  /* Interactive States - Enhanced Feedback */
+  /* Interactive States - Refined Feedback */
   .interactive {
     @apply transition-all duration-200 ease-in-out;
   }
@@ -506,7 +507,7 @@
     @apply bg-surface-elevated-2 transform translate-y-[0px] shadow-sm;
   }
 
-  /* Link Styles - Improved Dark Mode Contrast */
+  /* Link Styles - Refined Contrast */
   .link-default {
     @apply text-primary hover:text-primary-hover transition-colors duration-200 underline-offset-4 hover:underline;
   }
@@ -515,7 +516,7 @@
     @apply text-muted-foreground hover:text-foreground transition-colors duration-200;
   }
 
-  /* Enhanced Gradient Backgrounds */
+  /* Refined Gradient Backgrounds */
   .gradient-primary {
     background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--brand-secondary)) 100%);
   }
@@ -524,7 +525,7 @@
     background: linear-gradient(135deg, hsl(var(--brand-accent)) 0%, hsl(var(--primary)) 100%);
   }
 
-  /* Status Indicators - Enhanced Visibility */
+  /* Status Indicators - Refined Visibility */
   .status-dot {
     @apply w-2 h-2 rounded-full shadow-sm;
   }
@@ -545,7 +546,7 @@
     @apply status-dot bg-info;
   }
 
-  /* Status Cards - Enhanced Dark Mode Support */
+  /* Status Cards - Refined Theme Support */
   .card-success {
     @apply bg-success-light border-success/30 text-success rounded-lg p-3;
   }
@@ -562,7 +563,7 @@
     @apply bg-info-light border-info/30 text-info rounded-lg p-3;
   }
 
-  /* Table Enhancements for Dark Mode */
+  /* Table Enhancements */
   .table-row-hover {
     @apply hover:bg-surface-elevated transition-colors duration-150;
   }
@@ -572,21 +573,21 @@
   }
 
   /* Form Element Enhancements */
-  .form-input-dark {
+  .form-input-refined {
     @apply bg-surface-elevated border-border text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-ring/20;
   }
 
   /* Button Enhancements */
-  .button-ghost-dark {
+  .button-ghost-refined {
     @apply hover:bg-surface-elevated hover:text-foreground;
   }
 
-  /* Progress Bar Dark Mode */
-  .progress-bar-dark {
+  /* Progress Bar Refinements */
+  .progress-bar-refined {
     @apply bg-surface-elevated;
   }
 
-  .progress-fill-dark {
+  .progress-fill-refined {
     @apply bg-primary;
   }
 

@@ -1,6 +1,8 @@
+
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { LucideIcon, TrendingUp, TrendingDown } from "lucide-react";
+
 interface StatCardProps {
   title: string;
   value: string | number;
@@ -10,6 +12,7 @@ interface StatCardProps {
   description?: string;
   loading?: boolean;
 }
+
 const StatCard = React.memo(({
   title,
   value,
@@ -22,52 +25,68 @@ const StatCard = React.memo(({
   const getChangeColor = () => {
     switch (changeType) {
       case 'positive':
-        return 'text-green-600';
+        return 'text-success';
       case 'negative':
-        return 'text-red-600';
+        return 'text-error';
       default:
-        return 'text-gray-600';
+        return 'text-muted-foreground';
     }
   };
+
   const getTrendIcon = () => {
     if (changeType === 'positive') return TrendingUp;
     if (changeType === 'negative') return TrendingDown;
     return null;
   };
+
   const TrendIcon = getTrendIcon();
+
   if (loading) {
-    return <Card className="border border-gray-200 shadow-sm">
+    return (
+      <Card className="surface-elevated">
         <CardContent className="p-6">
           <div className="animate-pulse">
-            <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-            <div className="h-8 bg-gray-200 rounded w-1/2 mb-2"></div>
-            <div className="h-3 bg-gray-200 rounded w-1/4"></div>
+            <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+            <div className="h-8 bg-muted rounded w-1/2 mb-2"></div>
+            <div className="h-3 bg-muted rounded w-1/4"></div>
           </div>
         </CardContent>
-      </Card>;
+      </Card>
+    );
   }
-  return <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200">
-      <CardContent className="p-6 py-[12px] my-px mx-0 px-[3px] rounded">
+
+  return (
+    <Card className="surface-elevated hover:shadow-md transition-all duration-200">
+      <CardContent className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <p className="text-sm font-medium text-zinc-100">{title}</p>
-          {Icon && <div className="p-2 bg-purple-50 rounded-lg">
-              <Icon className="h-5 w-5 text-purple-600" />
-            </div>}
+          <p className="text-sm font-medium text-foreground">{title}</p>
+          {Icon && (
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Icon className="h-5 w-5 text-primary" />
+            </div>
+          )}
         </div>
         
         <div className="flex items-end justify-between">
           <div>
-            <p className="text-3xl font-bold text-gray-900 mb-1">{value}</p>
-            {description && <p className="text-sm text-gray-500">{description}</p>}
+            <p className="text-3xl font-bold text-foreground mb-1">{value}</p>
+            {description && (
+              <p className="text-sm text-muted-foreground">{description}</p>
+            )}
           </div>
           
-          {change && <div className={`flex items-center gap-1 ${getChangeColor()}`}>
+          {change && (
+            <div className={`flex items-center gap-1 ${getChangeColor()}`}>
               {TrendIcon && <TrendIcon className="h-4 w-4" />}
               <span className="text-sm font-medium">{change}</span>
-            </div>}
+            </div>
+          )}
         </div>
       </CardContent>
-    </Card>;
+    </Card>
+  );
 });
+
 StatCard.displayName = 'StatCard';
+
 export default StatCard;
