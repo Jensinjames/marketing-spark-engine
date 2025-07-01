@@ -52,12 +52,14 @@ export const CreateTeamDialog = ({ open, onOpenChange, onSuccess }: CreateTeamDi
     try {
       setLoading(true);
 
-      // Find user by email
-      const { data: userData, error: userError } = await supabase.auth.admin.getUserByEmail(
-        formData.ownerEmail.trim().toLowerCase()
-      );
+      // Find user by email using the users table
+      const { data: profiles, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', formData.ownerEmail.trim().toLowerCase())
+        .single();
 
-      if (userError || !userData.user) {
+      if (profileError || !profiles) {
         toast.error("User not found with this email address");
         return;
       }
@@ -66,7 +68,7 @@ export const CreateTeamDialog = ({ open, onOpenChange, onSuccess }: CreateTeamDi
       const { data: planData, error: planError } = await supabase
         .from('user_plans')
         .select('plan_type, team_seats')
-        .eq('user_id', userData.user.id)
+        .eq('user_id', profiles.id)
         .single();
 
       if (planError || !planData) {
@@ -83,7 +85,7 @@ export const CreateTeamDialog = ({ open, onOpenChange, onSuccess }: CreateTeamDi
       const { count: teamCount, error: countError } = await supabase
         .from('teams')
         .select('*', { count: 'exact', head: true })
-        .eq('owner_id', userData.user.id);
+        .eq('owner_id', profiles.id);
 
       if (countError) {
         toast.error("Failed to check user's current teams");
@@ -101,7 +103,7 @@ export const CreateTeamDialog = ({ open, onOpenChange, onSuccess }: CreateTeamDi
         .from('teams')
         .insert({
           name: formData.name.trim(),
-          owner_id: userData.user.id
+          owner_id: profiles.id
         })
         .select()
         .single();
@@ -115,7 +117,7 @@ export const CreateTeamDialog = ({ open, onOpenChange, onSuccess }: CreateTeamDi
         .from('team_members')
         .insert({
           team_id: teamData.id,
-          user_id: userData.user.id,
+          user_id: profiles.id,
           role: 'owner',
           status: 'active',
           joined_at: new Date().toISOString()
@@ -133,7 +135,7 @@ export const CreateTeamDialog = ({ open, onOpenChange, onSuccess }: CreateTeamDi
         event_data: { 
           team_id: teamData.id, 
           team_name: teamData.name,
-          owner_id: userData.user.id,
+          owner_id: profiles.id,
           owner_email: formData.ownerEmail
         }
       });

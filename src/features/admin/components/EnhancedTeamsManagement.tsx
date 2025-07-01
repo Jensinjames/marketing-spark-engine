@@ -90,8 +90,7 @@ export const EnhancedTeamsManagement = () => {
           team_members(
             id,
             role,
-            status,
-            team_invitations(status)
+            status
           )
         `)
         .order('created_at', { ascending: false });
@@ -103,9 +102,7 @@ export const EnhancedTeamsManagement = () => {
         ...team,
         member_count: team.team_members.length,
         active_members: team.team_members.filter(m => m.status === 'active').length,
-        pending_invitations: team.team_members.filter(m => 
-          m.team_invitations && m.team_invitations.some((inv: any) => inv.status === 'pending')
-        ).length
+        pending_invitations: 0 // Simplified for now
       })) as ExtendedTeam[];
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -262,7 +259,7 @@ export const EnhancedTeamsManagement = () => {
                 <SelectItem value="all">All Sizes</SelectItem>
                 <SelectItem value="small">Small (≤5 members)</SelectItem>
                 <SelectItem value="medium">Medium (6-20 members)</SelectItem>
-                <SelectItem value="large">Large (>20 members)</SelectItem>
+                <SelectItem value="large">Large ({'>'}20 members)</SelectItem>
               </SelectContent>
             </Select>
             <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>

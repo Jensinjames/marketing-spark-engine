@@ -97,12 +97,14 @@ export const EditTeamDialog = ({ open, onOpenChange, team, onSuccess }: EditTeam
     try {
       setLoading(true);
 
-      // Find new owner by email
-      const { data: userData, error: userError } = await supabase.auth.admin.getUserByEmail(
-        formData.transferEmail.trim().toLowerCase()
-      );
+      // Find new owner by email using profiles table
+      const { data: profiles, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', formData.transferEmail.trim().toLowerCase())
+        .single();
 
-      if (userError || !userData.user) {
+      if (profileError || !profiles) {
         toast.error("User not found with this email address");
         return;
       }
@@ -111,7 +113,7 @@ export const EditTeamDialog = ({ open, onOpenChange, team, onSuccess }: EditTeam
       const { data: planData, error: planError } = await supabase
         .from('user_plans')
         .select('plan_type')
-        .eq('user_id', userData.user.id)
+        .eq('user_id', profiles.id)
         .single();
 
       if (planError || !planData || !['growth', 'elite'].includes(planData.plan_type)) {
@@ -122,7 +124,7 @@ export const EditTeamDialog = ({ open, onOpenChange, team, onSuccess }: EditTeam
       // Update team ownership
       const { error: updateError } = await supabase
         .from('teams')
-        .update({ owner_id: userData.user.id })
+        .update({ owner_id: profiles.id })
         .eq('id', team.id);
 
       if (updateError) throw updateError;
@@ -143,7 +145,7 @@ export const EditTeamDialog = ({ open, onOpenChange, team, onSuccess }: EditTeam
         .from('team_members')
         .upsert({
           team_id: team.id,
-          user_id: userData.user.id,
+          user_id: profiles.id,
           role: 'owner',
           status: 'active',
           joined_at: new Date().toISOString()
@@ -159,7 +161,7 @@ export const EditTeamDialog = ({ open, onOpenChange, team, onSuccess }: EditTeam
         event_data: { 
           team_id: team.id,
           team_name: team.name,
-          new_owner_id: userData.user.id,
+          new_owner_id: profiles.id,
           new_owner_email: formData.transferEmail
         }
       });
